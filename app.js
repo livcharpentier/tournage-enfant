@@ -43,6 +43,10 @@ function load() {
       selectedEnfants = d.selectedEnfants || [];
     }
   } catch(e) {}
+  if (state.commentaireJour) {
+    const el = document.getElementById('commentaire-jour');
+    if (el) el.value = state.commentaireJour;
+  }
   // restore contacts inputs
   if (state.contacts) {
     const sc = document.getElementById('contact-scripte');
@@ -54,6 +58,11 @@ function load() {
     if (ws) ws.value = state.contacts.scripte || '';
     if (wp) wp.value = state.contacts.prod || '';
   }
+}
+
+function saveCommentaire() {
+  const el = document.getElementById('commentaire-jour');
+  if (el) { state.commentaireJour = el.value; save(); }
 }
 
 function saveContacts() {
@@ -512,6 +521,7 @@ function buildSummary() {
   const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
   const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
   const dateStr = `${days[today.getDay()]} ${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
+  const commentaire = document.getElementById('commentaire-jour')?.value?.trim() || '';
 
   let txt = `🎬 ${film ? film.nom.toUpperCase() : 'TOURNAGE'}\n📅 ${dateStr}\n${'─'.repeat(30)}\n\n`;
 
@@ -519,7 +529,6 @@ function buildSummary() {
     const evs = logs.filter(l => l.enfantId === enf.id);
     if (!evs.length) return;
 
-    // compute durations
     const dur = {};
     Object.keys(TYPE_LABEL).forEach(t => dur[t] = 0);
     evs.forEach(l => {
@@ -530,26 +539,27 @@ function buildSummary() {
     const pct = Math.round(travail / lim * 100);
     const statut = pct >= 100 ? '⚠️ DÉPASSEMENT' : pct >= 80 ? '⚠️ Proche limite' : '✅ OK';
 
-    txt += `👦 ${enf.nom} (${enf.age} ans)\n`;
+    // heures clés
+    const hArrivee = evs.find(l => l.type === 'arrivee');
+    const hFin = [...evs].reverse().find(l => l.type === 'fin');
+    const hRepas = evs.find(l => l.type === 'repas');
 
-    // chronologie
-    evs.forEach(l => {
-      const emoji = { arrivee:'🟢', hmc:'💄', tournage:'🎥', pause:'⏸', repas:'🍽', attente:'⏳', cours:'📚', cascade:'💪', sante:'🩺', fin:'🏁' };
-      const durStr = l.fin ? ` (${fmt(toMin(l.fin) - toMin(l.heure))})` : '';
-      txt += `  ${emoji[l.type] || '•'} ${l.heure}  ${TYPE_LABEL[l.type]}${l.fin ? ' → ' + l.fin : ''}${durStr}\n`;
-    });
-
-    txt += `\n  📊 Récap :\n`;
-    if (dur.hmc) txt += `  • HMC/Prép. : ${fmt(dur.hmc)}\n`;
-    if (dur.tournage) txt += `  • Tournage  : ${fmt(dur.tournage)}\n`;
-    if (dur.cours) txt += `  • Cours     : ${fmt(dur.cours)}\n`;
-    if (dur.pause) txt += `  • Pause     : ${fmt(dur.pause)}\n`;
-    if (dur.repas) txt += `  • Repas     : ${fmt(dur.repas)}\n`;
-    if (dur.attente) txt += `  • Attente   : ${fmt(dur.attente)}\n`;
-    if (dur.cascade) txt += `  • Cascade   : ${fmt(dur.cascade)}\n`;
-    if (dur.sante) txt += `  • Santé     : ${fmt(dur.sante)}\n`;
-    txt += `  • Travail plateau : ${fmt(travail)} / ${fmt(lim)} ${statut}\n\n`;
+    txt += `👦 ${enf.nom}\n`;
+    if (hArrivee) txt += `🟢 Arrivée       ${hArrivee.heure}\n`;
+    if (dur.hmc)  txt += `✂️👗🎨 HMC/Prép.  ${fmt(dur.hmc)}\n`;
+    if (dur.tournage) txt += `🎥 Tournage      ${fmt(dur.tournage)}\n`;
+    if (dur.pause)    txt += `🧩 Pause         ${fmt(dur.pause)}\n`;
+    if (hRepas)       txt += `🍽 Repas         ${hRepas.heure}${hRepas.fin ? ' → ' + hRepas.fin : ''}\n`;
+    if (dur.attente)  txt += `☁️ Attente       ${fmt(dur.attente)}\n`;
+    if (dur.cours)    txt += `📚 Cours         ${fmt(dur.cours)}\n`;
+    if (dur.cascade)  txt += `🤸 Cascade       ${fmt(dur.cascade)}\n`;
+    if (hFin)         txt += `🏁 Fin journée   ${hFin.heure}\n`;
+    txt += `${statut} Plateau : ${fmt(travail)} / ${fmt(lim)}\n\n`;
   });
+
+  if (commentaire) {
+    txt += `${'─'.repeat(30)}\n📝 NOTE DU JOUR\n${commentaire}\n\n`;
+  }
 
   txt += `${'─'.repeat(30)}\n🕐 Envoyé à ${nowHM()}`;
   return txt;
