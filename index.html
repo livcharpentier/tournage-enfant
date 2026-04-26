@@ -737,6 +737,32 @@ function ajouterEnfant() {
   renderChips();
 }
 
+function ouvrirModifierEnfant(id) {
+  const enf = state.enfants.find(e => e.id === id);
+  if (!enf) return;
+  document.getElementById('edit-enf-id').value = id;
+  document.getElementById('edit-enf-nom').value = enf.nom;
+  document.getElementById('edit-enf-age').value = enf.age;
+  document.getElementById('edit-enf-tel').value = enf.tel || '';
+  document.getElementById('edit-enf-color').value = enf.couleur || '#3b82f6';
+  openModal('modal-edit-enfant');
+}
+
+function sauvegarderEnfant() {
+  const id = parseInt(document.getElementById('edit-enf-id').value);
+  const enf = state.enfants.find(e => e.id === id);
+  if (!enf) return;
+  enf.nom = document.getElementById('edit-enf-nom').value.trim() || enf.nom;
+  enf.age = document.getElementById('edit-enf-age').value;
+  enf.tel = document.getElementById('edit-enf-tel').value.trim();
+  enf.couleur = document.getElementById('edit-enf-color').value;
+  save();
+  closeModal('modal-edit-enfant');
+  renderEnfantsList();
+  renderChips();
+  renderStatusBar();
+}
+
 function supprimerEnfant(id) {
   if (!confirm('Supprimer cet enfant ?')) return;
   state.enfants = state.enfants.filter(e => e.id !== id);
@@ -758,13 +784,14 @@ function renderEnfantsList() {
     return;
   }
   el.innerHTML = enfs.map(e => `
-    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)">
       <div style="width:34px;height:34px;border-radius:50%;background:${e.couleur}22;color:${e.couleur};font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${initials(e.nom)}</div>
       <div style="flex:1">
         <div style="font-size:14px;font-weight:600">${e.nom}</div>
         <div style="font-size:11px;color:var(--text-muted)">${e.age} ans · max ${fmt(LIMITES[e.age])}/jour</div>
+        <div style="font-size:11px;color:${e.tel ? '#10b981' : 'var(--text-muted)'}">📱 ${e.tel || 'Pas de numéro parent'}</div>
       </div>
-      ${e.tel ? `<button onclick="envoyerAgendaParent(${e.id})" style="padding:4px 8px;border-radius:6px;border:none;background:#25D366;color:#fff;font-size:11px;font-weight:600;cursor:pointer">Agenda WA</button>` : ''}
+      <button onclick="ouvrirModifierEnfant(${e.id})" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);font-size:11px;font-weight:600;cursor:pointer">✏️</button>
       <button onclick="supprimerEnfant(${e.id})" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)">✕</button>
     </div>`).join('');
 }
@@ -1391,9 +1418,7 @@ function genererPDF() {
     '<th>Date</th><th>Type</th><th>Événement</th><th>Horaires</th><th>Repas</th>' +
     '<th>Lieu</th><th>Scènes</th><th>Retour estimé</th><th>Enfant</th>' +
     '</tr></thead><tbody>' + rows + '</tbody></table>' +
-    '<div class="footer">— Liv ;-) · ' + new Date().toLocaleDateString('fr-FR') + '</div>' +
-    '</body></html>';
-
+    '</div>' + '</body></html>';
   const blob = new Blob([html], {type: 'text/html'});
   const url = URL.createObjectURL(blob);
   const win = window.open(url, '_blank');
@@ -1852,5 +1877,47 @@ if ('serviceWorker' in navigator) {
   </div>
 </div>
 
+
+<div class="modal-overlay" id="modal-edit-enfant">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-edit-enfant')">✕</button>
+    <div class="modal-title">Modifier l'enfant</div>
+    <input type="hidden" id="edit-enf-id">
+    <div class="form-row"><label class="form-label">Prénom Nom</label><input class="form-input" id="edit-enf-nom"></div>
+    <div class="form-row"><label class="form-label">Tranche d'âge</label>
+      <select class="form-input" id="edit-enf-age">
+        <option value="<3">Moins de 3 ans (max 2h)</option>
+        <option value="3-5">3 – 5 ans (max 3h)</option>
+        <option value="6-11">6 – 11 ans (max 4h)</option>
+        <option value="12-15">12 – 15 ans (max 6h)</option>
+        <option value="16-17">16 – 17 ans (max 8h)</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">📱 Numéro WhatsApp parent</label><input class="form-input" type="tel" id="edit-enf-tel" placeholder="+336..."></div>
+    <div class="form-row"><label class="form-label">Couleur</label><input type="color" class="form-input" id="edit-enf-color" style="height:40px;padding:4px;cursor:pointer"></div>
+    <button class="form-btn" style="background:var(--green)" onclick="sauvegarderEnfant()">Enregistrer</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-edit-enfant">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-edit-enfant')">✕</button>
+    <div class="modal-title">Modifier l'enfant</div>
+    <input type="hidden" id="edit-enf-id">
+    <div class="form-row"><label class="form-label">Prenom Nom</label><input class="form-input" id="edit-enf-nom"></div>
+    <div class="form-row"><label class="form-label">Tranche age</label>
+      <select class="form-input" id="edit-enf-age">
+        <option value="<3">Moins de 3 ans (max 2h)</option>
+        <option value="3-5">3-5 ans (max 3h)</option>
+        <option value="6-11">6-11 ans (max 4h)</option>
+        <option value="12-15">12-15 ans (max 6h)</option>
+        <option value="16-17">16-17 ans (max 8h)</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">Numero WhatsApp parent</label><input class="form-input" type="tel" id="edit-enf-tel" placeholder="+336..."></div>
+    <div class="form-row"><label class="form-label">Couleur</label><input type="color" class="form-input" id="edit-enf-color" style="height:40px;padding:4px;cursor:pointer"></div>
+    <button class="form-btn" style="background:var(--green)" onclick="sauvegarderEnfant()">Enregistrer</button>
+  </div>
+</div>
 </body>
 </html>
