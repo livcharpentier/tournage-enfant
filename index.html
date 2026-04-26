@@ -1272,7 +1272,7 @@ function openAddEvent(dateStr) {
 
 function validerCalEvent() {
   const titre = document.getElementById('cal-ev-titre').value.trim();
-  if (!titre) { alert('Entrez un titre pour l'événement.'); return; }
+  if (!titre) { alert('Entrez un titre pour l\'evenement.'); return; }
   const ev = {
     id: nextId++,
     filmId: state.activeFilmId,
