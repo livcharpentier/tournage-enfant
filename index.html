@@ -372,6 +372,7 @@
           <span style="font-size:20px">📋</span>Copier le résumé
         </button>
       </div>
+      <div id="extra-contacts-btns" style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
     </div>
   </div>
 </div>
@@ -393,7 +394,7 @@
       <button class="form-btn" onclick="openModal('modal-enfant')" style="margin-top:8px;background:var(--green)">+ Ajouter un enfant</button>
     </div>
     <div class="card">
-      <div class="card-title">Contacts (numéros WhatsApp/SMS)</div>
+      <div class="card-title">Contacts résumé journée</div>
       <div class="form-row">
         <label class="form-label">Scripte</label>
         <input class="form-input" type="tel" id="contact-scripte" placeholder="+336..." oninput="saveContacts()">
@@ -402,6 +403,8 @@
         <label class="form-label">Production</label>
         <input class="form-input" type="tel" id="contact-prod" placeholder="+336..." oninput="saveContacts()">
       </div>
+      <div id="contacts-extra-list"></div>
+      <button class="form-btn" onclick="openModal('modal-contact')" style="margin-top:4px;background:var(--purple)">+ Ajouter un contact</button>
     </div>
     <div class="card">
       <div class="card-title" style="color:var(--red-dark)">Données</div>
@@ -618,6 +621,7 @@ function showPage(name, btn) {
   if (name === 'resume') renderResume();
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
+  if (name === 'resume') renderExtraContactsBtns();
   if (name === 'live') { renderChips(); renderStatusBar(); renderLog(); updateFilmDisplay(); }
 }
 
@@ -691,6 +695,7 @@ function renderFilmsPage() {
       </div>`).join('');
   }
   renderEnfantsList();
+  renderContactsExtra();
 }
 
 // ─── ENFANTS ──────────────────────────────────────────────────────
@@ -1161,6 +1166,66 @@ function copyResume() {
 }
 
 
+
+// ─── CONTACTS EXTRA ──────────────────────────────────────────────
+function getContactsExtra() { return state.contactsExtra || []; }
+
+function ajouterContactExtra() {
+  const nom = document.getElementById('new-contact-nom').value.trim();
+  const tel = document.getElementById('new-contact-tel').value.trim();
+  if (!nom || !tel) { alert('Merci de renseigner un nom et un numéro.'); return; }
+  if (!state.contactsExtra) state.contactsExtra = [];
+  state.contactsExtra.push({ id: nextId++, nom, tel });
+  document.getElementById('new-contact-nom').value = '';
+  document.getElementById('new-contact-tel').value = '';
+  closeModal('modal-contact');
+  save();
+  renderContactsExtra();
+  renderExtraContactsBtns();
+}
+
+function supprimerContactExtra(id) {
+  state.contactsExtra = (state.contactsExtra || []).filter(c => c.id !== id);
+  save();
+  renderContactsExtra();
+  renderExtraContactsBtns();
+}
+
+function renderContactsExtra() {
+  const el = document.getElementById('contacts-extra-list');
+  if (!el) return;
+  const contacts = getContactsExtra();
+  if (!contacts.length) { el.innerHTML = ''; return; }
+  el.innerHTML = contacts.map(c => `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border)">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">${c.nom}</div>
+        <div style="font-size:11px;color:var(--text-muted)">${c.tel}</div>
+      </div>
+      <button onclick="sendWhatsAppExtra(${c.id})" style="padding:5px 10px;border-radius:8px;border:none;background:#25D366;color:#fff;font-size:11px;font-weight:600;cursor:pointer">WA</button>
+      <button onclick="supprimerContactExtra(${c.id})" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--text-muted)">✕</button>
+    </div>`).join('');
+}
+
+function renderExtraContactsBtns() {
+  const el = document.getElementById('extra-contacts-btns');
+  if (!el) return;
+  const contacts = getContactsExtra();
+  if (!contacts.length) { el.innerHTML = ''; return; }
+  el.innerHTML = contacts.map(c => `
+    <button class="send-btn btn-wa" onclick="sendWhatsAppExtra(${c.id})" style="background:#1a9e5a">
+      <span style="font-size:16px">💬</span>${c.nom}<span style="font-size:10px;opacity:.8">WhatsApp</span>
+    </button>`).join('');
+}
+
+function sendWhatsAppExtra(id) {
+  const c = getContactsExtra().find(x => x.id === id);
+  if (!c) return;
+  const clean = c.tel.replace(/\s/g, '').replace(/^00/, '+');
+  const msg = encodeURIComponent(buildSummary());
+  window.open(`https://wa.me/${clean}?text=${msg}`);
+}
+
 // ─── CALENDRIER ──────────────────────────────────────────────────
 let calYear = new Date().getFullYear();
 let calMonth = new Date().getMonth();
@@ -1324,6 +1389,8 @@ renderChips();
 renderLog();
 renderStatusBar();
 updateFilmDisplay();
+renderContactsExtra();
+renderExtraContactsBtns();
 
 // refresh planning + status every minute
 setInterval(() => {
@@ -1364,6 +1431,23 @@ if ('serviceWorker' in navigator) {
       <select class="form-input" id="cal-ev-enfant"><option value="">Tous</option></select>
     </div>
     <button class="form-btn" onclick="validerCalEvent()">Ajouter cet événement</button>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="modal-contact">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-contact')">✕</button>
+    <div class="modal-title">Ajouter un contact</div>
+    <div class="form-row">
+      <label class="form-label">Nom / rôle</label>
+      <input class="form-input" id="new-contact-nom" placeholder="ex: Directeur de prod, Parent de Léa…">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Numéro WhatsApp (avec indicatif)</label>
+      <input class="form-input" type="tel" id="new-contact-tel" placeholder="+336...">
+    </div>
+    <button class="form-btn" style="background:var(--purple)" onclick="ajouterContactExtra()">Ajouter ce contact</button>
   </div>
 </div>
 
