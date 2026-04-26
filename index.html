@@ -10,6 +10,8 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
   <title>Areca</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
   <style>
     :root {
       --blue: #3b82f6; --blue-light: #dbeafe; --blue-dark: #1d4ed8;
@@ -232,8 +234,8 @@
 
 <!-- SPLASH SCREEN -->
 <div id="splash" style="position:fixed;inset:0;background:#1a1a2e;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s">
-  <div style="font-size:52px;font-weight:200;color:#fff;letter-spacing:.2em">LIV</div>
-  <div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:8px;letter-spacing:.1em">RESPONSABLE ENFANT (ARECA)</div>
+  <div style="font-size:72px;font-family:'Fredoka One',cursive;color:#fff;letter-spacing:.15em;text-shadow:3px 3px 0px rgba(255,255,255,.15)">Liv</div>
+  <div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:8px;letter-spacing:.1em">RESPONSABLE ENFANTS (ARECA)</div>
   <div style="margin-top:32px;width:40px;height:2px;background:rgba(255,255,255,.2);border-radius:2px;overflow:hidden">
     <div id="splash-bar" style="height:100%;width:0%;background:#fff;transition:width 1.5s;border-radius:2px"></div>
   </div>
@@ -246,7 +248,7 @@
       <div id="film-name-live" style="font-size:15px;font-weight:700;margin-top:1px">Aucun film sélectionné</div>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
-      <div style="font-size:11px;opacity:.6;font-weight:700;letter-spacing:.08em">LIV</div>
+      <div style="font-size:18px;font-family:'Fredoka One',cursive;opacity:.9;letter-spacing:.1em">Liv</div>
       <div id="live-date-top" style="font-size:12px;opacity:.6;text-align:right"></div>
     </div>
   </div>
@@ -1322,12 +1324,14 @@ function renderCal() {
       <div class="ev-dot" style="background:${col}"></div>
       <div class="ev-info">
         <div class="ev-title">${e.titre}</div>
-        <div class="ev-sub">${dateLabel} ${e.heure ? '· ' + e.heure : ''} ${enf ? '· ' + enf.nom.split(' ')[0] : '· Tous'}</div>
+        <div class="ev-sub">${dateLabel}${e.debut ? ' · ' + e.debut + (e.fin ? ' - ' + e.fin : '') : ''} ${enf ? '· ' + enf.nom.split(' ')[0] : '· Tous'}</div>
       </div>
       <button class="ev-del" onclick="delCalEvent(${e.id})">✕</button>
     </div>`;
   }).join('');
 }
+
+let calSelectedEnfants = [];
 
 function openAddEvent(dateStr) {
   const d = new Date(dateStr);
@@ -1335,31 +1339,67 @@ function openAddEvent(dateStr) {
   const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
   const label = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
 
-  const enfs = activeEnfants();
-  const enfsOpts = '<option value="">Tous</option>' + enfs.map(e => `<option value="${e.id}">${e.nom}</option>`).join('');
-
+  calSelectedEnfants = [];
   document.getElementById('modal-cal-title').textContent = label;
   document.getElementById('cal-ev-date').value = dateStr;
-  document.getElementById('cal-ev-enfant').innerHTML = enfsOpts;
   document.getElementById('cal-ev-titre').value = '';
-  document.getElementById('cal-ev-heure').value = '';
+  document.getElementById('cal-ev-debut').value = '';
+  document.getElementById('cal-ev-fin').value = '';
   document.getElementById('cal-ev-type').value = 't';
+  renderCalChips();
   openModal('modal-cal');
+}
+
+function renderCalChips() {
+  const enfs = activeEnfants();
+  const el = document.getElementById('cal-enfants-chips');
+  if (!el) return;
+  let html = '';
+  const allSel = calSelectedEnfants.length === 0;
+  html += `<div onclick="calSelectEnfant('all')" style="padding:7px 14px;border-radius:20px;border:1.5px solid ${allSel ? 'var(--blue)' : 'var(--border)'};background:${allSel ? 'var(--blue-light)' : 'var(--surface)'};color:${allSel ? 'var(--blue-dark)' : 'var(--text-muted)'};font-size:13px;font-weight:600;cursor:pointer">Tous</div>`;
+  enfs.forEach(e => {
+    const sel = calSelectedEnfants.includes(e.id);
+    html += `<div onclick="calSelectEnfant(${e.id})" style="padding:7px 14px;border-radius:20px;border:1.5px solid ${sel ? e.couleur : 'var(--border)'};background:${sel ? e.couleur : 'var(--surface)'};color:${sel ? '#fff' : 'var(--text-muted)'};font-size:13px;font-weight:600;cursor:pointer">${e.nom.split(' ')[0]}</div>`;
+  });
+  el.innerHTML = html;
+}
+
+function calSelectEnfant(id) {
+  if (id === 'all') { calSelectedEnfants = []; }
+  else {
+    if (calSelectedEnfants.includes(id)) calSelectedEnfants = calSelectedEnfants.filter(x => x !== id);
+    else calSelectedEnfants.push(id);
+  }
+  renderCalChips();
 }
 
 function validerCalEvent() {
   const titre = document.getElementById('cal-ev-titre').value.trim();
-  if (!titre) { alert('Entrez un titre pour l\'evenement.'); return; }
-  const ev = {
-    id: nextId++,
-    filmId: state.activeFilmId,
-    enfantId: parseInt(document.getElementById('cal-ev-enfant').value) || null,
-    date: document.getElementById('cal-ev-date').value,
-    heure: document.getElementById('cal-ev-heure').value,
-    titre,
-    type: document.getElementById('cal-ev-type').value
-  };
-  saveCalEvent(ev);
+  if (!titre) { alert('Entrez un titre.'); return; }
+  const debut = document.getElementById('cal-ev-debut').value;
+  const fin = document.getElementById('cal-ev-fin').value;
+  const type = document.getElementById('cal-ev-type').value;
+  const date = document.getElementById('cal-ev-date').value;
+  const enfs = activeEnfants();
+  const targets = calSelectedEnfants.length > 0 ? calSelectedEnfants : [null];
+
+  targets.forEach(eid => {
+    const ev = {
+      id: nextId++,
+      filmId: state.activeFilmId,
+      enfantId: eid,
+      date,
+      debut,
+      fin,
+      heure: debut,
+      titre,
+      type
+    };
+    if (!state.calEvents) state.calEvents = [];
+    state.calEvents.push(ev);
+  });
+  save();
+  renderCal();
   closeModal('modal-cal');
 }
 
@@ -1381,7 +1421,7 @@ function partagerCalendrier() {
     const enf = state.enfants.find(en => en.id === e.enfantId);
     const typeLabel = e.type === 't' ? '[Tournage]' : '[Famille]';
     txt += `${jours[d.getDay()]} ${d.getDate()} - ${e.titre} ${typeLabel}`;
-    if (e.heure) txt += ` a ${e.heure}`;
+    if (e.debut) txt += ` ${e.debut}${e.fin ? ' - ' + e.fin : ''}`;
     if (enf) txt += ` (${enf.nom.split(' ')[0]})`;
     txt += '\n';
   });
@@ -1442,15 +1482,21 @@ if ('serviceWorker' in navigator) {
     </div>
     <div class="form-row">
       <label class="form-label">Titre de l'événement</label>
-      <input class="form-input" id="cal-ev-titre" placeholder="ex: Répétition scène 3, Brevet des collèges…">
+      <input class="form-input" id="cal-ev-titre" placeholder="ex: Coaching, Répétition scène 3, Brevet…">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div>
+        <label class="form-label">Heure début</label>
+        <input class="form-input" type="time" id="cal-ev-debut">
+      </div>
+      <div>
+        <label class="form-label">Heure fin</label>
+        <input class="form-input" type="time" id="cal-ev-fin">
+      </div>
     </div>
     <div class="form-row">
-      <label class="form-label">Heure (optionnel)</label>
-      <input class="form-input" type="time" id="cal-ev-heure">
-    </div>
-    <div class="form-row">
-      <label class="form-label">Enfant concerné</label>
-      <select class="form-input" id="cal-ev-enfant"><option value="">Tous</option></select>
+      <label class="form-label">Enfants concernés (appuyez pour sélectionner)</label>
+      <div id="cal-enfants-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px"></div>
     </div>
     <button class="form-btn" onclick="validerCalEvent()">Ajouter cet événement</button>
   </div>
