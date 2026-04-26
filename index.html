@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Tournage">
+  <meta name="apple-mobile-web-app-title" content="Areca">
   <meta name="theme-color" content="#1a1a2e">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <title>Tournage Enfants</title>
+  <title>Areca</title>
   <style>
     :root {
       --blue: #3b82f6; --blue-light: #dbeafe; --blue-dark: #1d4ed8;
@@ -229,13 +229,26 @@
 <body>
 
 <!-- PAGES -->
+
+<!-- SPLASH SCREEN -->
+<div id="splash" style="position:fixed;inset:0;background:#1a1a2e;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s">
+  <div style="font-size:52px;font-weight:200;color:#fff;letter-spacing:.2em">LIV</div>
+  <div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:8px;letter-spacing:.1em">RESPONSABLE ENFANT (ARECA)</div>
+  <div style="margin-top:32px;width:40px;height:2px;background:rgba(255,255,255,.2);border-radius:2px;overflow:hidden">
+    <div id="splash-bar" style="height:100%;width:0%;background:#fff;transition:width 1.5s;border-radius:2px"></div>
+  </div>
+</div>
+
 <div id="page-live" class="page active">
   <div style="background:#1a1a2e;color:#fff;padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10">
     <div>
       <div style="font-size:11px;opacity:.6;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Plateau Live</div>
       <div id="film-name-live" style="font-size:15px;font-weight:700;margin-top:1px">Aucun film sélectionné</div>
     </div>
-    <div id="live-date-top" style="font-size:12px;opacity:.6;text-align:right"></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="font-size:11px;opacity:.6;font-weight:700;letter-spacing:.08em">LIV</div>
+      <div id="live-date-top" style="font-size:12px;opacity:.6;text-align:right"></div>
+    </div>
   </div>
   <div class="scroll-content">
     <div class="clock-block">
@@ -1061,8 +1074,7 @@ function buildSummary() {
   if (commentaire) {
     txt += `Note : ${commentaire}\n\n`;
   }
-
-  txt += `Envoye a ${nowHM()}`;
+  txt += `— Liv :)`;
   return txt;
 }
 
@@ -1391,6 +1403,16 @@ renderStatusBar();
 updateFilmDisplay();
 renderContactsExtra();
 renderExtraContactsBtns();
+
+// Splash screen
+setTimeout(() => {
+  const bar = document.getElementById('splash-bar');
+  if (bar) bar.style.width = '100%';
+}, 100);
+setTimeout(() => {
+  const splash = document.getElementById('splash');
+  if (splash) { splash.style.opacity = '0'; setTimeout(() => splash.remove(), 600); }
+}, 1800);
 
 // refresh planning + status every minute
 setInterval(() => {
