@@ -448,9 +448,13 @@
     </div>
     <div class="cal-grid" id="cal-grid"></div>
     <div class="card">
-      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
         <span id="cal-events-title">Événements du mois</span>
-        <button onclick="partagerCalendrier()" style="font-size:12px;padding:5px 10px;border-radius:8px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer">WhatsApp</button>
+        <div style="display:flex;gap:6px">
+          <button onclick="partagerCalendrier()" style="font-size:11px;padding:5px 10px;border-radius:8px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer">Équipe</button>
+          <button onclick="partagerParents()" style="font-size:11px;padding:5px 10px;border-radius:8px;border:none;background:#3b82f6;color:#fff;font-weight:600;cursor:pointer">Parents WA</button>
+          <button onclick="copierParents()" style="font-size:11px;padding:5px 10px;border-radius:8px;border:none;background:#8b5cf6;color:#fff;font-weight:600;cursor:pointer">📋 Copier groupe</button>
+        </div>
       </div>
       <div id="cal-events-list"><div class="empty"><div class="empty-icon">📅</div>Appuyez sur un jour pour ajouter un événement</div></div>
     </div>
@@ -1060,23 +1064,23 @@ function buildSummary() {
     const hFin = [...evs].reverse().find(l => l.type === 'fin');
     const hRepas = evs.find(l => l.type === 'repas');
 
-    txt += `${enf.nom}\n`;
-    if (hArrivee)     txt += `Arrivee : ${hArrivee.heure}\n`;
-    if (dur.hmc)      txt += `HMC : ${fmt(dur.hmc)}\n`;
-    if (dur.tournage) txt += `Tournage : ${fmt(dur.tournage)}\n`;
-    if (dur.pause)    txt += `Pause : ${fmt(dur.pause)}\n`;
-    if (hRepas)       txt += `Repas : ${hRepas.heure}${hRepas.fin ? ' - ' + hRepas.fin : ''}\n`;
-    if (dur.attente)  txt += `Attente : ${fmt(dur.attente)}\n`;
-    if (dur.cours)    txt += `Cours : ${fmt(dur.cours)}\n`;
-    if (dur.cascade)  txt += `Cascade : ${fmt(dur.cascade)}\n`;
-    if (hFin)         txt += `Fin : ${hFin.heure}\n`;
-    txt += `Plateau : ${fmt(travail)} / ${fmt(lim)} - ${statut}\n\n`;
+    txt += enf.nom + '\n';
+    if (hArrivee)     txt += 'Arrivee : ' + hArrivee.heure + '\n';
+    if (dur.hmc)      txt += 'HMC : ' + fmt(dur.hmc) + '\n';
+    if (dur.tournage) txt += 'Tournage : ' + fmt(dur.tournage) + '\n';
+    if (dur.pause)    txt += 'Pause : ' + fmt(dur.pause) + '\n';
+    if (hRepas)       txt += 'Repas : ' + hRepas.heure + (hRepas.fin ? ' - ' + hRepas.fin : '') + '\n';
+    if (dur.attente)  txt += 'Attente : ' + fmt(dur.attente) + '\n';
+    if (dur.cours)    txt += 'Cours : ' + fmt(dur.cours) + '\n';
+    if (dur.cascade)  txt += 'Cascade : ' + fmt(dur.cascade) + '\n';
+    if (hFin)         txt += 'Fin : ' + hFin.heure + '\n';
+    txt += 'Plateau : ' + fmt(travail) + ' / ' + fmt(lim) + ' - ' + statut + '\n\n';
   });
 
   if (commentaire) {
-    txt += `Note : ${commentaire}\n\n`;
+    txt += 'Note : ' + commentaire + '\n\n';
   }
-  txt += `— Liv :)`;
+  txt += `— Liv ;-)`;
   return txt;
 }
 
@@ -1324,7 +1328,7 @@ function renderCal() {
       <div class="ev-dot" style="background:${col}"></div>
       <div class="ev-info">
         <div class="ev-title">${e.titre}</div>
-        <div class="ev-sub">${dateLabel}${e.debut ? ' · ' + e.debut + (e.fin ? ' - ' + e.fin : '') : ''} ${enf ? '· ' + enf.nom.split(' ')[0] : '· Tous'}</div>
+        <div class="ev-sub">${dateLabel}${e.debut ? ' · ' + e.debut + (e.fin ? ' - ' + e.fin : '') : ''}${e.retour ? ' · 🏠' + e.retour : ''}${e.repasDebut ? ' · 🍽' + e.repasDebut + (e.repasFin ? '-' + e.repasFin : '') : ''}${e.lieu ? ' · 📍' + e.lieu : ''}${e.scenes ? ' · 🎬' + e.scenes : ''} ${enf ? '· ' + enf.nom.split(' ')[0] : '· Tous'}</div>
       </div>
       <button class="ev-del" onclick="delCalEvent(${e.id})">✕</button>
     </div>`;
@@ -1345,6 +1349,11 @@ function openAddEvent(dateStr) {
   document.getElementById('cal-ev-titre').value = '';
   document.getElementById('cal-ev-debut').value = '';
   document.getElementById('cal-ev-fin').value = '';
+  document.getElementById('cal-ev-lieu').value = '';
+  document.getElementById('cal-ev-scenes').value = '';
+  document.getElementById('cal-ev-retour').value = '';
+  document.getElementById('cal-ev-repas-debut').value = '';
+  document.getElementById('cal-ev-repas-fin').value = '';
   document.getElementById('cal-ev-type').value = 't';
   renderCalChips();
   openModal('modal-cal');
@@ -1384,6 +1393,11 @@ function validerCalEvent() {
   const targets = calSelectedEnfants.length > 0 ? calSelectedEnfants : [null];
 
   targets.forEach(eid => {
+    const lieu = document.getElementById('cal-ev-lieu').value.trim();
+    const scenes = document.getElementById('cal-ev-scenes').value.trim();
+    const retour = document.getElementById('cal-ev-retour').value;
+    const repasDebut = document.getElementById('cal-ev-repas-debut').value;
+    const repasFin = document.getElementById('cal-ev-repas-fin').value;
     const ev = {
       id: nextId++,
       filmId: state.activeFilmId,
@@ -1392,6 +1406,11 @@ function validerCalEvent() {
       debut,
       fin,
       heure: debut,
+      lieu,
+      scenes,
+      retour,
+      repasDebut,
+      repasFin,
       titre,
       type
     };
@@ -1401,6 +1420,115 @@ function validerCalEvent() {
   save();
   renderCal();
   closeModal('modal-cal');
+}
+
+function copierParents() {
+  const txt = buildParentsMessage();
+  if (!txt) return;
+  navigator.clipboard.writeText(txt)
+    .then(() => alert('Message copié ! Ouvrez votre groupe WhatsApp parents et collez le message.'))
+    .catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = txt; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      alert('Message copié ! Ouvrez votre groupe WhatsApp parents et collez le message.');
+    });
+}
+
+function buildParentsMessage() {
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const film = activeFilm();
+  const events = getCalEvents().filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
+  }).sort((a,b) => a.date.localeCompare(b.date));
+
+  if (!events.length) { alert('Aucun événement ce mois-ci.'); return null; }
+
+  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  let txt = 'Planning ' + months[calMonth] + ' ' + calYear;
+  if (film) txt += ' - ' + film.nom;
+  txt += '\n\n';
+
+  const byDate = {};
+  events.forEach(e => {
+    if (!byDate[e.date]) byDate[e.date] = [];
+    byDate[e.date].push(e);
+  });
+
+  Object.keys(byDate).sort().forEach(date => {
+    const d = new Date(date);
+    txt += jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + '\n';
+    byDate[date].forEach(e => {
+      const enf = state.enfants.find(en => en.id === e.enfantId);
+      txt += '  • ' + e.titre;
+      if (e.debut) txt += ' de ' + e.debut + (e.fin ? ' a ' + e.fin : '');
+      if (e.lieu) txt += '\n    Lieu : ' + e.lieu;
+      if (e.scenes) txt += '\n    Scenes : ' + e.scenes;
+      if (e.repasDebut) txt += '\n    Coupure repas : ' + e.repasDebut + (e.repasFin ? ' - ' + e.repasFin : '');
+      if (e.retour) txt += '\n    Retour estime : ' + e.retour;
+      if (enf) txt += '\n    Enfant : ' + enf.nom;
+      else txt += '\n    Tous les enfants';
+      txt += '\n';
+    });
+    txt += '\n';
+  });
+
+  txt += '— Liv ;-)';
+  return txt;
+}
+
+function partagerParents() {
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const film = activeFilm();
+  const events = getCalEvents().filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
+  }).sort((a,b) => a.date.localeCompare(b.date));
+
+  if (!events.length) { alert('Aucun événement ce mois-ci.'); return; }
+
+  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  let txt = `Planning ${months[calMonth]} ${calYear}`;
+  if (film) txt += ' - ' + film.nom;
+  txt += '\n\n';
+
+  // Grouper par date
+  const byDate = {};
+  events.forEach(e => {
+    if (!byDate[e.date]) byDate[e.date] = [];
+    byDate[e.date].push(e);
+  });
+
+  Object.keys(byDate).sort().forEach(date => {
+    const d = new Date(date);
+    txt += `${jours[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}` + '\n';
+    byDate[date].forEach(e => {
+      const enf = state.enfants.find(en => en.id === e.enfantId);
+      const typeLabel = e.type === 't' ? 'Tournage' : 'Info';
+      txt += `  • ${e.titre}`;
+      if (e.debut) txt += ` de ${e.debut}${e.fin ? ' a ' + e.fin : ''}`;
+      if (e.lieu) txt += '\n    Lieu : ' + e.lieu;
+      if (enf) txt += '\n    Enfant : ' + enf.nom;
+      else txt += '\n    Tous les enfants';
+      txt += '
+';
+    });
+    txt += '
+';
+  });
+
+  txt += `— Liv ;-)`;
+
+  const n = state.contacts.scripte || state.contacts.prod || '';
+  if (n) {
+    const clean = n.replace(/\s/g, '').replace(/^00/, '+');
+    window.open(`https://wa.me/${clean}?text=${encodeURIComponent(txt)}`);
+  } else {
+    navigator.clipboard.writeText(txt)
+      .then(() => alert('Planning parents copié ! Collez-le dans WhatsApp.'))
+      .catch(() => alert(txt));
+  }
 }
 
 function partagerCalendrier() {
@@ -1422,7 +1550,10 @@ function partagerCalendrier() {
     const typeLabel = e.type === 't' ? '[Tournage]' : '[Famille]';
     txt += `${jours[d.getDay()]} ${d.getDate()} - ${e.titre} ${typeLabel}`;
     if (e.debut) txt += ` ${e.debut}${e.fin ? ' - ' + e.fin : ''}`;
-    if (enf) txt += ` (${enf.nom.split(' ')[0]})`;
+    if (e.lieu) txt += ' - ' + e.lieu;
+    if (e.repasDebut) txt += ' - Repas ' + e.repasDebut + (e.repasFin ? '-' + e.repasFin : '');
+    if (e.scenes) txt += ' [' + e.scenes + ']';
+    if (enf) txt += ' (' + enf.nom.split(' ')[0] + ')';
     txt += '\n';
   });
 
@@ -1436,23 +1567,27 @@ function partagerCalendrier() {
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────
-load();
-renderChips();
-renderLog();
-renderStatusBar();
-updateFilmDisplay();
-renderContactsExtra();
-renderExtraContactsBtns();
+try {
+  load();
+  renderChips();
+  renderLog();
+  renderStatusBar();
+  updateFilmDisplay();
+  renderContactsExtra();
+  renderExtraContactsBtns();
+} catch(e) {
+  console.error('Init error:', e);
+}
 
-// Splash screen
-setTimeout(() => {
-  const bar = document.getElementById('splash-bar');
-  if (bar) bar.style.width = '100%';
-}, 100);
-setTimeout(() => {
+// Splash screen - se ferme toujours même en cas d'erreur
+function closeSplash() {
   const splash = document.getElementById('splash');
-  if (splash) { splash.style.opacity = '0'; setTimeout(() => splash.remove(), 600); }
-}, 1800);
+  if (splash) { splash.style.opacity = '0'; setTimeout(() => { try { splash.remove(); } catch(e) {} }, 600); }
+}
+setTimeout(() => { const bar = document.getElementById('splash-bar'); if (bar) bar.style.width = '100%'; }, 100);
+setTimeout(closeSplash, 1800);
+// Sécurité : ferme dans tous les cas après 3s
+setTimeout(closeSplash, 3000);
 
 // refresh planning + status every minute
 setInterval(() => {
@@ -1484,14 +1619,36 @@ if ('serviceWorker' in navigator) {
       <label class="form-label">Titre de l'événement</label>
       <input class="form-input" id="cal-ev-titre" placeholder="ex: Coaching, Répétition scène 3, Brevet…">
     </div>
+    <div class="form-row">
+      <label class="form-label">Lieu</label>
+      <input class="form-input" id="cal-ev-lieu" placeholder="ex: Studio 5, Salle de répétition Paris 11e…">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Scènes prévues (optionnel)</label>
+      <input class="form-input" id="cal-ev-scenes" placeholder="ex: Scènes 12B, 15A, 23…">
+    </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
       <div>
         <label class="form-label">Heure début</label>
         <input class="form-input" type="time" id="cal-ev-debut">
       </div>
       <div>
-        <label class="form-label">Heure fin</label>
+        <label class="form-label">Heure fin tournage</label>
         <input class="form-input" type="time" id="cal-ev-fin">
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">🏠 Heure de retour estimée (pour les parents)</label>
+      <input class="form-input" type="time" id="cal-ev-retour">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div>
+        <label class="form-label">🍽 Coupure repas début</label>
+        <input class="form-input" type="time" id="cal-ev-repas-debut">
+      </div>
+      <div>
+        <label class="form-label">🍽 Coupure repas fin</label>
+        <input class="form-input" type="time" id="cal-ev-repas-fin">
       </div>
     </div>
     <div class="form-row">
