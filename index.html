@@ -966,7 +966,7 @@ function buildSummary() {
   const dateStr = `${days[today.getDay()]} ${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
   const commentaire = document.getElementById('commentaire-jour')?.value?.trim() || '';
 
-  let txt = `🎬 ${film ? film.nom.toUpperCase() : 'TOURNAGE'}\n📅 ${dateStr}\n${'─'.repeat(30)}\n\n`;
+  let txt = `${film ? film.nom.toUpperCase() : 'TOURNAGE'}\n${dateStr}\n\n`;
 
   enfs.forEach(enf => {
     const evs = logs.filter(l => l.enfantId === enf.id);
@@ -980,31 +980,30 @@ function buildSummary() {
     const travail = WORK_TYPES.reduce((s, t) => s + (dur[t] || 0), 0);
     const lim = LIMITES[enf.age];
     const pct = Math.round(travail / lim * 100);
-    const statut = pct >= 100 ? '⚠️ DÉPASSEMENT' : pct >= 80 ? '⚠️ Proche limite' : '✅ OK';
+    const statut = pct >= 100 ? 'DEPASSEMENT' : pct >= 80 ? 'Proche limite' : 'OK';
 
-    // heures clés
     const hArrivee = evs.find(l => l.type === 'arrivee');
     const hFin = [...evs].reverse().find(l => l.type === 'fin');
     const hRepas = evs.find(l => l.type === 'repas');
 
-    txt += `👦 ${enf.nom}\n`;
-    if (hArrivee) txt += `🟢 Arrivée       ${hArrivee.heure}\n`;
-    if (dur.hmc)  txt += `✂️👗🎨 HMC/Prép.  ${fmt(dur.hmc)}\n`;
-    if (dur.tournage) txt += `🎥 Tournage      ${fmt(dur.tournage)}\n`;
-    if (dur.pause)    txt += `🧩 Pause         ${fmt(dur.pause)}\n`;
-    if (hRepas)       txt += `🍽 Repas         ${hRepas.heure}${hRepas.fin ? ' → ' + hRepas.fin : ''}\n`;
-    if (dur.attente)  txt += `☁️ Attente       ${fmt(dur.attente)}\n`;
-    if (dur.cours)    txt += `📚 Cours         ${fmt(dur.cours)}\n`;
-    if (dur.cascade)  txt += `🤸 Cascade       ${fmt(dur.cascade)}\n`;
-    if (hFin)         txt += `🏁 Fin journée   ${hFin.heure}\n`;
-    txt += `${statut} Plateau : ${fmt(travail)} / ${fmt(lim)}\n\n`;
+    txt += `${enf.nom}\n`;
+    if (hArrivee)     txt += `Arrivee : ${hArrivee.heure}\n`;
+    if (dur.hmc)      txt += `HMC : ${fmt(dur.hmc)}\n`;
+    if (dur.tournage) txt += `Tournage : ${fmt(dur.tournage)}\n`;
+    if (dur.pause)    txt += `Pause : ${fmt(dur.pause)}\n`;
+    if (hRepas)       txt += `Repas : ${hRepas.heure}${hRepas.fin ? ' - ' + hRepas.fin : ''}\n`;
+    if (dur.attente)  txt += `Attente : ${fmt(dur.attente)}\n`;
+    if (dur.cours)    txt += `Cours : ${fmt(dur.cours)}\n`;
+    if (dur.cascade)  txt += `Cascade : ${fmt(dur.cascade)}\n`;
+    if (hFin)         txt += `Fin : ${hFin.heure}\n`;
+    txt += `Plateau : ${fmt(travail)} / ${fmt(lim)} - ${statut}\n\n`;
   });
 
   if (commentaire) {
-    txt += `${'─'.repeat(30)}\n📝 NOTE DU JOUR\n${commentaire}\n\n`;
+    txt += `Note : ${commentaire}\n\n`;
   }
 
-  txt += `${'─'.repeat(30)}\n🕐 Envoyé à ${nowHM()}`;
+  txt += `Envoye a ${nowHM()}`;
   return txt;
 }
 
