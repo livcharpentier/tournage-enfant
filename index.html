@@ -1,441 +1,684 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Tournage">
-  <meta name="theme-color" content="#1a1a2e">
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <title>Tournage Enfants</title>
-  <style>
-    :root {
-      --blue: #3b82f6; --blue-light: #dbeafe; --blue-dark: #1d4ed8;
-      --green: #10b981; --green-light: #d1fae5; --green-dark: #065f46;
-      --amber: #f59e0b; --amber-light: #fef3c7; --amber-dark: #92400e;
-      --red: #ef4444; --red-light: #fee2e2; --red-dark: #991b1b;
-      --purple: #8b5cf6; --purple-light: #ede9fe; --purple-dark: #5b21b6;
-      --gray: #6b7280; --gray-light: #f3f4f6; --gray-dark: #1f2937;
-      --teal: #14b8a6; --teal-light: #ccfbf1;
-      --pink: #ec4899; --pink-light: #fce7f3;
-      --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0;
-      --text: #0f172a; --text-muted: #64748b;
-      --radius: 12px; --radius-sm: 8px;
-      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+// ─── CONSTANTES ───────────────────────────────────────────────────
+const LIMITES = { '<3': 120, '3-5': 180, '6-11': 240, '12-15': 360, '16-17': 480 };
+const TYPE_LABEL = {
+  arrivee: 'Arrivée', hmc: 'HMC/Prép.', tournage: 'Tournage',
+  pause: 'Pause', repas: 'Repas', attente: 'Attente',
+  cours: 'Cours', cascade: 'Cascade', sante: 'Santé', fin: 'Fin journée'
+};
+const TYPE_COLOR = {
+  arrivee: ['#d1fae5', '#065f46'], hmc: ['#dbeafe', '#1d4ed8'],
+  tournage: ['#a7f3d0', '#065f46'], pause: ['#f3f4f6', '#1f2937'],
+  repas: ['#fef9c3', '#713f12'], attente: ['#fef3c7', '#92400e'],
+  cours: ['#ede9fe', '#5b21b6'], cascade: ['#fee2e2', '#991b1b'],
+  sante: ['#fce7f3', '#9d174d'], fin: ['#fce7f3', '#9d174d']
+};
+const WORK_TYPES = ['tournage', 'hmc', 'cascade', 'cours'];
+
+// ─── STATE ────────────────────────────────────────────────────────
+let state = {
+  films: [],
+  enfants: [],
+  logs: [],       // { id, filmId, enfantId, type, heure, fin, date }
+  activeFilmId: null,
+  contacts: { scripte: '', prod: '' }
+};
+
+let selectedEnfants = [];  // [] = tous
+let recognition = null;
+let isListening = false;
+let nextId = 1;
+
+// ─── PERSISTENCE ─────────────────────────────────────────────────
+function save() {
+  try { localStorage.setItem('tournage_v2', JSON.stringify({ state, nextId, selectedEnfants })); } catch(e) {}
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem('tournage_v2');
+    if (raw) {
+      const d = JSON.parse(raw);
+      state = d.state || state;
+      nextId = d.nextId || 1;
+      selectedEnfants = d.selectedEnfants || [];
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100%; background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: var(--text); font-size: 15px; }
-    
-    /* NAV */
-    .nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
-    .nav-btn { flex: 1; padding: 10px 4px 8px; display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; cursor: pointer; font-size: 10px; color: var(--text-muted); font-weight: 500; }
-    .nav-btn.active { color: var(--blue-dark); }
-    .nav-btn svg { width: 22px; height: 22px; }
-    .nav-badge { background: var(--red); color: #fff; border-radius: 10px; padding: 1px 5px; font-size: 9px; position: absolute; top: 6px; right: calc(50% - 20px); }
-    
-    /* PAGES */
-    .page { display: none; flex-direction: column; height: 100vh; padding-bottom: calc(60px + env(safe-area-inset-bottom)); overflow-y: auto; }
-    .page.active { display: flex; }
-    
-    /* HEADER */
-    .page-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 16px 12px; position: sticky; top: 0; z-index: 10; }
-    .page-title { font-size: 20px; font-weight: 700; color: var(--text); }
-    .page-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
-    
-    /* CARDS */
-    .card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 14px 16px; margin: 0 12px 10px; box-shadow: var(--shadow); }
-    .card-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
-    
-    /* CLOCK */
-    .clock-block { text-align: center; padding: 16px 12px 8px; }
-    .clock { font-size: 52px; font-weight: 200; letter-spacing: .04em; line-height: 1; font-variant-numeric: tabular-nums; }
-    .clock-date { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
-    
-    /* FILM SELECTOR */
-    .film-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 8px 12px; display: flex; align-items: center; gap: 8px; position: sticky; top: 0; z-index: 10; }
-    .film-label { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
-    .film-select { flex: 1; font-size: 13px; font-weight: 600; background: var(--blue-light); color: var(--blue-dark); border: none; border-radius: 20px; padding: 6px 12px; cursor: pointer; }
-    .film-select-wrap { flex: 1; position: relative; }
-    .film-select-wrap select { width: 100%; appearance: none; }
-    
-    /* ENFANT CHIPS */
-    .chips-wrap { display: flex; gap: 8px; flex-wrap: wrap; padding: 10px 12px 4px; }
-    .chip { padding: 8px 14px; border-radius: 20px; border: 1.5px solid var(--border); font-size: 13px; font-weight: 600; cursor: pointer; background: var(--surface); color: var(--text-muted); transition: all .15s; white-space: nowrap; }
-    .chip.sel { color: #fff; border-color: transparent; }
-    .chip.all-chip { background: var(--blue-light); color: var(--blue-dark); border-color: var(--blue); }
-    .chip.all-chip.sel { background: var(--blue-dark); color: #fff; }
-    
-    /* ACTION BUTTONS */
-    .action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 8px 12px; }
-    .action-btn { border: none; border-radius: var(--radius); padding: 12px 6px 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: transform .1s, opacity .15s; -webkit-tap-highlight-color: transparent; }
-    .action-btn:active { transform: scale(.94); }
-    .action-btn .icon { font-size: 26px; line-height: 1; }
-    .action-btn .lbl { font-size: 11px; font-weight: 600; }
-    .action-btn .last-t { font-size: 10px; opacity: .7; }
-    .btn-arrivee { background: var(--green-light); color: var(--green-dark); }
-    .btn-hmc { background: var(--blue-light); color: var(--blue-dark); }
-    .btn-tournage { background: #d1fae5; color: #065f46; }
-    .btn-pause { background: var(--gray-light); color: var(--gray-dark); }
-    .btn-repas { background: #fef9c3; color: #713f12; }
-    .btn-attente { background: var(--amber-light); color: var(--amber-dark); }
-    .btn-cours { background: var(--purple-light); color: var(--purple-dark); }
-    .btn-cascade { background: var(--red-light); color: var(--red-dark); }
-    .btn-sante { background: var(--pink-light); color: #9d174d; }
-    .btn-fin { background: #fce7f3; color: #9d174d; }
-    
-    /* MIC */
-    .mic-wrap { display: flex; flex-direction: column; align-items: center; padding: 6px 12px 8px; }
-    .mic-btn { width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--border); background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 22px; transition: all .15s; }
-    .mic-btn.on { background: var(--red-light); border-color: var(--red); animation: pulse 1.2s infinite; }
-    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
-    .mic-hint { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
-    .mic-txt { font-size: 12px; color: var(--text); min-height: 16px; margin-top: 3px; font-style: italic; }
-    
-    /* STATUS */
-    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 4px 12px 8px; }
-    .status-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; }
-    .status-name { font-size: 11px; font-weight: 600; color: var(--text-muted); }
-    .status-state { font-size: 13px; font-weight: 600; margin-top: 2px; display: flex; align-items: center; gap: 5px; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .status-time { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
-    .status-warn { border-color: var(--red); background: var(--red-light); }
-    
-    /* LOG */
-    .log-item { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
-    .log-item:last-child { border-bottom: none; }
-    .log-time { font-size: 14px; font-weight: 700; min-width: 42px; font-variant-numeric: tabular-nums; }
-    .log-tag { font-size: 11px; padding: 3px 9px; border-radius: 10px; font-weight: 600; white-space: nowrap; }
-    .log-who { font-size: 12px; color: var(--text-muted); flex: 1; }
-    .log-dur { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
-    .log-del { background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; padding: 2px 4px; }
-    
-    /* GANTT */
-    .gantt-wrap { overflow-x: auto; padding: 4px 0; }
-    .gantt-inner { min-width: 480px; }
-    .gantt-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-    .gantt-name { width: 80px; flex-shrink: 0; font-size: 11px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .gantt-track { flex: 1; height: 24px; background: var(--gray-light); border-radius: 6px; position: relative; overflow: hidden; }
-    .gantt-block { position: absolute; top: 2px; height: 20px; border-radius: 4px; }
-    .gantt-limit { position: absolute; top: 0; height: 100%; background: rgba(239,68,68,.12); border-right: 2px solid var(--red); }
-    .gantt-now { position: absolute; top: 0; width: 2px; height: 100%; background: var(--red); z-index: 5; }
-    .gantt-hours { display: flex; padding: 0; margin-bottom: 4px; }
-    .gantt-name-empty { width: 80px; flex-shrink: 0; }
-    .gantt-ticks { flex: 1; position: relative; height: 14px; }
-    .gantt-tick { position: absolute; font-size: 9px; color: var(--text-muted); transform: translateX(-50%); }
-    
-    /* PROG */
-    .prog-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
-    .prog-row:last-child { border-bottom: none; }
-    .prog-info { width: 100px; flex-shrink: 0; }
-    .prog-info .name { font-size: 12px; font-weight: 600; }
-    .prog-info .sub { font-size: 10px; color: var(--text-muted); }
-    .prog-bar-wrap { flex: 1; height: 6px; background: var(--gray-light); border-radius: 10px; overflow: hidden; }
-    .prog-bar { height: 100%; border-radius: 10px; transition: width .4s; }
-    .prog-pct { font-size: 12px; font-weight: 700; min-width: 36px; text-align: right; }
-    
-    /* METRICS */
-    .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
-    .metric { background: var(--gray-light); border-radius: var(--radius-sm); padding: 10px; }
-    .metric-val { font-size: 22px; font-weight: 700; }
-    .metric-lbl { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
-    
-    /* ALERTS */
-    .alert { padding: 10px 12px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 8px; font-weight: 500; }
-    .alert-ok { background: var(--green-light); color: var(--green-dark); }
-    .alert-warn { background: var(--amber-light); color: var(--amber-dark); }
-    .alert-danger { background: var(--red-light); color: var(--red-dark); }
-    
-    /* SUMMARY */
-    .summary-box { background: var(--gray-light); border-radius: var(--radius-sm); padding: 12px; font-size: 12px; font-family: monospace; white-space: pre-wrap; line-height: 1.7; color: var(--text); max-height: 260px; overflow-y: auto; margin-bottom: 10px; }
-    .send-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .send-btn { padding: 13px 8px; border-radius: var(--radius); border: none; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .btn-wa { background: #25D366; color: #fff; }
-    .btn-sms { background: var(--blue); color: #fff; }
-    .btn-copy { background: var(--gray-light); color: var(--text); }
-    .btn-csv { background: var(--purple-light); color: var(--purple-dark); }
-    
-    /* FILMS PAGE */
-    .film-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin: 0 12px 10px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px; cursor: pointer; }
-    .film-card.active-film { border-color: var(--blue); background: var(--blue-light); }
-    .film-card-icon { font-size: 28px; }
-    .film-card-info { flex: 1; }
-    .film-card-name { font-size: 15px; font-weight: 700; }
-    .film-card-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .film-card-del { background: none; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer; padding: 4px; }
-    
-    /* FORM */
-    .form-row { margin-bottom: 12px; }
-    .form-label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; display: block; }
-    .form-input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; background: var(--bg); color: var(--text); }
-    .form-input:focus { outline: none; border-color: var(--blue); }
-    .form-btn { width: 100%; padding: 12px; border-radius: var(--radius); border: none; font-size: 15px; font-weight: 700; cursor: pointer; background: var(--blue); color: #fff; margin-top: 4px; }
-    .form-btn:active { opacity: .85; }
-    
-    /* BADGE */
-    .badge { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
-    .badge-ok { background: var(--green-light); color: var(--green-dark); }
-    .badge-warn { background: var(--amber-light); color: var(--amber-dark); }
-    .badge-danger { background: var(--red-light); color: var(--red-dark); }
-    
-    /* CONTACTS */
-    .contact-row { display: flex; gap: 8px; margin-bottom: 8px; }
-    .contact-row input { flex: 1; }
+  } catch(e) {}
+  if (state.commentaireJour) {
+    const el = document.getElementById('commentaire-jour');
+    if (el) el.value = state.commentaireJour;
+  }
+  // restore contacts inputs
+  if (state.contacts) {
+    const sc = document.getElementById('contact-scripte');
+    const pr = document.getElementById('contact-prod');
+    if (sc) sc.value = state.contacts.scripte || '';
+    if (pr) pr.value = state.contacts.prod || '';
+    const ws = document.getElementById('wa-scripte');
+    const wp = document.getElementById('wa-prod');
+    if (ws) ws.value = state.contacts.scripte || '';
+    if (wp) wp.value = state.contacts.prod || '';
+  }
+}
 
-    /* EMPTY */
-    .empty { text-align: center; padding: 2rem 1rem; color: var(--text-muted); }
-    .empty-icon { font-size: 40px; margin-bottom: 8px; }
+function saveCommentaire() {
+  const el = document.getElementById('commentaire-jour');
+  if (el) { state.commentaireJour = el.value; save(); }
+}
 
-    /* MODAL */
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: flex-end; justify-content: center; }
-    .modal-overlay.open { display: flex; }
-    .modal { background: var(--surface); border-radius: 20px 20px 0 0; padding: 20px 16px calc(20px + env(safe-area-inset-bottom)); width: 100%; max-height: 85vh; overflow-y: auto; }
-    .modal-title { font-size: 17px; font-weight: 700; margin-bottom: 14px; }
-    .modal-close { float: right; background: var(--gray-light); border: none; border-radius: 50%; width: 28px; height: 28px; font-size: 16px; cursor: pointer; color: var(--text-muted); }
+function saveContacts() {
+  const sc = document.getElementById('contact-scripte');
+  const pr = document.getElementById('contact-prod');
+  state.contacts = { scripte: sc ? sc.value : '', prod: pr ? pr.value : '' };
+  const ws = document.getElementById('wa-scripte');
+  const wp = document.getElementById('wa-prod');
+  if (ws) ws.value = state.contacts.scripte;
+  if (wp) wp.value = state.contacts.prod;
+  save();
+}
 
-    .scroll-content { overflow-y: auto; flex: 1; }
+// ─── HELPERS ──────────────────────────────────────────────────────
+function toMin(t) { const [h, m] = t.split(':').map(Number); return h * 60 + m; }
+function fmt(min) {
+  if (!min || min <= 0) return '—';
+  const h = Math.floor(min / 60), m = min % 60;
+  return h > 0 ? (m > 0 ? `${h}h${String(m).padStart(2,'0')}` : `${h}h`) : `${m}min`;
+}
+function nowHM() {
+  const n = new Date();
+  return `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
+}
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+function initials(nom) { return nom.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2); }
+function activeFilm() { return state.films.find(f => f.id === state.activeFilmId); }
+function activeEnfants() { return state.enfants.filter(e => e.filmId === state.activeFilmId); }
+function todayLogs() { return state.logs.filter(l => l.filmId === state.activeFilmId && l.date === todayStr()); }
 
-    /* CHRONO TABLE */
-    .chrono-block { margin-bottom: 12px; }
-    .chrono-name { font-size: 13px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-    .chrono-items { display: flex; flex-wrap: wrap; gap: 4px; }
-    .chrono-item { font-size: 11px; display: flex; align-items: center; gap: 3px; }
-    .chrono-item-time { font-weight: 700; }
-  </style>
-</head>
-<body>
+// ─── CLOCK ────────────────────────────────────────────────────────
+function tickClock() {
+  const n = new Date();
+  const hm = `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
+  const hms = hm + ':' + String(n.getSeconds()).padStart(2,'0');
+  const el = document.getElementById('live-clock');
+  if (el) el.textContent = hm;
+  const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const nd = new Date();
+  const ds = `${days[nd.getDay()]} ${nd.getDate()} ${months[nd.getMonth()]} ${nd.getFullYear()}`;
+  const ld = document.getElementById('live-date');
+  if (ld) ld.textContent = ds;
+  const lt = document.getElementById('live-date-top');
+  if (lt) lt.textContent = hm + '\n' + ds;
+}
+setInterval(tickClock, 1000);
+tickClock();
 
-<!-- PAGES -->
-<div id="page-live" class="page active">
-  <div style="background:#1a1a2e;color:#fff;padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10">
-    <div>
-      <div style="font-size:11px;opacity:.6;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Plateau Live</div>
-      <div id="film-name-live" style="font-size:15px;font-weight:700;margin-top:1px">Aucun film sélectionné</div>
-    </div>
-    <div id="live-date-top" style="font-size:12px;opacity:.6;text-align:right"></div>
-  </div>
-  <div class="scroll-content">
-    <div class="clock-block">
-      <div class="clock" id="live-clock">00:00</div>
-      <div class="clock-date" id="live-date"></div>
-    </div>
-    <div style="padding:0 12px 4px">
-      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Pour qui ?</div>
-      <div class="chips-wrap" id="enfant-chips" style="padding:0"></div>
-    </div>
-    <div style="padding:8px 12px 4px">
-      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Action rapide</div>
-    </div>
-    <div class="action-grid">
-      <button class="action-btn btn-arrivee" onclick="logAction('arrivee')">
-        <span class="icon">🎬</span><span class="lbl">Arrivée</span><span class="last-t" id="lt-arrivee"></span>
-      </button>
-      <button class="action-btn btn-hmc" onclick="logAction('hmc')">
-        <span class="icon">💄</span><span class="lbl">HMC / Prép.</span><span class="last-t" id="lt-hmc"></span>
-      </button>
-      <button class="action-btn btn-tournage" onclick="logAction('tournage')">
-        <span class="icon">🎥</span><span class="lbl">Tournage</span><span class="last-t" id="lt-tournage"></span>
-      </button>
-      <button class="action-btn btn-pause" onclick="logAction('pause')">
-        <span class="icon">⏸</span><span class="lbl">Pause</span><span class="last-t" id="lt-pause"></span>
-      </button>
-      <button class="action-btn btn-repas" onclick="logAction('repas')">
-        <span class="icon">🍽</span><span class="lbl">Repas</span><span class="last-t" id="lt-repas"></span>
-      </button>
-      <button class="action-btn btn-attente" onclick="logAction('attente')">
-        <span class="icon">⏳</span><span class="lbl">Attente</span><span class="last-t" id="lt-attente"></span>
-      </button>
-      <button class="action-btn btn-cours" onclick="logAction('cours')">
-        <span class="icon">📚</span><span class="lbl">Cours</span><span class="last-t" id="lt-cours"></span>
-      </button>
-      <button class="action-btn btn-cascade" onclick="logAction('cascade')">
-        <span class="icon">💪</span><span class="lbl">Cascade</span><span class="last-t" id="lt-cascade"></span>
-      </button>
-      <button class="action-btn btn-sante" onclick="logAction('sante')">
-        <span class="icon">🩺</span><span class="lbl">Santé</span><span class="last-t" id="lt-sante"></span>
-      </button>
-      <button class="action-btn btn-fin" onclick="logAction('fin')" style="grid-column:span 3">
-        <span class="icon">🏁</span><span class="lbl">Fin de journée</span><span class="last-t" id="lt-fin"></span>
-      </button>
-    </div>
+// ─── NAVIGATION ───────────────────────────────────────────────────
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'planning') renderPlanning();
+  if (name === 'resume') renderResume();
+  if (name === 'films') renderFilmsPage();
+  if (name === 'live') { renderChips(); renderStatusBar(); renderLog(); updateFilmDisplay(); }
+}
 
-    <div class="mic-wrap">
-      <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎤</button>
-      <div class="mic-hint" id="mic-hint">Dicter : "tournage", "pause", "repas"…</div>
-      <div class="mic-txt" id="mic-txt"></div>
-    </div>
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
-    <div style="padding:4px 12px 6px">
-      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">État actuel</div>
-      <div class="status-grid" id="status-bar"></div>
-    </div>
+// ─── FILMS ────────────────────────────────────────────────────────
+function ajouterFilm() {
+  const nom = document.getElementById('new-film-nom').value.trim();
+  const real = document.getElementById('new-film-real').value.trim();
+  if (!nom) { alert('Entrez un titre de film.'); return; }
+  const film = { id: nextId++, nom, real };
+  state.films.push(film);
+  state.activeFilmId = film.id;
+  selectedEnfants = [];
+  document.getElementById('new-film-nom').value = '';
+  document.getElementById('new-film-real').value = '';
+  closeModal('modal-film');
+  save();
+  renderFilmsPage();
+  renderChips();
+  updateFilmDisplay();
+}
 
-    <div class="card">
-      <div class="card-title" style="display:flex;justify-content:space-between">
-        <span>Journal <span id="log-count" style="font-weight:400;color:var(--text-muted)"></span></span>
-        <button onclick="clearLog()" style="font-size:11px;background:none;border:none;color:var(--text-muted);cursor:pointer">Effacer</button>
-      </div>
-      <div id="log-list"><div class="empty"><div class="empty-icon">📋</div>Appuyez sur une action pour commencer</div></div>
-    </div>
-  </div>
-</div>
+function setActiveFilm(id) {
+  state.activeFilmId = id;
+  selectedEnfants = [];
+  save();
+  renderFilmsPage();
+  renderChips();
+  updateFilmDisplay();
+  renderStatusBar();
+  renderLog();
+}
 
-<div id="page-planning" class="page">
-  <div class="page-header">
-    <div class="page-title">Planning</div>
-    <div class="page-sub" id="planning-film-name">Vue chronologique de la journée</div>
-  </div>
-  <div class="scroll-content">
-    <div style="display:flex;gap:6px;padding:10px 12px;align-items:center;flex-wrap:wrap">
-      <input type="time" id="gs" value="06:00" style="width:85px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text)">
-      <span style="font-size:12px;color:var(--text-muted)">→</span>
-      <input type="time" id="ge" value="22:00" style="width:85px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text)">
-      <button onclick="renderPlanning()" style="padding:6px 12px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer">OK</button>
-    </div>
-    <div class="card">
-      <div class="card-title">Timeline</div>
-      <div class="gantt-wrap"><div class="gantt-inner" id="gantt-rows"></div></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Progression légale</div>
-      <div id="prog-bars"></div>
-    </div>
-  </div>
-</div>
+function supprimerFilm(id) {
+  if (!confirm('Supprimer ce film et toutes ses données ?')) return;
+  state.films = state.films.filter(f => f.id !== id);
+  state.enfants = state.enfants.filter(e => e.filmId !== id);
+  state.logs = state.logs.filter(l => l.filmId !== id);
+  if (state.activeFilmId === id) state.activeFilmId = state.films[0]?.id || null;
+  save();
+  renderFilmsPage();
+  renderChips();
+  updateFilmDisplay();
+}
 
-<div id="page-resume" class="page">
-  <div class="page-header">
-    <div class="page-title">Résumé journée</div>
-    <div class="page-sub" id="resume-film-name">Rapport et envoi</div>
-  </div>
-  <div class="scroll-content">
-    <div class="card">
-      <div id="resume-alerts"></div>
-      <div class="metrics-grid" id="resume-metrics"></div>
-      <div class="card-title" style="margin-bottom:8px">Chronologie par enfant</div>
-      <div id="chrono-enfants"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Message WhatsApp / SMS</div>
-      <div class="summary-box" id="summary-txt"></div>
-      <div style="margin-bottom:10px">
-        <div class="form-row">
-          <label class="form-label">Numéro WhatsApp scripte (avec indicatif, ex: +33612...)</label>
-          <input class="form-input" type="tel" id="wa-scripte" placeholder="+336...">
+function updateFilmDisplay() {
+  const f = activeFilm();
+  const name = f ? f.nom : 'Aucun film sélectionné';
+  ['film-name-live', 'planning-film-name', 'resume-film-name'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = name;
+  });
+}
+
+function renderFilmsPage() {
+  const fl = document.getElementById('films-list');
+  if (!fl) return;
+  if (!state.films.length) {
+    fl.innerHTML = '<div class="empty"><div class="empty-icon">🎬</div>Aucun film. Créez votre premier projet.</div>';
+  } else {
+    fl.innerHTML = state.films.map(f => `
+      <div class="film-card ${f.id === state.activeFilmId ? 'active-film' : ''}" onclick="setActiveFilm(${f.id})">
+        <div class="film-card-icon">🎬</div>
+        <div class="film-card-info">
+          <div class="film-card-name">${f.nom}</div>
+          <div class="film-card-sub">${f.real ? 'Réal. ' + f.real : 'Appuyez pour sélectionner'}${f.id === state.activeFilmId ? ' ✓ Actif' : ''}</div>
         </div>
-        <div class="form-row">
-          <label class="form-label">Numéro WhatsApp production</label>
-          <input class="form-input" type="tel" id="wa-prod" placeholder="+336...">
+        <button class="film-card-del" onclick="event.stopPropagation();supprimerFilm(${f.id})">🗑</button>
+      </div>`).join('');
+  }
+  renderEnfantsList();
+}
+
+// ─── ENFANTS ──────────────────────────────────────────────────────
+function ajouterEnfant() {
+  if (!state.activeFilmId) { alert('Créez ou sélectionnez un film d\'abord.'); return; }
+  const nom = document.getElementById('new-enf-nom').value.trim();
+  const age = document.getElementById('new-enf-age').value;
+  const couleur = document.getElementById('new-enf-color').value;
+  if (!nom) { alert('Entrez un prénom.'); return; }
+  state.enfants.push({ id: nextId++, filmId: state.activeFilmId, nom, age, couleur });
+  document.getElementById('new-enf-nom').value = '';
+  closeModal('modal-enfant');
+  save();
+  renderEnfantsList();
+  renderChips();
+}
+
+function supprimerEnfant(id) {
+  if (!confirm('Supprimer cet enfant ?')) return;
+  state.enfants = state.enfants.filter(e => e.id !== id);
+  state.logs = state.logs.filter(l => l.enfantId !== id);
+  selectedEnfants = selectedEnfants.filter(x => x !== id);
+  save();
+  renderEnfantsList();
+  renderChips();
+  renderStatusBar();
+  renderLog();
+}
+
+function renderEnfantsList() {
+  const el = document.getElementById('enfants-list');
+  if (!el) return;
+  const enfs = activeEnfants();
+  if (!enfs.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">👦</div>Aucun enfant sur ce film.</div>';
+    return;
+  }
+  el.innerHTML = enfs.map(e => `
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="width:34px;height:34px;border-radius:50%;background:${e.couleur}22;color:${e.couleur};font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${initials(e.nom)}</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:600">${e.nom}</div>
+        <div style="font-size:11px;color:var(--text-muted)">${e.age} ans · max ${fmt(LIMITES[e.age])}/jour</div>
+      </div>
+      <button onclick="supprimerEnfant(${e.id})" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)">✕</button>
+    </div>`).join('');
+}
+
+// ─── CHIPS ────────────────────────────────────────────────────────
+function renderChips() {
+  const c = document.getElementById('enfant-chips');
+  if (!c) return;
+  const enfs = activeEnfants();
+  if (!enfs.length) {
+    c.innerHTML = '<div style="font-size:13px;color:var(--text-muted)">Ajoutez des enfants dans l\'onglet Films</div>';
+    return;
+  }
+  let html = '';
+  if (enfs.length > 1) {
+    const allSel = selectedEnfants.length === 0;
+    html += `<div class="chip all-chip ${allSel ? 'sel' : ''}" onclick="selectEnfant('all')">Tous</div>`;
+  }
+  enfs.forEach(e => {
+    const sel = selectedEnfants.includes(e.id);
+    html += `<div class="chip ${sel ? 'sel' : ''}" style="${sel ? 'background:' + e.couleur + ';border-color:' + e.couleur : ''}" onclick="selectEnfant(${e.id})">${e.nom.split(' ')[0]}</div>`;
+  });
+  c.innerHTML = html;
+}
+
+function selectEnfant(id) {
+  if (id === 'all') { selectedEnfants = []; }
+  else {
+    if (selectedEnfants.includes(id)) selectedEnfants = selectedEnfants.filter(x => x !== id);
+    else selectedEnfants.push(id);
+  }
+  renderChips();
+  save();
+}
+
+// ─── LOG ACTION ───────────────────────────────────────────────────
+function logAction(type) {
+  if (!state.activeFilmId) { alert('Sélectionnez un film d\'abord (onglet Films).'); return; }
+  const enfs = activeEnfants();
+  if (!enfs.length) { alert('Ajoutez des enfants dans l\'onglet Films.'); return; }
+  const hm = nowHM();
+  const targets = selectedEnfants.length > 0 ? selectedEnfants : enfs.map(e => e.id);
+
+  targets.forEach(eid => {
+    // fermer l'entrée précédente ouverte pour cet enfant aujourd'hui
+    const prev = todayLogs()
+      .filter(l => l.enfantId === eid && !l.fin)
+      .sort((a, b) => b.heure.localeCompare(a.heure))[0];
+    if (prev) prev.fin = hm;
+
+    state.logs.push({
+      id: nextId++,
+      filmId: state.activeFilmId,
+      enfantId: eid,
+      type,
+      heure: hm,
+      fin: null,
+      date: todayStr()
+    });
+  });
+
+  // update last-time on button
+  const ltEl = document.getElementById('lt-' + type);
+  if (ltEl) ltEl.textContent = hm;
+
+  save();
+  renderLog();
+  renderStatusBar();
+
+  // vibration feedback
+  if (navigator.vibrate) navigator.vibrate(30);
+}
+
+function delLog(id) {
+  state.logs = state.logs.filter(l => l.id !== id);
+  save();
+  renderLog();
+  renderStatusBar();
+}
+
+function clearLog() {
+  if (!confirm('Effacer tout le journal d\'aujourd\'hui ?')) return;
+  state.logs = state.logs.filter(l => !(l.filmId === state.activeFilmId && l.date === todayStr()));
+  save();
+  renderLog();
+  renderStatusBar();
+}
+
+function clearDay() {
+  if (!confirm('Effacer le journal du jour ?')) return;
+  state.logs = state.logs.filter(l => !(l.filmId === state.activeFilmId && l.date === todayStr()));
+  save();
+  renderLog();
+  renderStatusBar();
+}
+
+function renderLog() {
+  const el = document.getElementById('log-list');
+  const lc = document.getElementById('log-count');
+  const logs = todayLogs().sort((a, b) => a.heure.localeCompare(b.heure) || a.id - b.id);
+  if (lc) lc.textContent = `(${logs.length})`;
+  if (!el) return;
+  if (!logs.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>Appuyez sur une action pour commencer</div>';
+    return;
+  }
+  const enfs = activeEnfants();
+  el.innerHTML = logs.map(l => {
+    const enf = enfs.find(e => e.id === l.enfantId);
+    const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6', '#1f2937'];
+    const dur = l.fin ? fmt(toMin(l.fin) - toMin(l.heure)) : 'en cours';
+    return `<div class="log-item">
+      <div class="log-time">${l.heure}</div>
+      <div class="log-tag" style="background:${bg};color:${tc}">${TYPE_LABEL[l.type] || l.type}</div>
+      <div class="log-who">${enf ? enf.nom.split(' ')[0] : '?'}${l.fin ? ' → ' + l.fin : ''}</div>
+      <div class="log-dur">${dur}</div>
+      <button class="log-del" onclick="delLog(${l.id})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ─── STATUS BAR ───────────────────────────────────────────────────
+function renderStatusBar() {
+  const sb = document.getElementById('status-bar');
+  if (!sb) return;
+  const enfs = activeEnfants();
+  if (!enfs.length) { sb.innerHTML = ''; return; }
+  sb.innerHTML = enfs.map(e => {
+    const logs = todayLogs().filter(l => l.enfantId === e.id);
+    const last = logs.sort((a, b) => b.heure.localeCompare(a.heure))[0];
+    const lim = LIMITES[e.age];
+    const travail = logs.filter(l => WORK_TYPES.includes(l.type) && l.fin)
+      .reduce((s, l) => s + Math.max(0, toMin(l.fin) - toMin(l.heure)), 0);
+    const pct = Math.round(travail / lim * 100);
+    const warn = pct >= 90;
+    const [bg] = last ? TYPE_COLOR[last.type] || ['#f3f4f6'] : ['#f3f4f6'];
+    return `<div class="status-card ${warn ? 'status-warn' : ''}">
+      <div class="status-name">${e.nom.split(' ')[0]}</div>
+      <div class="status-state"><div class="dot" style="background:${bg}"></div>${last ? (TYPE_LABEL[last.type] || last.type) : 'Non arrivé'}</div>
+      <div class="status-time">${last ? last.heure : '—'} · plateau ${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── VOICE ────────────────────────────────────────────────────────
+function toggleMic() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert('La dictée vocale nécessite Chrome ou Safari récent.');
+    return;
+  }
+  if (isListening) { stopMic(); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = 'fr-FR';
+  recognition.interimResults = true;
+  recognition.continuous = false;
+  recognition.onstart = () => {
+    isListening = true;
+    document.getElementById('mic-btn').classList.add('on');
+    document.getElementById('mic-hint').textContent = 'Écoute… parlez !';
+  };
+  recognition.onresult = (e) => {
+    const t = Array.from(e.results).map(r => r[0].transcript).join('');
+    document.getElementById('mic-txt').textContent = t;
+    if (e.results[e.results.length - 1].isFinal) parseVoice(t.toLowerCase());
+  };
+  recognition.onerror = () => stopMic();
+  recognition.onend = () => stopMic();
+  recognition.start();
+}
+
+function stopMic() {
+  isListening = false;
+  if (recognition) try { recognition.stop(); } catch(e) {}
+  const btn = document.getElementById('mic-btn');
+  if (btn) btn.classList.remove('on');
+  const hint = document.getElementById('mic-hint');
+  if (hint) hint.textContent = 'Dicter : "tournage", "pause", "repas"…';
+  setTimeout(() => { const t = document.getElementById('mic-txt'); if (t) t.textContent = ''; }, 3000);
+}
+
+function parseVoice(text) {
+  const map = {
+    'arrivée': 'arrivee', 'arrivee': 'arrivee', 'arrivé': 'arrivee',
+    'hmc': 'hmc', 'maquillage': 'hmc', 'costume': 'hmc', 'préparation': 'hmc', 'prep': 'hmc',
+    'tournage': 'tournage', 'action': 'tournage', 'on tourne': 'tournage',
+    'pause': 'pause', 'coupure': 'pause',
+    'repas': 'repas', 'déjeuner': 'repas', 'manger': 'repas', 'lunch': 'repas',
+    'attente': 'attente',
+    'cours': 'cours', 'école': 'cours', 'scolaire': 'cours',
+    'cascade': 'cascade',
+    'santé': 'sante', 'médecin': 'sante', 'docteur': 'sante',
+    'fin': 'fin', 'départ': 'fin', 'terminé': 'fin', 'fini': 'fin'
+  };
+  for (const [k, v] of Object.entries(map)) {
+    if (text.includes(k)) { logAction(v); return; }
+  }
+  const t = document.getElementById('mic-txt');
+  if (t) t.textContent = `Pas compris : "${text}"`;
+}
+
+// ─── PLANNING ─────────────────────────────────────────────────────
+function renderPlanning() {
+  const sv = document.getElementById('gs')?.value || '06:00';
+  const ev = document.getElementById('ge')?.value || '22:00';
+  const sm = toMin(sv), em = toMin(ev), span = em - sm;
+  if (span <= 0) return;
+
+  const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
+  const nowPct = Math.min(100, Math.max(0, (nowMin - sm) / span * 100));
+
+  const ticks = [];
+  let h = Math.ceil(sm / 60);
+  while (h * 60 <= em) { ticks.push(h); h++; }
+
+  const enfs = activeEnfants();
+  const logs = todayLogs();
+  const rows = document.getElementById('gantt-rows');
+  if (!rows) return;
+
+  let html = `<div class="gantt-row"><div class="gantt-name-empty"></div><div class="gantt-ticks">${ticks.map(h => {
+    const p = ((h * 60 - sm) / span * 100).toFixed(1);
+    return `<span class="gantt-tick" style="left:${p}%">${String(h).padStart(2,'0')}h</span>`;
+  }).join('')}</div></div>`;
+
+  enfs.forEach(e => {
+    const evs = logs.filter(l => l.enfantId === e.id).sort((a, b) => a.heure.localeCompare(b.heure));
+    const lim = LIMITES[e.age];
+    const limPct = Math.min(100, lim / span * 100).toFixed(1);
+
+    const blocks = evs.map(l => {
+      const ls = Math.max(0, toMin(l.heure) - sm);
+      const le = l.fin ? toMin(l.fin) - sm : nowMin - sm;
+      const left = (ls / span * 100).toFixed(1);
+      const width = Math.max(0.5, ((le - ls) / span * 100)).toFixed(1);
+      if (parseFloat(left) >= 100) return '';
+      const [bg] = TYPE_COLOR[l.type] || ['#f3f4f6'];
+      return `<div class="gantt-block" style="left:${left}%;width:${Math.min(100 - parseFloat(left), parseFloat(width))}%;background:${bg}" title="${TYPE_LABEL[l.type]} ${l.heure}${l.fin ? '→' + l.fin : ''}"></div>`;
+    }).join('');
+
+    html += `<div class="gantt-row">
+      <div class="gantt-name" style="display:flex;align-items:center;gap:4px">
+        <div style="width:20px;height:20px;border-radius:50%;background:${e.couleur}22;color:${e.couleur};font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${initials(e.nom)}</div>
+        ${e.nom.split(' ')[0]}
+      </div>
+      <div class="gantt-track">
+        <div class="gantt-limit" style="width:${limPct}%"></div>
+        ${blocks}
+        <div class="gantt-now" style="left:${nowPct.toFixed(1)}%"></div>
+      </div>
+    </div>`;
+  });
+
+  rows.innerHTML = html || '<div class="empty">Aucun enfant</div>';
+
+  // progress bars
+  const pb = document.getElementById('prog-bars');
+  if (pb) pb.innerHTML = enfs.map(e => {
+    const lim = LIMITES[e.age];
+    const travail = logs.filter(l => l.enfantId === e.id && WORK_TYPES.includes(l.type) && l.fin)
+      .reduce((s, l) => s + Math.max(0, toMin(l.fin) - toMin(l.heure)), 0);
+    const pct = Math.min(100, Math.round(travail / lim * 100));
+    const col = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
+    return `<div class="prog-row">
+      <div class="prog-info">
+        <div class="name">${e.nom.split(' ')[0]}</div>
+        <div class="sub">${fmt(travail)} / ${fmt(lim)}</div>
+      </div>
+      <div class="prog-bar-wrap"><div class="prog-bar" style="width:${pct}%;background:${col}"></div></div>
+      <div class="prog-pct" style="color:${col}">${pct}%</div>
+    </div>`;
+  }).join('') || '<div class="empty">Aucun enfant</div>';
+}
+
+// ─── RÉSUMÉ ───────────────────────────────────────────────────────
+function buildSummary() {
+  const film = activeFilm();
+  const enfs = activeEnfants();
+  const logs = todayLogs().sort((a, b) => a.heure.localeCompare(b.heure));
+  const today = new Date();
+  const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const dateStr = `${days[today.getDay()]} ${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
+  const commentaire = document.getElementById('commentaire-jour')?.value?.trim() || '';
+
+  let txt = `🎬 ${film ? film.nom.toUpperCase() : 'TOURNAGE'}\n📅 ${dateStr}\n${'─'.repeat(30)}\n\n`;
+
+  enfs.forEach(enf => {
+    const evs = logs.filter(l => l.enfantId === enf.id);
+    if (!evs.length) return;
+
+    const dur = {};
+    Object.keys(TYPE_LABEL).forEach(t => dur[t] = 0);
+    evs.forEach(l => {
+      if (l.fin) dur[l.type] = (dur[l.type] || 0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
+    });
+    const travail = WORK_TYPES.reduce((s, t) => s + (dur[t] || 0), 0);
+    const lim = LIMITES[enf.age];
+    const pct = Math.round(travail / lim * 100);
+    const statut = pct >= 100 ? '⚠️ DÉPASSEMENT' : pct >= 80 ? '⚠️ Proche limite' : '✅ OK';
+
+    // heures clés
+    const hArrivee = evs.find(l => l.type === 'arrivee');
+    const hFin = [...evs].reverse().find(l => l.type === 'fin');
+    const hRepas = evs.find(l => l.type === 'repas');
+
+    txt += `👦 ${enf.nom}\n`;
+    if (hArrivee) txt += `🟢 Arrivée       ${hArrivee.heure}\n`;
+    if (dur.hmc)  txt += `✂️👗🎨 HMC/Prép.  ${fmt(dur.hmc)}\n`;
+    if (dur.tournage) txt += `🎥 Tournage      ${fmt(dur.tournage)}\n`;
+    if (dur.pause)    txt += `🧩 Pause         ${fmt(dur.pause)}\n`;
+    if (hRepas)       txt += `🍽 Repas         ${hRepas.heure}${hRepas.fin ? ' → ' + hRepas.fin : ''}\n`;
+    if (dur.attente)  txt += `☁️ Attente       ${fmt(dur.attente)}\n`;
+    if (dur.cours)    txt += `📚 Cours         ${fmt(dur.cours)}\n`;
+    if (dur.cascade)  txt += `🤸 Cascade       ${fmt(dur.cascade)}\n`;
+    if (hFin)         txt += `🏁 Fin journée   ${hFin.heure}\n`;
+    txt += `${statut} Plateau : ${fmt(travail)} / ${fmt(lim)}\n\n`;
+  });
+
+  if (commentaire) {
+    txt += `${'─'.repeat(30)}\n📝 NOTE DU JOUR\n${commentaire}\n\n`;
+  }
+
+  txt += `${'─'.repeat(30)}\n🕐 Envoyé à ${nowHM()}`;
+  return txt;
+}
+
+function renderResume() {
+  const sp = document.getElementById('summary-txt');
+  if (sp) sp.textContent = buildSummary();
+
+  // contacts sync
+  const ws = document.getElementById('wa-scripte');
+  const wp = document.getElementById('wa-prod');
+  if (ws && state.contacts.scripte) ws.value = state.contacts.scripte;
+  if (wp && state.contacts.prod) wp.value = state.contacts.prod;
+
+  // alerts + metrics
+  const enfs = activeEnfants();
+  const logs = todayLogs();
+  const alertDiv = document.getElementById('resume-alerts');
+  const metrics = document.getElementById('resume-metrics');
+  const chrono = document.getElementById('chrono-enfants');
+
+  let alerts = '';
+  let totTournage = 0, present = new Set();
+  logs.forEach(l => {
+    if (l.type === 'tournage' && l.fin) { totTournage += Math.max(0, toMin(l.fin) - toMin(l.heure)); present.add(l.enfantId); }
+  });
+
+  if (metrics) metrics.innerHTML = `
+    <div class="metric"><div class="metric-val">${present.size}</div><div class="metric-lbl">Présents</div></div>
+    <div class="metric"><div class="metric-val">${fmt(totTournage) || '—'}</div><div class="metric-lbl">Tournage</div></div>
+    <div class="metric"><div class="metric-val">${logs.length}</div><div class="metric-lbl">Entrées</div></div>
+  `;
+
+  enfs.forEach(e => {
+    const lim = LIMITES[e.age];
+    const travail = logs.filter(l => l.enfantId === e.id && WORK_TYPES.includes(l.type) && l.fin)
+      .reduce((s, l) => s + Math.max(0, toMin(l.fin) - toMin(l.heure)), 0);
+    const pct = Math.round(travail / lim * 100);
+    if (pct >= 100) alerts += `<div class="alert alert-danger">⚠ ${e.nom} a dépassé la limite légale (${fmt(travail)} / ${fmt(lim)})</div>`;
+    else if (pct >= 80) alerts += `<div class="alert alert-warn">⚠ ${e.nom} proche de la limite (${pct}%)</div>`;
+  });
+  if (!alerts && logs.length) alerts = '<div class="alert alert-ok">✅ Tous les enfants respectent les limites légales</div>';
+  if (alertDiv) alertDiv.innerHTML = alerts;
+
+  if (chrono) {
+    chrono.innerHTML = enfs.map(e => {
+      const evs = logs.filter(l => l.enfantId === e.id).sort((a, b) => a.heure.localeCompare(b.heure));
+      if (!evs.length) return '';
+      const items = evs.map(l => {
+        const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6', '#1f2937'];
+        return `<span class="chrono-item"><span class="chrono-item-time">${l.heure}</span> <span style="background:${bg};color:${tc};padding:1px 7px;border-radius:8px;font-size:11px;font-weight:600">${TYPE_LABEL[l.type]}</span>${l.fin ? '<span style="font-size:11px;color:var(--text-muted)">→' + l.fin + '</span>' : ''}</span>`;
+      }).join(' ');
+      return `<div class="chrono-block">
+        <div class="chrono-name">
+          <div style="width:22px;height:22px;border-radius:50%;background:${e.couleur}22;color:${e.couleur};font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">${initials(e.nom)}</div>
+          ${e.nom}
         </div>
-      </div>
-      <div class="send-btns">
-        <button class="send-btn btn-wa" onclick="sendWhatsApp('scripte')">
-          <span style="font-size:20px">💬</span>Scripte<span style="font-size:10px;opacity:.8">WhatsApp</span>
-        </button>
-        <button class="send-btn btn-wa" onclick="sendWhatsApp('prod')">
-          <span style="font-size:20px">💬</span>Prod<span style="font-size:10px;opacity:.8">WhatsApp</span>
-        </button>
-        <button class="send-btn btn-sms" onclick="sendSMS('scripte')">
-          <span style="font-size:20px">📱</span>Scripte<span style="font-size:10px;opacity:.8">SMS</span>
-        </button>
-        <button class="send-btn btn-sms" onclick="sendSMS('prod')">
-          <span style="font-size:20px">📱</span>Prod<span style="font-size:10px;opacity:.8">SMS</span>
-        </button>
-        <button class="send-btn btn-copy" onclick="copyResume()" style="grid-column:span 2">
-          <span style="font-size:20px">📋</span>Copier le résumé
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+        <div class="chrono-items">${items}</div>
+      </div>`;
+    }).join('') || '<div class="empty">Aucune donnée pour aujourd\'hui</div>';
+  }
+}
 
-<div id="page-films" class="page">
-  <div class="page-header">
-    <div class="page-title">Films & Enfants</div>
-    <div class="page-sub">Gérer vos projets</div>
-  </div>
-  <div class="scroll-content">
-    <div class="card">
-      <div class="card-title">Film actif</div>
-      <div id="films-list"></div>
-      <button class="form-btn" onclick="openModal('modal-film')" style="margin-top:8px">+ Nouveau film</button>
-    </div>
-    <div class="card">
-      <div class="card-title">Enfants du film actif</div>
-      <div id="enfants-list"></div>
-      <button class="form-btn" onclick="openModal('modal-enfant')" style="margin-top:8px;background:var(--green)">+ Ajouter un enfant</button>
-    </div>
-    <div class="card">
-      <div class="card-title">Contacts (numéros WhatsApp/SMS)</div>
-      <div class="form-row">
-        <label class="form-label">Scripte</label>
-        <input class="form-input" type="tel" id="contact-scripte" placeholder="+336..." oninput="saveContacts()">
-      </div>
-      <div class="form-row">
-        <label class="form-label">Production</label>
-        <input class="form-input" type="tel" id="contact-prod" placeholder="+336..." oninput="saveContacts()">
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title" style="color:var(--red-dark)">Données</div>
-      <button onclick="clearDay()" style="width:100%;padding:10px;border-radius:8px;border:1.5px solid var(--red);background:var(--red-light);color:var(--red-dark);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px">
-        Effacer journal du jour
-      </button>
-    </div>
-  </div>
-</div>
+// ─── WHATSAPP / SMS ───────────────────────────────────────────────
+function getNumber(role) {
+  const fromResume = document.getElementById('wa-' + role)?.value;
+  const fromContacts = state.contacts[role];
+  const n = fromResume || fromContacts || '';
+  if (!n) { alert(`Entrez le numéro ${role === 'scripte' ? 'de la scripte' : 'de la production'} dans le champ ci-dessous.`); }
+  // save it
+  if (n) { state.contacts[role] = n; save(); }
+  return n;
+}
 
-<!-- BOTTOM NAV -->
-<nav class="nav">
-  <button class="nav-btn active" onclick="showPage('live',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/></svg>
-    Live
-  </button>
-  <button class="nav-btn" onclick="showPage('planning',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-    Planning
-  </button>
-  <button class="nav-btn" onclick="showPage('resume',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-    Résumé
-  </button>
-  <button class="nav-btn" onclick="showPage('films',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
-    Films
-  </button>
-</nav>
+function sendWhatsApp(role) {
+  const n = getNumber(role);
+  if (!n) return;
+  const clean = n.replace(/\s/g, '').replace(/^00/, '+');
+  const msg = encodeURIComponent(buildSummary());
+  window.open(`https://wa.me/${clean}?text=${msg}`);
+}
 
-<!-- MODALS -->
-<div class="modal-overlay" id="modal-film">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-film')">✕</button>
-    <div class="modal-title">Nouveau film</div>
-    <div class="form-row"><label class="form-label">Titre du film / production</label><input class="form-input" id="new-film-nom" placeholder="ex: Les Aventuriers"></div>
-    <div class="form-row"><label class="form-label">Réalisateur</label><input class="form-input" id="new-film-real" placeholder="ex: Marie Dubois"></div>
-    <button class="form-btn" onclick="ajouterFilm()">Créer ce film</button>
-  </div>
-</div>
+function sendSMS(role) {
+  const n = getNumber(role);
+  if (!n) return;
+  const msg = encodeURIComponent(buildSummary());
+  // iOS uses &, Android uses ?
+  const sep = /iPhone|iPad|iPod/.test(navigator.userAgent) ? '&' : '?';
+  window.open(`sms:${n}${sep}body=${msg}`);
+}
 
-<div class="modal-overlay" id="modal-enfant">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-enfant')">✕</button>
-    <div class="modal-title">Ajouter un enfant</div>
-    <div class="form-row"><label class="form-label">Prénom Nom</label><input class="form-input" id="new-enf-nom" placeholder="ex: Léa Martin"></div>
-    <div class="form-row"><label class="form-label">Tranche d'âge</label>
-      <select class="form-input" id="new-enf-age">
-        <option value="<3">Moins de 3 ans (max 2h)</option>
-        <option value="3-5">3 – 5 ans (max 3h)</option>
-        <option value="6-11" selected>6 – 11 ans (max 4h)</option>
-        <option value="12-15">12 – 15 ans (max 6h)</option>
-        <option value="16-17">16 – 17 ans (max 8h)</option>
-      </select>
-    </div>
-    <div class="form-row"><label class="form-label">Couleur</label><input type="color" class="form-input" id="new-enf-color" value="#3b82f6" style="height:40px;padding:4px;cursor:pointer"></div>
-    <button class="form-btn" style="background:var(--green)" onclick="ajouterEnfant()">Ajouter cet enfant</button>
-  </div>
-</div>
+function copyResume() {
+  const txt = buildSummary();
+  navigator.clipboard.writeText(txt)
+    .then(() => alert('Résumé copié !'))
+    .catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = txt; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      alert('Résumé copié !');
+    });
+}
 
-<script src="app.js"></script>
-</body>
-</html>
+// ─── INIT ─────────────────────────────────────────────────────────
+load();
+renderChips();
+renderLog();
+renderStatusBar();
+updateFilmDisplay();
+
+// refresh planning + status every minute
+setInterval(() => {
+  const activePage = document.querySelector('.page.active');
+  if (activePage && activePage.id === 'page-planning') renderPlanning();
+  renderStatusBar();
+}, 60000);
+
+// register service worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
