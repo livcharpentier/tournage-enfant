@@ -457,6 +457,7 @@
           <button onclick="genererPDF()" style="font-size:11px;padding:5px 10px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-weight:600;cursor:pointer">📄 PDF</button>
         </div>
       </div>
+      <div id="cal-parents-btns" style="margin-bottom:10px"></div>
       <div id="cal-events-list"><div class="empty"><div class="empty-icon">📅</div>Appuyez sur un jour pour ajouter un événement</div></div>
     </div>
   </div>
@@ -1250,6 +1251,53 @@ function sendWhatsAppExtra(id) {
 }
 
 // ─── AGENDA PARENT + PDF ─────────────────────────────────────────
+function buildMsgEvenement(ev, enfId) {
+  const months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  const film = activeFilm();
+  const enf = state.enfants.find(e => e.id === enfId);
+  const d = new Date(ev.date);
+
+  let txt = '';
+  if (film) txt += film.nom + '\n';
+  txt += jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + '\n\n';
+  txt += ev.titre + '\n';
+  if (ev.debut) txt += 'Horaire : ' + ev.debut + (ev.fin ? ' - ' + ev.fin : '') + '\n';
+  if (ev.lieu) txt += 'Lieu : ' + ev.lieu + '\n';
+  if (ev.scenes) txt += 'Scenes : ' + ev.scenes + '\n';
+  if (ev.repasDebut) txt += 'Repas : ' + ev.repasDebut + (ev.repasFin ? ' - ' + ev.repasFin : '') + '\n';
+  if (ev.retour) txt += 'Retour estime : ' + ev.retour + '\n';
+  if (enf) txt += '\nPour : ' + enf.nom;
+  txt += '\n\n— Liv ;-)';
+  return txt;
+}
+
+function envoyerEvenementParent(evId, enfId) {
+  const ev = (state.calEvents || []).find(e => e.id === evId);
+  if (!ev) return;
+  const targetId = enfId || ev.enfantId;
+  const enf = state.enfants.find(e => e.id === targetId);
+  if (!enf || !enf.tel) { alert('Pas de numero pour ' + (enf ? enf.nom : 'cet enfant') + '. Ajoutez-le dans Films.'); return; }
+  const txt = buildMsgEvenement(ev, targetId);
+  const clean = enf.tel.replace(/\s/g, '').replace(/^00/, '+');
+  window.open('https://wa.me/' + clean + '?text=' + encodeURIComponent(txt));
+}
+
+function envoyerEvenementTous(evId) {
+  const ev = (state.calEvents || []).find(e => e.id === evId);
+  if (!ev) return;
+  const enfsAvecTel = activeEnfants().filter(en => en.tel);
+  if (!enfsAvecTel.length) { alert('Aucun parent avec numero. Ajoutez les numeros dans Films.'); return; }
+  // Envoyer à chacun
+  enfsAvecTel.forEach((enf, idx) => {
+    setTimeout(() => {
+      const txt = buildMsgEvenement(ev, enf.id);
+      const clean = enf.tel.replace(/\s/g, '').replace(/^00/, '+');
+      window.open('https://wa.me/' + clean + '?text=' + encodeURIComponent(txt));
+    }, idx * 1000);
+  });
+}
+
 function envoyerAgendaParent(enfantId) {
   const enf = state.enfants.find(e => e.id === enfantId);
   if (!enf || !enf.tel) { alert('Aucun numero pour cet enfant.'); return; }
@@ -1436,11 +1484,29 @@ function renderCal() {
     const jours2 = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
     const dateLabel = jours2[d.getDay()] + ' ' + d.getDate();
     const enf = state.enfants.find(en => en.id === e.enfantId);
+    // Boutons d'envoi selon les enfants concernés
+    let sendBtns = '';
+    if (e.enfantId) {
+      // Événement pour un enfant spécifique
+      const enfEv = state.enfants.find(en => en.id === e.enfantId);
+      if (enfEv && enfEv.tel) {
+        sendBtns += `<button onclick="envoyerEvenementParent(${e.id})" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer;margin-right:4px">📱 ${enfEv.nom.split(' ')[0]}</button>`;
+      }
+    } else {
+      // Événement pour tous - un bouton par enfant qui a un numéro
+      activeEnfants().filter(en => en.tel).forEach(en => {
+        sendBtns += `<button onclick="envoyerEvenementParent(${e.id},${en.id})" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer;margin-right:4px">📱 ${en.nom.split(' ')[0]}</button>`;
+      });
+      if (activeEnfants().some(en => en.tel)) {
+        sendBtns += `<button onclick="envoyerEvenementTous(${e.id})" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#3b82f6;color:#fff;font-weight:600;cursor:pointer">📱 Tous</button>`;
+      }
+    }
     return `<div class="ev-item">
       <div class="ev-dot" style="background:${col}"></div>
       <div class="ev-info">
         <div class="ev-title">${e.titre}</div>
         <div class="ev-sub">${dateLabel}${e.debut ? ' · ' + e.debut + (e.fin ? ' - ' + e.fin : '') : ''}${e.retour ? ' · 🏠' + e.retour : ''}${e.repasDebut ? ' · 🍽' + e.repasDebut + (e.repasFin ? '-' + e.repasFin : '') : ''}${e.lieu ? ' · 📍' + e.lieu : ''}${e.scenes ? ' · 🎬' + e.scenes : ''} ${enf ? '· ' + enf.nom.split(' ')[0] : '· Tous'}</div>
+        ${sendBtns ? '<div style="margin-top:5px">' + sendBtns + '</div>' : ''}
       </div>
       <button class="ev-del" onclick="delCalEvent(${e.id})">✕</button>
     </div>`;
