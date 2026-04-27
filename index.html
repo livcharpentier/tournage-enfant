@@ -1095,7 +1095,8 @@ function buildSummary() {
     const travail = WORK_TYPES.reduce((s, t) => s + (dur[t] || 0), 0);
     const lim = LIMITES[enf.age];
     const pct = Math.round(travail / lim * 100);
-    const statut = pct >= 100 ? 'DEPASSEMENT' : pct >= 80 ? 'Proche limite' : 'OK';
+    // Presence = travail + pause + repas (sans attente qui ne compte pas)
+    const presenceDepuisHMC = travail + (dur.pause||0) + (dur.repas||0);
 
     const hArrivee = evs.find(l => l.type === 'arrivee');
     const hFin = [...evs].reverse().find(l => l.type === 'fin');
@@ -1111,7 +1112,7 @@ function buildSummary() {
     if (dur.cours)    txt += 'Cours : ' + fmt(dur.cours) + '\n';
     if (dur.cascade)  txt += 'Cascade : ' + fmt(dur.cascade) + '\n';
     if (hFin)         txt += 'Fin : ' + hFin.heure + '\n';
-    txt += 'Plateau : ' + fmt(travail) + ' / ' + fmt(lim) + ' - ' + statut + '\n\n';
+    txt += 'Presence : ' + fmt(presenceDepuisHMC) + ' / ' + fmt(lim) + '\n\n';
   });
 
   if (commentaire) {
