@@ -1100,8 +1100,17 @@ function buildSummary() {
     const travail = WORK_TYPES.reduce((s, t) => s + (dur[t] || 0), 0);
     const lim = LIMITES[enf.age];
     const pct = Math.round(travail / lim * 100);
-    // Presence = travail + pause SANS repas ni attente (reglementation DRIEETS)
-    const presenceDepuisHMC = travail + (dur.pause||0);
+    // Presence reelle = fin - debut HMC - repas (reglementation DRIEETS)
+    const debutEvt = evs.find(l => l.type === 'hmc') || evs.find(l => l.type === 'arrivee');
+    const finEvt = [...evs].reverse().find(l => l.type === 'fin');
+    let presenceDepuisHMC = 0;
+    if (debutEvt) {
+      const finM = finEvt ? toMin(finEvt.heure) : 0;
+      const debM = toMin(debutEvt.heure);
+      presenceDepuisHMC = finM > 0 ? Math.max(0, finM - debM - (dur.repas||0)) : travail + (dur.pause||0);
+    } else {
+      presenceDepuisHMC = travail + (dur.pause||0);
+    }
 
     const hArrivee = evs.find(l => l.type === 'arrivee');
     const hFin = [...evs].reverse().find(l => l.type === 'fin');
@@ -1185,12 +1194,7 @@ function renderResume() {
         if (s.enAlerte) html += '<div style="font-size:11px;font-weight:700;color:#991b1b">⚠ ALERTER MISE EN SCENE</div>';
         html += '</div>';
         // Heure de début = HMC ou arrivée
-        const debutJour = evs => {
-          const h = evs.find(l => l.type === 'hmc') || evs.find(l => l.type === 'arrivee');
-          return h ? h.heure : '-';
-        };
-        const logs2 = todayLogs().filter(l => l.enfantId === s.enf.id);
-        const debutH = debutJour(logs2);
+        const debutH = s.debutH || '-';
         html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
         html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Début</div><div style="font-size:14px;font-weight:600">' + debutH + '</div></div>';
         html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.hmc||0) + '</div></div>';
@@ -1199,10 +1203,11 @@ function renderResume() {
         html += '</div>';
         html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">Repas non compté : ' + fmt(s.dur.repas||0) + ' · Attente non comptée : ' + fmt(s.dur.attente||0) + '</div>';
         html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:6px">';
-        html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,pct) + '%"></div>';
+        html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,s.pct) + '%"></div>';
         html += '</div>';
         html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted)">';
-        html += '<span>Présence : ' + fmt(s.presence) + ' / ' + fmt(s.lim) + ' (' + pct + '%)</span>';
+        const presLabel = (s.depasse ? '⚠ DEPASSE : ' : 'Presence : ') + fmt(s.presence) + ' / ' + fmt(s.lim) + ' (' + s.pct + '%)';
+        html += '<span style="color:' + (s.depasse?'#991b1b':'var(--text-muted)') + ';font-weight:' + (s.depasse?'700':'400') + '">' + presLabel + '</span>';
         if (s.finMax) html += '<span style="font-weight:600;color:' + (s.enAlerte?'#991b1b':'var(--text)') + '">Fin max : ' + s.finMax + (s.alerteH ? ' · Alerte : ' + s.alerteH : '') + '</span>';
         html += '</div>';
         html += '</div>';
