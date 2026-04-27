@@ -1194,7 +1194,9 @@ function renderResume() {
         if (s.enAlerte) html += '<div style="font-size:11px;font-weight:700;color:#991b1b">⚠ ALERTER MISE EN SCENE</div>';
         html += '</div>';
         // Heure de début = HMC ou arrivée
-        const debutH = s.debutH || '-';
+        const logsEnf = todayLogs().filter(l => l.enfantId === s.enf.id).sort((a,b) => a.heure.localeCompare(b.heure));
+        const debutEvR = logsEnf.find(l => l.type === 'hmc') || logsEnf.find(l => l.type === 'arrivee');
+        const debutH = debutEvR ? debutEvR.heure : '-';
         html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
         html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Début</div><div style="font-size:14px;font-weight:600">' + debutH + '</div></div>';
         html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.hmc||0) + '</div></div>';
@@ -1203,12 +1205,17 @@ function renderResume() {
         html += '</div>';
         html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">Repas non compté : ' + fmt(s.dur.repas||0) + ' · Attente non comptée : ' + fmt(s.dur.attente||0) + '</div>';
         html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:6px">';
-        html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,s.pct) + '%"></div>';
+        html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,pct) + '%"></div>';
         html += '</div>';
         html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted)">';
-        const presLabel = (s.depasse ? '⚠ DEPASSE : ' : 'Presence : ') + fmt(s.presence) + ' / ' + fmt(s.lim) + ' (' + s.pct + '%)';
-        html += '<span style="color:' + (s.depasse?'#991b1b':'var(--text-muted)') + ';font-weight:' + (s.depasse?'700':'400') + '">' + presLabel + '</span>';
-        if (s.finMax) html += '<span style="font-weight:600;color:' + (s.enAlerte?'#991b1b':'var(--text)') + '">Fin max : ' + s.finMax + (s.alerteH ? ' · Alerte : ' + s.alerteH : '') + '</span>';
+        const presLabel = (pct >= 100 ? '⚠ DEPASSE : ' : 'Presence : ') + fmt(s.presence) + ' / ' + fmt(s.lim) + ' (' + pct + '%)';
+        html += '<span style="color:' + (pct>=100?'#991b1b':'var(--text-muted)') + ';font-weight:' + (pct>=100?'700':'400') + '">' + presLabel + '</span>';
+        let finInfo = '';
+        if (s.finMax) finInfo += 'Fin max : ' + s.finMax;
+        if (s.finReelH) finInfo += ' · Fin réelle : ' + s.finReelH;
+        if (s.depasseMin > 0) finInfo += ' · Dépassement : ' + fmt(s.depasseMin);
+        if (s.alerteH && !s.finReelH) finInfo += ' · Alerte : ' + s.alerteH;
+        if (finInfo) html += '<span style="font-weight:600;color:' + (s.depasse?'#991b1b':s.enAlerte?'#991b1b':'var(--text)') + '">' + finInfo + '</span>';
         html += '</div>';
         html += '</div>';
       });
