@@ -348,6 +348,10 @@
   </div>
   <div class="scroll-content">
     <div class="card">
+      <div class="card-title">Suivi temps — journée en cours</div>
+      <div id="resume-bilan-haut"></div>
+    </div>
+    <div class="card">
       <div id="resume-alerts"></div>
       <div class="metrics-grid" id="resume-metrics"></div>
       <div class="card-title" style="margin-bottom:8px">Chronologie par enfant</div>
@@ -1122,9 +1126,79 @@ function buildSummary() {
   return txt;
 }
 
+function calcFinMax() {
+  // Calcule l'heure max de fin pour chaque enfant et l'alerte 1H avant
+  const enfs = activeEnfants();
+  const logs = todayLogs();
+  const now = new Date();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  
+  return enfs.map(enf => {
+    const evs = logs.filter(l => l.enfantId === enf.id);
+    const dur = {};
+    Object.keys(TYPE_LABEL).forEach(t => dur[t] = 0);
+    evs.forEach(l => {
+      if (l.fin) dur[l.type] = (dur[l.type]||0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
+    });
+    const presence = (dur.hmc||0) + (dur.tournage||0) + (dur.cascade||0) + (dur.cours||0) + (dur.pause||0) + (dur.repas||0);
+    const lim = LIMITES[enf.age];
+    const reste = Math.max(0, lim - presence);
+    
+    // Trouver l'heure de début (HMC ou arrivée)
+    const debut = evs.find(l => l.type === 'hmc') || evs.find(l => l.type === 'arrivee');
+    let finMax = null;
+    let finMaxMin = null;
+    if (debut) {
+      finMaxMin = toMin(debut.heure) + lim;
+      const hh = Math.floor(finMaxMin / 60);
+      const mm = finMaxMin % 60;
+      finMax = String(hh).padStart(2,'0') + 'h' + String(mm).padStart(2,'0');
+    }
+    
+    const alerteMin = finMaxMin ? finMaxMin - 60 : null;
+    const alerteH = alerteMin ? (String(Math.floor(alerteMin/60)).padStart(2,'0') + 'h' + String(alerteMin%60).padStart(2,'0')) : null;
+    const enAlerte = alerteMin && nowMin >= alerteMin;
+    
+    return { enf, dur, presence, lim, reste, finMax, alerteH, enAlerte };
+  });
+}
+
 function renderResume() {
   const sp = document.getElementById('summary-txt');
   if (sp) sp.textContent = buildSummary();
+  
+  // Bloc résumé horaire en haut
+  const bilanDiv = document.getElementById('resume-bilan-haut');
+  if (bilanDiv) {
+    const stats = calcFinMax();
+    if (stats.length) {
+      let html = '';
+      stats.forEach(s => {
+        const pct = Math.round(s.presence / s.lim * 100);
+        const barColor = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
+        const alertClass = s.enAlerte ? 'background:#fee2e2;border:1px solid #ef4444;' : 'background:var(--gray-light);';
+        html += '<div style="' + alertClass + 'border-radius:10px;padding:10px 12px;margin-bottom:8px">';
+        html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">';
+        html += '<div style="font-size:13px;font-weight:700">' + s.enf.nom.split(' ')[0] + '</div>';
+        if (s.enAlerte) html += '<div style="font-size:11px;font-weight:700;color:#991b1b">⚠ ALERTER MISE EN SCENE</div>';
+        html += '</div>';
+        html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.hmc||0) + '</div></div>';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Tournage</div><div style="font-size:14px;font-weight:600;color:#065f46">' + fmt(s.dur.tournage||0) + '</div></div>';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Pause</div><div style="font-size:14px;font-weight:600">' + fmt((s.dur.pause||0)+(s.dur.repas||0)) + '</div></div>';
+        html += '</div>';
+        html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:6px">';
+        html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,pct) + '%"></div>';
+        html += '</div>';
+        html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted)">';
+        html += '<span>Présence : ' + fmt(s.presence) + ' / ' + fmt(s.lim) + ' (' + pct + '%)</span>';
+        if (s.finMax) html += '<span style="font-weight:600;color:' + (s.enAlerte?'#991b1b':'var(--text)') + '">Fin max : ' + s.finMax + (s.alerteH ? ' · Alerte : ' + s.alerteH : '') + '</span>';
+        html += '</div>';
+        html += '</div>';
+      });
+      bilanDiv.innerHTML = html;
+    }
+  }
 
   // contacts sync
   const ws = document.getElementById('wa-scripte');
@@ -1861,9 +1935,7 @@ function renderBilan() {
     const stats = getStatsByDate(date);
     if (!stats.length) return;
     
-    // Récupérer commentaire du jour si existe
-    const commentKey = 'comment_' + date;
-    const comment = state[commentKey] || '';
+    const comment = state['comment_' + date] || '';
     
     html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden">';
     html += '<div style="background:#1a1a2e;color:#fff;padding:8px 14px;font-size:13px;font-weight:600">' + dayLabel + '</div>';
