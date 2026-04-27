@@ -464,6 +464,20 @@
 </div>
 
 <!-- BOTTOM NAV -->
+<div id="page-bilan" class="page">
+  <div class="page-header">
+    <div class="page-title">Bilan Film</div>
+    <div class="page-sub" id="bilan-film-name">Toutes les journees</div>
+  </div>
+  <div class="scroll-content">
+    <div style="display:flex;gap:8px;padding:10px 12px;flex-wrap:wrap;align-items:center">
+      <button onclick="renderBilan()" style="padding:7px 14px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer">Actualiser</button>
+      <button onclick="genererPDFBilan()" style="padding:7px 14px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-size:12px;font-weight:600;cursor:pointer">📄 PDF Bilan</button>
+    </div>
+    <div id="bilan-content" style="padding:0 12px 10px"></div>
+  </div>
+</div>
+
 <nav class="nav">
   <button class="nav-btn active" onclick="showPage('live',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/></svg>
@@ -485,6 +499,10 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
     Films
   </button>
+  <button class="nav-btn" onclick="showPage('bilan',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+    Bilan
+  </button>
 </nav>
 
 <!-- MODALS -->
@@ -501,21 +519,7 @@
 <div class="modal-overlay" id="modal-enfant">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('modal-enfant')">✕</button>
-    <div class="modal-title">Ajouter un enfant</div>
-    <div class="form-row"><label class="form-label">Prénom Nom</label><input class="form-input" id="new-enf-nom" placeholder="ex: Léa Martin"></div>
-    <div class="form-row"><label class="form-label">Tranche d'âge</label>
-      <select class="form-input" id="new-enf-age">
-        <option value="<3">Moins de 3 ans (max 2h)</option>
-        <option value="3-5">3 – 5 ans (max 3h)</option>
-        <option value="6-11" selected>6 – 11 ans (max 4h)</option>
-        <option value="12-15">12 – 15 ans (max 6h)</option>
-        <option value="16-17">16 – 17 ans (max 8h)</option>
-      </select>
-    </div>
-    <div class="form-row"><label class="form-label">Couleur</label><input type="color" class="form-input" id="new-enf-color" value="#3b82f6" style="height:40px;padding:4px;cursor:pointer"></div>
-    <div class="form-row"><label class="form-label">📱 Numéro WhatsApp parent (optionnel)</label><input class="form-input" type="tel" id="new-enf-tel" placeholder="+336..."></div>
-    <button class="form-btn" style="background:var(--green)" onclick="ajouterEnfant()">Ajouter cet enfant</button>
-  </div>
+</div>
 </div>
 <script>
 // ─── CONSTANTES ───────────────────────────────────────────────────
@@ -642,6 +646,7 @@ function showPage(name, btn) {
   if (name === 'resume') renderResume();
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
+  if (name === 'bilan') renderBilan();
   if (name === 'resume') renderExtraContactsBtns();
   if (name === 'live') { renderChips(); renderStatusBar(); renderLog(); updateFilmDisplay(); }
 }
@@ -693,7 +698,7 @@ function supprimerFilm(id) {
 function updateFilmDisplay() {
   const f = activeFilm();
   const name = f ? f.nom : 'Aucun film sélectionné';
-  ['film-name-live', 'planning-film-name', 'resume-film-name'].forEach(id => {
+  ['film-name-live', 'planning-film-name', 'resume-film-name', 'bilan-film-name'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.textContent = name;
   });
@@ -1806,6 +1811,192 @@ function partagerCalendrier() {
     navigator.clipboard.writeText(txt).then(() => alert('Planning copié ! Collez-le dans WhatsApp.')).catch(() => alert(txt));
   }
 }
+
+
+// ─── BILAN FILM ──────────────────────────────────────────────────
+function getStatsByDate(date) {
+  const dayLogs = state.logs.filter(l => l.filmId === state.activeFilmId && l.date === date);
+  const enfs = activeEnfants();
+  return enfs.map(enf => {
+    const evs = dayLogs.filter(l => l.enfantId === enf.id).sort((a,b) => a.heure.localeCompare(b.heure));
+    if (!evs.length) return null;
+    const dur = {};
+    Object.keys(TYPE_LABEL).forEach(t => dur[t] = 0);
+    evs.forEach(l => {
+      if (l.fin) dur[l.type] = (dur[l.type] || 0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
+    });
+    const hArrivee = evs.find(l => l.type === 'arrivee');
+    const hFin = [...evs].reverse().find(l => l.type === 'fin');
+    const hRepas = evs.find(l => l.type === 'repas');
+    const travail = WORK_TYPES.reduce((s,t) => s + (dur[t]||0), 0);
+    const lim = LIMITES[enf.age];
+    const pct = Math.round(travail/lim*100);
+    return { enf, dur, hArrivee, hFin, hRepas, travail, lim, pct, hasCascade: dur.cascade > 0, hasSante: dur.sante > 0 };
+  }).filter(Boolean);
+}
+
+function getAllDates() {
+  const dates = [...new Set(
+    state.logs.filter(l => l.filmId === state.activeFilmId).map(l => l.date)
+  )].sort();
+  return dates;
+}
+
+function renderBilan() {
+  const el = document.getElementById('bilan-content');
+  if (!el) return;
+  const dates = getAllDates();
+  if (!dates.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📊</div>Aucune journee enregistree pour ce film.</div>';
+    return;
+  }
+  const months = ['Jan','Fev','Mar','Avr','Mai','Jun','Jul','Aou','Sep','Oct','Nov','Dec'];
+  const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  
+  let html = '';
+  dates.forEach(date => {
+    const d = new Date(date);
+    const dayLabel = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+    const stats = getStatsByDate(date);
+    if (!stats.length) return;
+    
+    // Récupérer commentaire du jour si existe
+    const commentKey = 'comment_' + date;
+    const comment = state[commentKey] || '';
+    
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden">';
+    html += '<div style="background:#1a1a2e;color:#fff;padding:8px 14px;font-size:13px;font-weight:600">' + dayLabel + '</div>';
+    html += '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px">';
+    html += '<thead><tr style="background:var(--gray-light)">';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Enfant</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Arrivee</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">HMC</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Tournage</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Pause</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Repas</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Attente</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Cascade</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Sante</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Fin</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Plateau</th>';
+    html += '</tr></thead><tbody>';
+    
+    stats.forEach(s => {
+      const col = s.pct >= 100 ? '#fee2e2' : s.pct >= 80 ? '#fef3c7' : '';
+      html += '<tr style="border-bottom:1px solid var(--border);' + (col ? 'background:' + col : '') + '">';
+      html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
+      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.dur.pause ? fmt(s.dur.pause) : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin ? '-' + s.hRepas.fin : '') : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
+      html += '<td style="padding:6px 8px;color:' + (s.hasCascade ? '#991b1b' : 'var(--text-muted)') + '">' + (s.hasCascade ? fmt(s.dur.cascade) : '-') + '</td>';
+      html += '<td style="padding:6px 8px;color:' + (s.hasSante ? '#9d174d' : 'var(--text-muted)') + '">' + (s.hasSante ? '⚠' : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure : '-') + '</td>';
+      html += '<td style="padding:6px 8px;font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+    if (comment) {
+      html += '<div style="padding:8px 12px;font-size:12px;color:var(--text-muted);border-top:1px solid var(--border)">📝 ' + comment + '</div>';
+    }
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function genererPDFBilan() {
+  const film = activeFilm();
+  const dates = getAllDates();
+  if (!dates.length) { alert('Aucune journee enregistree.'); return; }
+  const months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  
+  let rows = '';
+  dates.forEach(date => {
+    const d = new Date(date);
+    const dayLabel = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
+    const stats = getStatsByDate(date);
+    stats.forEach((s, idx) => {
+      rows += '<tr>';
+      rows += '<td style="background:#f8fafc;font-weight:600;white-space:nowrap">' + (idx===0 ? dayLabel : '') + '</td>';
+      rows += '<td style="font-weight:600">' + s.enf.nom.split(' ')[0] + '</td>';
+      rows += '<td>' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
+      rows += '<td>' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
+      rows += '<td style="font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
+      rows += '<td>' + (s.dur.pause ? fmt(s.dur.pause) : '-') + '</td>';
+      rows += '<td>' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin ? '-'+s.hRepas.fin : '') : '-') + '</td>';
+      rows += '<td>' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
+      rows += '<td style="color:#991b1b">' + (s.hasCascade ? fmt(s.dur.cascade) : '-') + '</td>';
+      rows += '<td style="color:#9d174d">' + (s.hasSante ? 'Oui' : '-') + '</td>';
+      rows += '<td style="font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
+      rows += '</tr>';
+    });
+  });
+
+  const titre = film ? 'Bilan ' + film.nom : 'Bilan Film';
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' +
+    'body{font-family:Arial,sans-serif;padding:15px;color:#1e293b;font-size:12px}' +
+    'h1{font-size:16px;margin-bottom:4px;color:#1a1a2e}' +
+    '.sub{font-size:11px;color:#64748b;margin-bottom:14px}' +
+    'table{width:100%;border-collapse:collapse}' +
+    'th{background:#1a1a2e;color:#fff;padding:6px 7px;text-align:left;font-size:10px;white-space:nowrap}' +
+    'td{padding:5px 7px;border-bottom:1px solid #e2e8f0;vertical-align:middle}' +
+    'tr:nth-child(even) td{background:#f8fafc}' +
+    '.footer{margin-top:14px;font-size:10px;color:#94a3b8;text-align:right}' +
+    '@media print{body{padding:8px}}' +
+    '</style></head><body>' +
+    '<h1>' + titre + '</h1>' +
+    '<div class="sub">Bilan complet — Liv · RESPONSABLE ENFANTS (ARECA)</div>' +
+    '<table><thead><tr>' +
+    '<th>Date</th><th>Enfant</th><th>Arrivee</th><th>HMC</th><th>Tournage</th>' +
+    '<th>Pause</th><th>Repas</th><th>Attente</th><th>Cascade</th><th>Sante</th><th>Plateau</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div class="footer">— Liv ;-) · ' + new Date().toLocaleDateString('fr-FR') + '</div>' +
+    '</body></html>';
+
+  const blob = new Blob([html], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url, '_blank');
+  if (win) { win.onload = () => { setTimeout(() => { win.print(); }, 500); }; }
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────
+try {
+  load();
+  renderChips();
+  renderLog();
+  renderStatusBar();
+  updateFilmDisplay();
+  renderContactsExtra();
+  renderExtraContactsBtns();
+} catch(e) {
+  console.error('Init error:', e);
+}
+
+// Splash screen - se ferme toujours même en cas d'erreur
+function closeSplash() {
+  const splash = document.getElementById('splash');
+  if (splash) { splash.style.opacity = '0'; setTimeout(() => { try { splash.remove(); } catch(e) {} }, 600); }
+}
+setTimeout(() => { const bar = document.getElementById('splash-bar'); if (bar) bar.style.width = '100%'; }, 100);
+setTimeout(closeSplash, 1800);
+// Sécurité : ferme dans tous les cas après 3s
+setTimeout(closeSplash, 3000);
+
+// refresh planning + status every minute
+setInterval(() => {
+  const activePage = document.querySelector('.page.active');
+  if (activePage && activePage.id === 'page-planning') renderPlanning();
+  renderStatusBar();
+}, 60000);
+
+// Désactiver et supprimer tous les service workers
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+}
+
 
 // ─── INIT ─────────────────────────────────────────────────────────
 try {
