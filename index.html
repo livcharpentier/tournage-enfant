@@ -1184,11 +1184,20 @@ function renderResume() {
         html += '<div style="font-size:13px;font-weight:700">' + s.enf.nom.split(' ')[0] + '</div>';
         if (s.enAlerte) html += '<div style="font-size:11px;font-weight:700;color:#991b1b">⚠ ALERTER MISE EN SCENE</div>';
         html += '</div>';
-        html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
+        // Heure de début = HMC ou arrivée
+        const debutJour = evs => {
+          const h = evs.find(l => l.type === 'hmc') || evs.find(l => l.type === 'arrivee');
+          return h ? h.heure : '-';
+        };
+        const logs2 = todayLogs().filter(l => l.enfantId === s.enf.id);
+        const debutH = debutJour(logs2);
+        html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Début</div><div style="font-size:14px;font-weight:600">' + debutH + '</div></div>';
         html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.hmc||0) + '</div></div>';
         html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Tournage</div><div style="font-size:14px;font-weight:600;color:#065f46">' + fmt(s.dur.tournage||0) + '</div></div>';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Pause</div><div style="font-size:14px;font-weight:600">' + fmt((s.dur.pause||0)+(s.dur.repas||0)) + '</div></div>';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Pause</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.pause||0) + '</div></div>';
         html += '</div>';
+        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">Repas non compté : ' + fmt(s.dur.repas||0) + ' · Attente non comptée : ' + fmt(s.dur.attente||0) + '</div>';
         html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:6px">';
         html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,pct) + '%"></div>';
         html += '</div>';
@@ -1891,6 +1900,11 @@ function partagerCalendrier() {
 
 
 // ─── BILAN FILM ──────────────────────────────────────────────────
+function saveNoteJour(date, note) {
+  state['comment_' + date] = note;
+  save();
+}
+
 function getStatsByDate(date) {
   const dayLogs = state.logs.filter(l => l.filmId === state.activeFilmId && l.date === date);
   const enfs = activeEnfants();
@@ -1973,9 +1987,15 @@ function renderBilan() {
       html += '</tr>';
     });
     html += '</tbody></table></div>';
-    if (comment) {
-      html += '<div style="padding:8px 12px;font-size:12px;color:var(--text-muted);border-top:1px solid var(--border)">📝 ' + comment + '</div>';
-    }
+    const noteId = 'note_bilan_' + date;
+    html += '<div style="padding:8px 12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px">';
+    html += '<span style="font-size:18px">📝</span>';
+    html += '<input type="text" id="' + noteId + '"';
+    html += ' value="' + (comment || '').replace(/"/g, '&quot;') + '"';
+    html += ' placeholder="Ajouter une note pour cette journee..."';
+    html += ' onchange="saveNoteJour(' + "'" + date + "'" + ', this.value)"';
+    html += ' style="flex:1;font-size:13px;border:1px solid var(--border);border-radius:8px;padding:6px 10px;background:var(--bg);color:var(--text)">';
+    html += '</div>';
     html += '</div>';
   });
   el.innerHTML = html;
