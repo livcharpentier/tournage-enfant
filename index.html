@@ -931,6 +931,7 @@ function renderStatusBar() {
     const logs = todayLogs().filter(l => l.enfantId === e.id);
     const last = logs.sort((a, b) => b.heure.localeCompare(a.heure))[0];
     const lim = LIMITES[e.age];
+    // Presence sans repas ni attente
     const travail = logs.filter(l => WORK_TYPES.includes(l.type) && l.fin)
       .reduce((s, l) => s + Math.max(0, toMin(l.fin) - toMin(l.heure)), 0);
     const pct = Math.round(travail / lim * 100);
@@ -1099,8 +1100,8 @@ function buildSummary() {
     const travail = WORK_TYPES.reduce((s, t) => s + (dur[t] || 0), 0);
     const lim = LIMITES[enf.age];
     const pct = Math.round(travail / lim * 100);
-    // Presence = travail + pause + repas (sans attente qui ne compte pas)
-    const presenceDepuisHMC = travail + (dur.pause||0) + (dur.repas||0);
+    // Presence = travail + pause SANS repas ni attente (reglementation DRIEETS)
+    const presenceDepuisHMC = travail + (dur.pause||0);
 
     const hArrivee = evs.find(l => l.type === 'arrivee');
     const hFin = [...evs].reverse().find(l => l.type === 'fin');
@@ -1140,7 +1141,8 @@ function calcFinMax() {
     evs.forEach(l => {
       if (l.fin) dur[l.type] = (dur[l.type]||0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
     });
-    const presence = (dur.hmc||0) + (dur.tournage||0) + (dur.cascade||0) + (dur.cours||0) + (dur.pause||0) + (dur.repas||0);
+    // Presence = HMC + tournage + cascade + cours + pause (sans repas ni attente)
+    const presence = (dur.hmc||0) + (dur.tournage||0) + (dur.cascade||0) + (dur.cours||0) + (dur.pause||0);
     const lim = LIMITES[enf.age];
     const reste = Math.max(0, lim - presence);
     
