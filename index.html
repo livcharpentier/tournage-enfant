@@ -430,6 +430,9 @@
       <button onclick="clearDay()" style="width:100%;padding:10px;border-radius:8px;border:1.5px solid var(--red);background:var(--red-light);color:var(--red-dark);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px">
         Effacer journal du jour
       </button>
+      <button onclick="sbLogout()" style="width:100%;padding:10px;border-radius:8px;border:1.5px solid #6b7280;background:#f3f4f6;color:#374151;font-size:13px;font-weight:600;cursor:pointer">
+        🔒 Se déconnecter
+      </button>
     </div>
   </div>
 </div>
@@ -556,30 +559,84 @@ let recognition = null;
 let isListening = false;
 let nextId = 1;
 
-// ─── SUPABASE ────────────────────────────────────────────────────
+// ─── SUPABASE AUTH ───────────────────────────────────────────────
 const SB_URL = 'https://ljregtoosrhetgocvrkg.supabase.co';
 const SB_KEY = 'sb_publishable_zBiWpvk73YHJepQ1Ds2PXA_naS3HTPB';
-const UID = 'liv_areca_v1';
+let currentUser = null;
+let accessToken = null;
+
+async function sbLogin(email, password) {
+  try {
+    const res = await fetch(SB_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY },
+      body: JSON.stringify({ email, password })
+    });
+    const d = await res.json();
+    if (d.access_token) {
+      accessToken = d.access_token;
+      currentUser = d.user;
+      localStorage.setItem('sb_token', d.access_token);
+      localStorage.setItem('sb_refresh', d.refresh_token);
+      return true;
+    }
+    return false;
+  } catch(e) { return false; }
+}
+
+async function sbRefreshToken() {
+  const refresh = localStorage.getItem('sb_refresh');
+  if (!refresh) return false;
+  try {
+    const res = await fetch(SB_URL + '/auth/v1/token?grant_type=refresh_token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY },
+      body: JSON.stringify({ refresh_token: refresh })
+    });
+    const d = await res.json();
+    if (d.access_token) {
+      accessToken = d.access_token;
+      currentUser = d.user;
+      localStorage.setItem('sb_token', d.access_token);
+      localStorage.setItem('sb_refresh', d.refresh_token);
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+
+function sbLogout() {
+  accessToken = null;
+  currentUser = null;
+  localStorage.removeItem('sb_token');
+  localStorage.removeItem('sb_refresh');
+  localStorage.removeItem('tournage_v2');
+  showLoginScreen();
+}
 
 async function sbSave(data) {
+  if (!accessToken) return;
+  const uid = currentUser ? currentUser.id : 'anon';
   try {
     await fetch(SB_URL + '/rest/v1/tournage_data', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'apikey': SB_KEY,
-        'Authorization': 'Bearer ' + SB_KEY,
+        'Authorization': 'Bearer ' + accessToken,
         'Prefer': 'resolution=merge-duplicates'
       },
-      body: JSON.stringify({ id: UID, user_id: UID, data: data, updated_at: new Date().toISOString() })
+      body: JSON.stringify({ id: uid, user_id: uid, data: data, updated_at: new Date().toISOString() })
     });
   } catch(e) {}
 }
 
 async function sbLoad() {
+  if (!accessToken) return null;
+  const uid = currentUser ? currentUser.id : 'anon';
   try {
-    const res = await fetch(SB_URL + '/rest/v1/tournage_data?id=eq.' + UID, {
-      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+    const res = await fetch(SB_URL + '/rest/v1/tournage_data?id=eq.' + uid, {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + accessToken }
     });
     if (res.ok) {
       const rows = await res.json();
@@ -587,6 +644,35 @@ async function sbLoad() {
     }
   } catch(e) {}
   return null;
+}
+
+function showLoginScreen() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app-content').style.display = 'none';
+}
+
+function hideLoginScreen() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-content').style.display = 'block';
+}
+
+async function handleLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const btn = document.getElementById('login-btn');
+  const err = document.getElementById('login-error');
+  if (!email || !password) { err.textContent = 'Entrez votre email et mot de passe.'; return; }
+  btn.textContent = 'Connexion...';
+  btn.disabled = true;
+  const ok = await sbLogin(email, password);
+  if (ok) {
+    hideLoginScreen();
+    await initApp();
+  } else {
+    err.textContent = 'Email ou mot de passe incorrect.';
+    btn.textContent = 'Se connecter';
+    btn.disabled = false;
+  }
 }
 
 // ─── PERSISTENCE ─────────────────────────────────────────────────
@@ -1611,7 +1697,7 @@ function genererPDF() {
     '<th>Lieu</th><th>Scenes</th><th>Retour</th><th>Enfant</th>' +
     '</tr></thead><tbody>' + rows + '</tbody></table>' +
     '<div class="footer">— Liv ;-) · ' + new Date().toLocaleDateString('fr-FR') + '</div>' +
-    '</div>' + '</body></html>';
+    '</body></html>';
   const blob = new Blob([html], {type: 'text/html'});
   const url = URL.createObjectURL(blob);
   const win = window.open(url, '_blank');
@@ -2116,7 +2202,8 @@ function genererPDFBilan() {
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────
-load().then(() => {
+async function initApp() {
+  await load();
   try {
     renderChips();
     renderLog();
@@ -2125,12 +2212,22 @@ load().then(() => {
     renderContactsExtra();
     renderExtraContactsBtns();
   } catch(e) { console.error('Init error:', e); }
-}).catch(() => {
-  try {
-    renderChips(); renderLog(); renderStatusBar();
-    updateFilmDisplay(); renderContactsExtra(); renderExtraContactsBtns();
-  } catch(e) {}
-});
+}
+
+// Vérifier si token existant
+(async () => {
+  const token = localStorage.getItem('sb_token');
+  if (token) {
+    accessToken = token;
+    const refreshed = await sbRefreshToken();
+    if (refreshed) {
+      hideLoginScreen();
+      await initApp();
+      return;
+    }
+  }
+  showLoginScreen();
+})();
 
 // Splash screen - se ferme toujours même en cas d'erreur
 function closeSplash() {
@@ -2156,7 +2253,8 @@ if ('serviceWorker' in navigator) {
 
 
 // ─── INIT ─────────────────────────────────────────────────────────
-load().then(() => {
+async function initApp() {
+  await load();
   try {
     renderChips();
     renderLog();
@@ -2165,12 +2263,22 @@ load().then(() => {
     renderContactsExtra();
     renderExtraContactsBtns();
   } catch(e) { console.error('Init error:', e); }
-}).catch(() => {
-  try {
-    renderChips(); renderLog(); renderStatusBar();
-    updateFilmDisplay(); renderContactsExtra(); renderExtraContactsBtns();
-  } catch(e) {}
-});
+}
+
+// Vérifier si token existant
+(async () => {
+  const token = localStorage.getItem('sb_token');
+  if (token) {
+    accessToken = token;
+    const refreshed = await sbRefreshToken();
+    if (refreshed) {
+      hideLoginScreen();
+      await initApp();
+      return;
+    }
+  }
+  showLoginScreen();
+})();
 
 // Splash screen - se ferme toujours même en cas d'erreur
 function closeSplash() {
@@ -2327,6 +2435,7 @@ if ('serviceWorker' in navigator) {
     </div>
     <button class="form-btn" style="background:#ef4444;margin-top:8px" onclick="genererPDF()">Generer le PDF</button>
   </div>
+</div>
 </div>
 </body>
 </html>
