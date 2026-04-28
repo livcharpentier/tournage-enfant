@@ -556,26 +556,72 @@ let recognition = null;
 let isListening = false;
 let nextId = 1;
 
-// ─── PERSISTENCE ─────────────────────────────────────────────────
-function save() {
-  try { localStorage.setItem('tournage_v2', JSON.stringify({ state, nextId, selectedEnfants })); } catch(e) {}
+// ─── SUPABASE ────────────────────────────────────────────────────
+const SB_URL = 'https://ljregtoosrhetgocvrkg.supabase.co';
+const SB_KEY = 'sb_publishable_zBiWpvk73YHJepQ1Ds2PXA_naS3HTPB';
+const UID = 'liv_areca_v1';
+
+async function sbSave(data) {
+  try {
+    await fetch(SB_URL + '/rest/v1/tournage_data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({ id: UID, user_id: UID, data: data, updated_at: new Date().toISOString() })
+    });
+  } catch(e) {}
 }
 
-function load() {
+async function sbLoad() {
   try {
-    const raw = localStorage.getItem('tournage_v2');
-    if (raw) {
-      const d = JSON.parse(raw);
-      state = d.state || state;
-      nextId = d.nextId || 1;
-      selectedEnfants = d.selectedEnfants || [];
+    const res = await fetch(SB_URL + '/rest/v1/tournage_data?id=eq.' + UID, {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+    });
+    if (res.ok) {
+      const rows = await res.json();
+      if (rows && rows.length > 0) return rows[0].data;
     }
   } catch(e) {}
+  return null;
+}
+
+// ─── PERSISTENCE ─────────────────────────────────────────────────
+let saveTimer = null;
+
+function save() {
+  try { localStorage.setItem('tournage_v2', JSON.stringify({ state, nextId, selectedEnfants })); } catch(e) {}
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => { sbSave({ state, nextId, selectedEnfants }); }, 2000);
+}
+
+async function load() {
+  const remote = await sbLoad();
+  if (remote) {
+    try {
+      state = remote.state || state;
+      nextId = remote.nextId || 1;
+      selectedEnfants = remote.selectedEnfants || [];
+      localStorage.setItem('tournage_v2', JSON.stringify(remote));
+    } catch(e) {}
+  } else {
+    try {
+      const raw = localStorage.getItem('tournage_v2');
+      if (raw) {
+        const d = JSON.parse(raw);
+        state = d.state || state;
+        nextId = d.nextId || 1;
+        selectedEnfants = d.selectedEnfants || [];
+      }
+    } catch(e) {}
+  }
   if (state.commentaireJour) {
     const el = document.getElementById('commentaire-jour');
     if (el) el.value = state.commentaireJour;
   }
-  // restore contacts inputs
   if (state.contacts) {
     const sc = document.getElementById('contact-scripte');
     const pr = document.getElementById('contact-prod');
@@ -2070,17 +2116,21 @@ function genererPDFBilan() {
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────
-try {
-  load();
-  renderChips();
-  renderLog();
-  renderStatusBar();
-  updateFilmDisplay();
-  renderContactsExtra();
-  renderExtraContactsBtns();
-} catch(e) {
-  console.error('Init error:', e);
-}
+load().then(() => {
+  try {
+    renderChips();
+    renderLog();
+    renderStatusBar();
+    updateFilmDisplay();
+    renderContactsExtra();
+    renderExtraContactsBtns();
+  } catch(e) { console.error('Init error:', e); }
+}).catch(() => {
+  try {
+    renderChips(); renderLog(); renderStatusBar();
+    updateFilmDisplay(); renderContactsExtra(); renderExtraContactsBtns();
+  } catch(e) {}
+});
 
 // Splash screen - se ferme toujours même en cas d'erreur
 function closeSplash() {
@@ -2106,17 +2156,21 @@ if ('serviceWorker' in navigator) {
 
 
 // ─── INIT ─────────────────────────────────────────────────────────
-try {
-  load();
-  renderChips();
-  renderLog();
-  renderStatusBar();
-  updateFilmDisplay();
-  renderContactsExtra();
-  renderExtraContactsBtns();
-} catch(e) {
-  console.error('Init error:', e);
-}
+load().then(() => {
+  try {
+    renderChips();
+    renderLog();
+    renderStatusBar();
+    updateFilmDisplay();
+    renderContactsExtra();
+    renderExtraContactsBtns();
+  } catch(e) { console.error('Init error:', e); }
+}).catch(() => {
+  try {
+    renderChips(); renderLog(); renderStatusBar();
+    updateFilmDisplay(); renderContactsExtra(); renderExtraContactsBtns();
+  } catch(e) {}
+});
 
 // Splash screen - se ferme toujours même en cas d'erreur
 function closeSplash() {
