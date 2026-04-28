@@ -544,7 +544,21 @@
 <div class="modal-overlay" id="modal-enfant">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('modal-enfant')">✕</button>
-</div>
+    <div class="modal-title">Ajouter un enfant</div>
+    <div class="form-row"><label class="form-label">Prénom Nom</label><input class="form-input" id="new-enf-nom" placeholder="ex: Léa Martin"></div>
+    <div class="form-row"><label class="form-label">Tranche d'âge</label>
+      <select class="form-input" id="new-enf-age">
+        <option value="&lt;3">Moins de 3 ans (max 2h)</option>
+        <option value="3-5">3 – 5 ans (max 3h)</option>
+        <option value="6-11">6 – 11 ans (max 4h)</option>
+        <option value="12-15" selected>12 – 15 ans (max 6h)</option>
+        <option value="16-17">16 – 17 ans (max 8h)</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">Couleur</label><input type="color" class="form-input" id="new-enf-color" value="#3b82f6" style="height:40px;padding:4px;cursor:pointer"></div>
+    <div class="form-row"><label class="form-label">📱 Numéro WhatsApp parent (optionnel)</label><input class="form-input" type="tel" id="new-enf-tel" placeholder="+336..."></div>
+    <button class="form-btn" style="background:var(--green)" onclick="ajouterEnfant()">Ajouter cet enfant</button>
+  </div>
 </div>
 <script>
 // ─── CONSTANTES ───────────────────────────────────────────────────
