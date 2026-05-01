@@ -2078,6 +2078,14 @@ function partagerCalendrier() {
 
 
 // ─── BILAN FILM ──────────────────────────────────────────────────
+function supprimerJour(date) {
+  if (!confirm('Supprimer toute la journee du ' + date + ' ?')) return;
+  state.logs = state.logs.filter(l => !(l.filmId === state.activeFilmId && l.date === date));
+  delete state['comment_' + date];
+  save();
+  renderBilan();
+}
+
 function saveNoteJour(date, note) {
   state['comment_' + date] = note;
   save();
@@ -2132,7 +2140,10 @@ function renderBilan() {
     const comment = state['comment_' + date] || '';
     
     html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden">';
-    html += '<div style="background:#1a1a2e;color:#fff;padding:8px 14px;font-size:13px;font-weight:600">' + dayLabel + '</div>';
+    html += '<div style="background:#1a1a2e;color:#fff;padding:8px 14px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">';
+    html += '<span>' + dayLabel + '</span>';
+    html += '<button onclick="supprimerJour(' + "'" + date + "'" + ')" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:3px 10px;border-radius:6px;font-size:11px;cursor:pointer">🗑 Supprimer</button>';
+    html += '</div>';
     html += '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px">';
     html += '<thead><tr style="background:var(--gray-light)">';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Enfant</th>';
