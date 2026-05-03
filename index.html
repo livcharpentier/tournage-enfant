@@ -299,7 +299,7 @@
         <span class="icon">🍽</span><span class="lbl">Repas</span><span class="last-t" id="lt-repas"></span>
       </button>
       <button class="action-btn btn-attente" onclick="logAction('attente')">
-        <span class="icon">☁️</span><span class="lbl">Attente</span><span class="last-t" id="lt-attente"></span>
+        <span class="icon">☁️</span><span class="lbl">Hors plateau</span><span class="last-t" id="lt-attente"></span>
       </button>
       <button class="action-btn btn-cours" onclick="logAction('cours')">
         <span class="icon">📚</span><span class="lbl">Cours</span><span class="last-t" id="lt-cours"></span>
@@ -609,13 +609,13 @@
         <div style="background:#fee2e2;border-radius:8px;padding:10px">
           <div style="font-weight:700;color:#991b1b;margin-bottom:6px">❌ NE COMPTE PAS</div>
           <div style="color:#991b1b;padding:2px 0">🍽 Repas</div>
-          <div style="color:#991b1b;padding:2px 0">☁️ Attente</div>
+          <div style="color:#991b1b;padding:2px 0">☁️ Hors plateau</div>
           <div style="color:#991b1b;padding:2px 0">🚗 Transport</div>
         </div>
       </div>
       <div style="margin-top:10px;background:#fef3c7;border-radius:8px;padding:10px;font-size:12px;color:#92400e">
-        <div style="font-weight:700;margin-bottom:4px">☁️ Quand utiliser "Attente" ?</div>
-        <div>L'attente correspond aux temps morts sur plateau où l'enfant n'est pas sollicité : attente entre deux prises, délai de préparation décor, pause technique... L'enfant est présent mais inactif. Ce temps <strong>ne compte pas</strong> dans le quota légal mais doit rester raisonnable — un enfant qui attend trop longtemps doit pouvoir se reposer dans un espace dédié.</div>
+        <div style="font-weight:700;margin-bottom:4px">☁️ Quand utiliser "Hors plateau" ?</div>
+        <div>L'enfant est <strong>déshabillé, dans sa loge ou hors du plateau</strong>, non disponible pour tourner. Il ne peut pas être rappelé immédiatement. Ce temps <strong>ne compte pas</strong> dans le quota légal.<br><br>À ne pas confondre avec la <strong>Pause</strong> 🧩 où l'enfant reste en costume sur le plateau et peut être rappelé rapidement.</div>
       </div>
     </div>
 
@@ -724,7 +724,7 @@
 const LIMITES = { '<3': 120, '3-5': 180, '6-11': 240, '12-15': 360, '16-17': 480 };
 const TYPE_LABEL = {
   arrivee: 'Arrivée', hmc: 'HMC/Prép.', tournage: 'Tournage',
-  pause: 'Pause', repas: 'Repas', attente: 'Attente',
+  pause: 'Pause', repas: 'Repas', attente: 'Hors plateau',
   cours: 'Cours', cascade: 'Cascade', sante: 'Santé', fin: 'Fin journée'
 };
 const TYPE_COLOR = {
@@ -1528,7 +1528,7 @@ function renderResume() {
         html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Tournage</div><div style="font-size:14px;font-weight:600;color:#065f46">' + fmt(s.dur.tournage||0) + '</div></div>';
         html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Pause</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.pause||0) + '</div></div>';
         html += '</div>';
-        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">Repas non compté : ' + fmt(s.dur.repas||0) + ' · Attente non comptée : ' + fmt(s.dur.attente||0) + '</div>';
+        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">Repas non compté : ' + fmt(s.dur.repas||0) + ' · Hors plateau non compté : ' + fmt(s.dur.attente||0) + '</div>';
         html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:6px">';
         html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,pct) + '%"></div>';
         html += '</div>';
@@ -2311,7 +2311,7 @@ function renderBilan() {
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Tournage</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Pause</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Repas</th>';
-    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Attente</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Hors plateau</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Cascade</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Sante</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Fin</th>';
@@ -2394,7 +2394,7 @@ function genererPDFBilan() {
     '<div class="sub">Bilan complet — Liv · RESPONSABLE ENFANTS (ARECA)</div>' +
     '<table><thead><tr>' +
     '<th>Date</th><th>Enfant</th><th>Arrivee</th><th>HMC</th><th>Tournage</th>' +
-    '<th>Pause</th><th>Repas</th><th>Attente</th><th>Cascade</th><th>Sante</th><th>Plateau</th>' +
+    '<th>Pause</th><th>Repas</th><th>Hors plateau</th><th>Cascade</th><th>Sante</th><th>Plateau</th>' +
     '</tr></thead><tbody>' + rows + '</tbody></table>' +
     '<div class="footer">— Liv ;-) · ' + new Date().toLocaleDateString('fr-FR') + '</div>' +
     '</body></html>';
