@@ -1,0 +1,2846 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Areca">
+  <meta name="theme-color" content="#1a1a2e">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>Areca</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue: #3b82f6; --blue-light: #dbeafe; --blue-dark: #1d4ed8;
+      --green: #10b981; --green-light: #d1fae5; --green-dark: #065f46;
+      --amber: #f59e0b; --amber-light: #fef3c7; --amber-dark: #92400e;
+      --red: #ef4444; --red-light: #fee2e2; --red-dark: #991b1b;
+      --purple: #8b5cf6; --purple-light: #ede9fe; --purple-dark: #5b21b6;
+      --gray: #6b7280; --gray-light: #f3f4f6; --gray-dark: #1f2937;
+      --teal: #14b8a6; --teal-light: #ccfbf1;
+      --pink: #ec4899; --pink-light: #fce7f3;
+      --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0;
+      --text: #0f172a; --text-muted: #64748b;
+      --radius: 12px; --radius-sm: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: var(--text); font-size: 15px; }
+    
+    /* NAV */
+    .nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
+    .nav-btn { flex: 1; padding: 10px 4px 8px; display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; cursor: pointer; font-size: 10px; color: var(--text-muted); font-weight: 500; }
+    .nav-btn.active { color: var(--blue-dark); }
+    .nav-btn svg { width: 22px; height: 22px; }
+    .nav-badge { background: var(--red); color: #fff; border-radius: 10px; padding: 1px 5px; font-size: 9px; position: absolute; top: 6px; right: calc(50% - 20px); }
+    
+    /* PAGES */
+    .page { display: none; flex-direction: column; height: 100vh; padding-bottom: calc(60px + env(safe-area-inset-bottom)); overflow-y: auto; }
+    .page.active { display: flex; }
+    
+    /* HEADER */
+    .page-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 16px 12px; position: sticky; top: 0; z-index: 10; }
+    .page-title { font-size: 20px; font-weight: 700; color: var(--text); }
+    .page-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    
+    /* CARDS */
+    .card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 14px 16px; margin: 0 12px 10px; box-shadow: var(--shadow); }
+    .card-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+    
+    /* CLOCK */
+    .clock-block { text-align: center; padding: 16px 12px 8px; }
+    .clock { font-size: 52px; font-weight: 200; letter-spacing: .04em; line-height: 1; font-variant-numeric: tabular-nums; }
+    .clock-date { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    
+    /* FILM SELECTOR */
+    .film-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 8px 12px; display: flex; align-items: center; gap: 8px; position: sticky; top: 0; z-index: 10; }
+    .film-label { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+    .film-select { flex: 1; font-size: 13px; font-weight: 600; background: var(--blue-light); color: var(--blue-dark); border: none; border-radius: 20px; padding: 6px 12px; cursor: pointer; }
+    .film-select-wrap { flex: 1; position: relative; }
+    .film-select-wrap select { width: 100%; appearance: none; }
+    
+    /* ENFANT CHIPS */
+    .chips-wrap { display: flex; gap: 8px; flex-wrap: wrap; padding: 10px 12px 4px; }
+    .chip { padding: 8px 14px; border-radius: 20px; border: 1.5px solid var(--border); font-size: 13px; font-weight: 600; cursor: pointer; background: var(--surface); color: var(--text-muted); transition: all .15s; white-space: nowrap; }
+    .chip.sel { color: #fff; border-color: transparent; }
+    .chip.all-chip { background: var(--blue-light); color: var(--blue-dark); border-color: var(--blue); }
+    .chip.all-chip.sel { background: var(--blue-dark); color: #fff; }
+    
+    /* ACTION BUTTONS */
+    .action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 8px 12px; }
+    .action-btn { border: none; border-radius: var(--radius); padding: 12px 6px 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: transform .1s, opacity .15s; -webkit-tap-highlight-color: transparent; }
+    .action-btn:active { transform: scale(.94); }
+    .action-btn .icon { font-size: 26px; line-height: 1; }
+    .action-btn .lbl { font-size: 11px; font-weight: 600; }
+    .action-btn .last-t { font-size: 10px; opacity: .7; }
+    .btn-arrivee { background: var(--green-light); color: var(--green-dark); }
+    .btn-hmc { background: var(--blue-light); color: var(--blue-dark); }
+    .btn-tournage { background: #d1fae5; color: #065f46; }
+    .btn-pause { background: var(--gray-light); color: var(--gray-dark); }
+    .btn-repas { background: #fef9c3; color: #713f12; }
+    .btn-attente { background: var(--amber-light); color: var(--amber-dark); }
+    .btn-cours { background: var(--purple-light); color: var(--purple-dark); }
+    .btn-cascade { background: var(--red-light); color: var(--red-dark); }
+    .btn-sante { background: var(--pink-light); color: #9d174d; }
+    .btn-fin { background: #fce7f3; color: #9d174d; }
+    
+    /* MIC */
+    .mic-wrap { display: flex; flex-direction: column; align-items: center; padding: 6px 12px 8px; }
+    .mic-btn { width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--border); background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 22px; transition: all .15s; }
+    .mic-btn.on { background: var(--red-light); border-color: var(--red); animation: pulse 1.2s infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+    .mic-hint { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+    .mic-txt { font-size: 12px; color: var(--text); min-height: 16px; margin-top: 3px; font-style: italic; }
+    
+    /* STATUS */
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 4px 12px 8px; }
+    .status-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; }
+    .status-name { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+    .status-state { font-size: 13px; font-weight: 600; margin-top: 2px; display: flex; align-items: center; gap: 5px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .status-time { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+    .status-warn { border-color: var(--red); background: var(--red-light); }
+    
+    /* LOG */
+    .log-item { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+    .log-item:last-child { border-bottom: none; }
+    .log-time { font-size: 14px; font-weight: 700; min-width: 42px; font-variant-numeric: tabular-nums; }
+    .log-tag { font-size: 11px; padding: 3px 9px; border-radius: 10px; font-weight: 600; white-space: nowrap; }
+    .log-who { font-size: 12px; color: var(--text-muted); flex: 1; }
+    .log-dur { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+    .log-del { background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; padding: 2px 4px; }
+    
+    /* GANTT */
+    .gantt-wrap { overflow-x: auto; padding: 4px 0; }
+    .gantt-inner { min-width: 480px; }
+    .gantt-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .gantt-name { width: 80px; flex-shrink: 0; font-size: 11px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .gantt-track { flex: 1; height: 24px; background: var(--gray-light); border-radius: 6px; position: relative; overflow: hidden; }
+    .gantt-block { position: absolute; top: 2px; height: 20px; border-radius: 4px; }
+    .gantt-limit { position: absolute; top: 0; height: 100%; background: rgba(239,68,68,.12); border-right: 2px solid var(--red); }
+    .gantt-now { position: absolute; top: 0; width: 2px; height: 100%; background: var(--red); z-index: 5; }
+    .gantt-hours { display: flex; padding: 0; margin-bottom: 4px; }
+    .gantt-name-empty { width: 80px; flex-shrink: 0; }
+    .gantt-ticks { flex: 1; position: relative; height: 14px; }
+    .gantt-tick { position: absolute; font-size: 9px; color: var(--text-muted); transform: translateX(-50%); }
+    
+    /* PROG */
+    .prog-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .prog-row:last-child { border-bottom: none; }
+    .prog-info { width: 100px; flex-shrink: 0; }
+    .prog-info .name { font-size: 12px; font-weight: 600; }
+    .prog-info .sub { font-size: 10px; color: var(--text-muted); }
+    .prog-bar-wrap { flex: 1; height: 6px; background: var(--gray-light); border-radius: 10px; overflow: hidden; }
+    .prog-bar { height: 100%; border-radius: 10px; transition: width .4s; }
+    .prog-pct { font-size: 12px; font-weight: 700; min-width: 36px; text-align: right; }
+    
+    /* METRICS */
+    .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+    .metric { background: var(--gray-light); border-radius: var(--radius-sm); padding: 10px; }
+    .metric-val { font-size: 22px; font-weight: 700; }
+    .metric-lbl { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+    
+    /* ALERTS */
+    .alert { padding: 10px 12px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 8px; font-weight: 500; }
+    .alert-ok { background: var(--green-light); color: var(--green-dark); }
+    .alert-warn { background: var(--amber-light); color: var(--amber-dark); }
+    .alert-danger { background: var(--red-light); color: var(--red-dark); }
+    
+    /* SUMMARY */
+    .summary-box { background: var(--gray-light); border-radius: var(--radius-sm); padding: 12px; font-size: 12px; font-family: monospace; white-space: pre-wrap; line-height: 1.7; color: var(--text); max-height: 260px; overflow-y: auto; margin-bottom: 10px; }
+    .send-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .send-btn { padding: 13px 8px; border-radius: var(--radius); border: none; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .btn-wa { background: #25D366; color: #fff; }
+    .btn-sms { background: var(--blue); color: #fff; }
+    .btn-copy { background: var(--gray-light); color: var(--text); }
+    .btn-csv { background: var(--purple-light); color: var(--purple-dark); }
+    
+    /* FILMS PAGE */
+    .film-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin: 0 12px 10px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .film-card.active-film { border-color: var(--blue); background: var(--blue-light); }
+    .film-card-icon { font-size: 28px; }
+    .film-card-info { flex: 1; }
+    .film-card-name { font-size: 15px; font-weight: 700; }
+    .film-card-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .film-card-del { background: none; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer; padding: 4px; }
+    
+    /* FORM */
+    .form-row { margin-bottom: 12px; }
+    .form-label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; display: block; }
+    .form-input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; background: var(--bg); color: var(--text); }
+    .form-input:focus { outline: none; border-color: var(--blue); }
+    .form-btn { width: 100%; padding: 12px; border-radius: var(--radius); border: none; font-size: 15px; font-weight: 700; cursor: pointer; background: var(--blue); color: #fff; margin-top: 4px; }
+    .form-btn:active { opacity: .85; }
+    
+    /* BADGE */
+    .badge { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 700; }
+    .badge-ok { background: var(--green-light); color: var(--green-dark); }
+    .badge-warn { background: var(--amber-light); color: var(--amber-dark); }
+    .badge-danger { background: var(--red-light); color: var(--red-dark); }
+    
+    /* CONTACTS */
+    .contact-row { display: flex; gap: 8px; margin-bottom: 8px; }
+    .contact-row input { flex: 1; }
+
+    /* EMPTY */
+    .empty { text-align: center; padding: 2rem 1rem; color: var(--text-muted); }
+    .empty-icon { font-size: 40px; margin-bottom: 8px; }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: flex-end; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--surface); border-radius: 20px 20px 0 0; padding: 20px 16px calc(20px + env(safe-area-inset-bottom)); width: 100%; max-height: 85vh; overflow-y: auto; }
+    .modal-title { font-size: 17px; font-weight: 700; margin-bottom: 14px; }
+    .modal-close { float: right; background: var(--gray-light); border: none; border-radius: 50%; width: 28px; height: 28px; font-size: 16px; cursor: pointer; color: var(--text-muted); }
+
+    .scroll-content { overflow-y: auto; flex: 1; }
+
+    /* CHRONO TABLE */
+    .chrono-block { margin-bottom: 12px; }
+    .chrono-name { font-size: 13px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .chrono-items { display: flex; flex-wrap: wrap; gap: 4px; }
+    .chrono-item { font-size: 11px; display: flex; align-items: center; gap: 3px; }
+    .chrono-item-time { font-weight: 700; }
+
+    /* CALENDRIER */
+    .cal-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; }
+    .cal-month { font-size: 17px; font-weight: 700; }
+    .cal-nav { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 6px 14px; font-size: 18px; cursor: pointer; color: var(--text); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin: 0 12px 10px; }
+    .cal-day-name { background: var(--gray-light); text-align: center; font-size: 10px; font-weight: 700; color: var(--text-muted); padding: 6px 0; }
+    .cal-day { background: var(--surface); min-height: 62px; padding: 4px; cursor: pointer; }
+    .cal-day:active { opacity: .7; }
+    .cal-day.empty { background: var(--gray-light); cursor: default; opacity: .3; }
+    .cal-day.today .cal-day-num { color: var(--blue-dark); font-weight: 800; background: var(--blue-light); border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+    .cal-day-num { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; }
+    .cal-ev { font-size: 9px; font-weight: 600; border-radius: 3px; padding: 1px 3px; margin-bottom: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cal-ev.t { background: #dbeafe; color: #1d4ed8; }
+    .cal-ev.f { background: #fef3c7; color: #92400e; }
+    .ev-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .ev-item:last-child { border-bottom: none; }
+    .ev-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .ev-info { flex: 1; }
+    .ev-title { font-size: 13px; font-weight: 600; }
+    .ev-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .ev-del { background: none; border: none; font-size: 16px; color: var(--text-muted); cursor: pointer; padding: 4px; }
+  </style>
+</head>
+<body>
+
+<!-- ECRAN LOGIN -->
+<div id="login-screen" style="display:none;position:fixed;inset:0;background:#1a1a2e;z-index:9999;flex-direction:column;align-items:center;justify-content:center;padding:24px">
+  <div style="font-size:56px;font-family:'Fredoka One',cursive;color:#fff;letter-spacing:.1em;margin-bottom:8px">Liv</div>
+  <div style="font-size:12px;color:rgba(255,255,255,.4);letter-spacing:.1em;margin-bottom:40px">RESPONSABLE ENFANTS (ARECA)</div>
+  <div style="width:100%;max-width:340px;background:rgba(255,255,255,.05);border-radius:16px;padding:24px">
+    <div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:20px;text-align:center">Connexion</div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:12px;color:rgba(255,255,255,.6);display:block;margin-bottom:4px">Email</label>
+      <input id="login-email" type="email" placeholder="votre@email.fr" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;font-size:14px;box-sizing:border-box" onkeydown="if(event.key==='Enter')document.getElementById('login-password').focus()">
+    </div>
+    <div style="margin-bottom:20px">
+      <label style="font-size:12px;color:rgba(255,255,255,.6);display:block;margin-bottom:4px">Mot de passe</label>
+      <input id="login-password" type="password" placeholder="••••••••" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;font-size:14px;box-sizing:border-box" onkeydown="if(event.key==='Enter')handleLogin()">
+    </div>
+    <div id="login-error" style="color:#f87171;font-size:12px;margin-bottom:12px;text-align:center;min-height:16px"></div>
+    <button id="login-btn" onclick="handleLogin()" style="width:100%;padding:12px;border-radius:8px;border:none;background:#3b82f6;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Se connecter</button>
+  </div>
+</div>
+<!-- PAGES -->
+
+<!-- SPLASH SCREEN -->
+<div id="splash" style="position:fixed;inset:0;background:#1a1a2e;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s">
+  <div style="font-size:72px;font-family:'Fredoka One',cursive;color:#fff;letter-spacing:.15em;text-shadow:3px 3px 0px rgba(255,255,255,.15)">Liv</div>
+  <div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:8px;letter-spacing:.1em">RESPONSABLE ENFANTS (ARECA)</div>
+  <div style="margin-top:32px;width:40px;height:2px;background:rgba(255,255,255,.2);border-radius:2px;overflow:hidden">
+    <div id="splash-bar" style="height:100%;width:0%;background:#fff;transition:width 1.5s;border-radius:2px"></div>
+  </div>
+</div>
+
+<div id="page-live" class="page active">
+  <div style="background:#f59e0b;color:#fff;padding:6px 14px;text-align:center;font-size:12px;font-weight:700;letter-spacing:.05em">
+    👁 MODE DÉMO — Les données ne sont pas sauvegardées
+  </div>
+  <div style="background:#1a1a2e;color:#fff;padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10">
+    <div>
+      <div style="font-size:11px;opacity:.6;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Plateau Live</div>
+      <div id="film-name-live" style="font-size:15px;font-weight:700;margin-top:1px">Aucun film sélectionné</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="font-size:18px;font-family:'Fredoka One',cursive;opacity:.9;letter-spacing:.1em">Liv</div>
+      <div id="live-date-top" style="font-size:12px;opacity:.6;text-align:right"></div>
+    </div>
+  </div>
+  <div class="scroll-content">
+    <div class="clock-block">
+      <div class="clock" id="live-clock">00:00</div>
+      <div class="clock-date" id="live-date"></div>
+    </div>
+    <div style="padding:0 12px 4px">
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Pour qui ?</div>
+      <div class="chips-wrap" id="enfant-chips" style="padding:0"></div>
+    </div>
+    <div style="padding:8px 12px 4px">
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Action rapide</div>
+    </div>
+    <div class="action-grid">
+      <button class="action-btn btn-arrivee" onclick="logAction('arrivee')">
+        <span class="icon">🎬</span><span class="lbl">Arrivée</span><span class="last-t" id="lt-arrivee"></span>
+      </button>
+      <button class="action-btn btn-hmc" onclick="logAction('hmc')">
+        <span class="icon">✂️👗🎨</span><span class="lbl">HMC / Prép.</span><span class="last-t" id="lt-hmc"></span>
+      </button>
+      <button class="action-btn btn-tournage" onclick="logAction('tournage')">
+        <span class="icon">🎥</span><span class="lbl">Tournage</span><span class="last-t" id="lt-tournage"></span>
+      </button>
+      <button class="action-btn btn-pause" onclick="logAction('pause')">
+        <span class="icon">🧩</span><span class="lbl">Pause</span><span class="last-t" id="lt-pause"></span>
+      </button>
+      <button class="action-btn btn-repas" onclick="logAction('repas')">
+        <span class="icon">🍽</span><span class="lbl">Repas</span><span class="last-t" id="lt-repas"></span>
+      </button>
+      <button class="action-btn btn-attente" onclick="logAction('attente')">
+        <span class="icon">☁️</span><span class="lbl">Hors plateau</span><span class="last-t" id="lt-attente"></span>
+      </button>
+      <button class="action-btn btn-cours" onclick="logAction('cours')">
+        <span class="icon">📚</span><span class="lbl">Cours</span><span class="last-t" id="lt-cours"></span>
+      </button>
+      <button class="action-btn btn-cascade" onclick="logAction('cascade')">
+        <span class="icon">🤸</span><span class="lbl">Cascade</span><span class="last-t" id="lt-cascade"></span>
+      </button>
+      <button class="action-btn btn-sante" onclick="logAction('sante')">
+        <span class="icon">🩺</span><span class="lbl">Santé</span><span class="last-t" id="lt-sante"></span>
+      </button>
+      <button class="action-btn btn-fin" onclick="logAction('fin')" style="grid-column:span 3">
+        <span class="icon">🏁</span><span class="lbl">Fin de journée</span><span class="last-t" id="lt-fin"></span>
+      </button>
+    </div>
+
+    <div class="mic-wrap">
+      <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎤</button>
+      <div class="mic-hint" id="mic-hint">Dicter : "tournage", "pause", "repas"…</div>
+      <div class="mic-txt" id="mic-txt"></div>
+    </div>
+
+    <div style="padding:4px 12px 6px">
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">État actuel</div>
+      <div class="status-grid" id="status-bar"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="display:flex;justify-content:space-between">
+        <span>Journal <span id="log-count" style="font-weight:400;color:var(--text-muted)"></span></span>
+        <button onclick="clearLog()" style="font-size:11px;background:none;border:none;color:var(--text-muted);cursor:pointer">Effacer</button>
+      </div>
+      <div id="log-list"><div class="empty"><div class="empty-icon">📋</div>Appuyez sur une action pour commencer</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="page-planning" class="page">
+  <div class="page-header">
+    <div class="page-title">Planning</div>
+    <div class="page-sub" id="planning-film-name">Vue chronologique de la journée</div>
+  </div>
+  <div class="scroll-content">
+    <div style="display:flex;gap:6px;padding:10px 12px;align-items:center;flex-wrap:wrap">
+      <input type="time" id="gs" value="06:00" style="width:85px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text)">
+      <span style="font-size:12px;color:var(--text-muted)">→</span>
+      <input type="time" id="ge" value="22:00" style="width:85px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text)">
+      <button onclick="renderPlanning()" style="padding:6px 12px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer">OK</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Timeline</div>
+      <div class="gantt-wrap"><div class="gantt-inner" id="gantt-rows"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Progression légale</div>
+      <div id="prog-bars"></div>
+    </div>
+  </div>
+</div>
+
+<div id="page-resume" class="page">
+  <div class="page-header">
+    <div class="page-title">Résumé journée</div>
+    <div class="page-sub" id="resume-film-name">Rapport et envoi</div>
+  </div>
+  <div class="scroll-content">
+    <div class="card">
+      <div class="card-title">Suivi temps — journée en cours</div>
+      <div id="resume-bilan-haut"></div>
+    </div>
+    <div class="card">
+      <div id="resume-alerts"></div>
+      <div class="metrics-grid" id="resume-metrics"></div>
+      <div class="card-title" style="margin-bottom:8px">Chronologie par enfant</div>
+      <div id="chrono-enfants"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Message WhatsApp / SMS</div>
+      <div class="summary-box" id="summary-txt"></div>
+      <div style="margin-bottom:10px">
+        <div class="form-row">
+          <label class="form-label">📝 Note / commentaire du jour (santé, incident, remarque…)</label>
+          <textarea class="form-input" id="commentaire-jour" rows="3" placeholder="Ex : Léa s'est plainte d'un mal de tête à 14h, repos 20 min. Tom fatigué en fin de journée." style="resize:vertical;line-height:1.5" oninput="saveCommentaire()"></textarea>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Numéro WhatsApp scripte (avec indicatif, ex: +33612...)</label>
+          <input class="form-input" type="tel" id="wa-scripte" placeholder="+336...">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Numéro WhatsApp production</label>
+          <input class="form-input" type="tel" id="wa-prod" placeholder="+336...">
+        </div>
+      </div>
+      <div class="send-btns">
+        <button class="send-btn btn-wa" onclick="sendWhatsApp('scripte')">
+          <span style="font-size:20px">💬</span>Scripte<span style="font-size:10px;opacity:.8">WhatsApp</span>
+        </button>
+        <button class="send-btn btn-wa" onclick="sendWhatsApp('prod')">
+          <span style="font-size:20px">💬</span>Prod<span style="font-size:10px;opacity:.8">WhatsApp</span>
+        </button>
+        <button class="send-btn btn-sms" onclick="sendSMS('scripte')">
+          <span style="font-size:20px">📱</span>Scripte<span style="font-size:10px;opacity:.8">SMS</span>
+        </button>
+        <button class="send-btn btn-sms" onclick="sendSMS('prod')">
+          <span style="font-size:20px">📱</span>Prod<span style="font-size:10px;opacity:.8">SMS</span>
+        </button>
+        <button class="send-btn btn-copy" onclick="copyResume()" style="grid-column:span 2">
+          <span style="font-size:20px">📋</span>Copier le résumé
+        </button>
+      </div>
+      <div id="extra-contacts-btns" style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+    </div>
+  </div>
+</div>
+
+<div id="page-films" class="page">
+  <div class="page-header">
+    <div class="page-title">Films & Enfants</div>
+    <div class="page-sub">Gérer vos projets</div>
+  </div>
+  <div class="scroll-content">
+    <div class="card">
+      <div class="card-title">Film actif</div>
+      <div id="films-list"></div>
+      <button class="form-btn" onclick="openModal('modal-film')" style="margin-top:8px">+ Nouveau film</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Enfants du film actif</div>
+      <div id="enfants-list"></div>
+      <button class="form-btn" onclick="openModal('modal-enfant')" style="margin-top:8px;background:var(--green)">+ Ajouter un enfant</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Contacts résumé journée</div>
+      <div class="form-row">
+        <label class="form-label">Scripte</label>
+        <input class="form-input" type="tel" id="contact-scripte" placeholder="+336..." oninput="saveContacts()">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Production</label>
+        <input class="form-input" type="tel" id="contact-prod" placeholder="+336..." oninput="saveContacts()">
+      </div>
+      <div id="contacts-extra-list"></div>
+      <button class="form-btn" onclick="openModal('modal-contact')" style="margin-top:4px;background:var(--purple)">+ Ajouter un contact</button>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--red-dark)">Données</div>
+      <button onclick="clearDay()" style="width:100%;padding:10px;border-radius:8px;border:1.5px solid var(--red);background:var(--red-light);color:var(--red-dark);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px">
+        Effacer journal du jour
+      </button>
+      <button onclick="sbLogout()" style="width:100%;padding:10px;border-radius:8px;border:1.5px solid #6b7280;background:#f3f4f6;color:#374151;font-size:13px;font-weight:600;cursor:pointer">
+        🔒 Se déconnecter
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<div id="page-calendrier" class="page">
+  <div class="page-header">
+    <div class="page-title">Calendrier</div>
+    <div class="page-sub" id="cal-film-name">Planning du film</div>
+  </div>
+  <div class="scroll-content">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px 6px">
+      <button class="cal-nav" onclick="calPrev()">&#8249;</button>
+      <div class="cal-month" id="cal-month-label"></div>
+      <button class="cal-nav" onclick="calNext()">&#8250;</button>
+    </div>
+    <div style="display:flex;gap:12px;padding:4px 16px 8px;flex-wrap:wrap">
+      <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-muted)"><span style="width:10px;height:10px;border-radius:50%;background:#3b82f6;display:inline-block"></span>Tournage</span>
+      <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-muted)"><span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;display:inline-block"></span>Famille / Personnel</span>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+    <div class="card">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+        <span id="cal-events-title">Événements du mois</span>
+        <div style="display:flex;gap:6px">
+          <button onclick="partagerCalendrier()" style="font-size:11px;padding:5px 10px;border-radius:8px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer">Équipe</button>
+          <button onclick="partagerParents()" style="font-size:11px;padding:5px 10px;border-radius:8px;border:none;background:#3b82f6;color:#fff;font-weight:600;cursor:pointer">Parents WA</button>
+          <button onclick="copierParents()" style="font-size:11px;padding:5px 10px;border-radius:8px;border:none;background:#8b5cf6;color:#fff;font-weight:600;cursor:pointer">📋 Groupe</button>
+          <button onclick="ouvrirModalPDF()" style="font-size:11px;padding:5px 10px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-weight:600;cursor:pointer">📄 PDF</button>
+        </div>
+      </div>
+      <div id="cal-events-list"><div class="empty"><div class="empty-icon">📅</div>Appuyez sur un jour pour ajouter un événement</div></div>
+      <div id="cal-parents-btns" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border)"></div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div id="page-bilan" class="page">
+  <div class="page-header">
+    <div class="page-title">Bilan Film</div>
+    <div class="page-sub" id="bilan-film-name">Toutes les journees</div>
+  </div>
+  <div class="scroll-content">
+    <div style="display:flex;gap:8px;padding:10px 12px;flex-wrap:wrap;align-items:center">
+      <button onclick="renderBilan()" style="padding:7px 14px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer">Actualiser</button>
+      <button onclick="genererPDFBilan()" style="padding:7px 14px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-size:12px;font-weight:600;cursor:pointer">📄 PDF Bilan</button>
+    </div>
+    <div id="bilan-content" style="padding:0 12px 10px"></div>
+  </div>
+</div>
+
+
+<div id="page-info" class="page">
+  <div class="page-header">
+    <div class="page-title">Réglementation</div>
+    <div class="page-sub">DRIEETS — Enfants sur tournage</div>
+  </div>
+  <div class="scroll-content" style="padding:0 12px 20px">
+
+    <div class="card" style="margin:10px 0">
+      <div class="card-title">⏱ Durée maximale de présence par âge</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="background:#1a1a2e;color:#fff">
+            <th style="padding:7px 8px;text-align:left">Âge</th>
+            <th style="padding:7px 8px;text-align:center">Présence max</th>
+            <th style="padding:7px 8px;text-align:center">Pause oblig.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:7px 8px;font-weight:600">Moins de 6 mois</td>
+            <td style="padding:7px 8px;text-align:center;color:var(--red-dark);font-weight:700">15 min</td>
+            <td style="padding:7px 8px;text-align:center;font-size:11px">Autorisation exceptionnelle</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);background:#f8fafc">
+            <td style="padding:7px 8px;font-weight:600">6 mois – 2 ans</td>
+            <td style="padding:7px 8px;text-align:center;color:var(--red-dark);font-weight:700">1h</td>
+            <td style="padding:7px 8px;text-align:center;font-size:11px">Très encadré</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:7px 8px;font-weight:600">Moins de 3 ans</td>
+            <td style="padding:7px 8px;text-align:center;color:var(--red-dark);font-weight:700">2h</td>
+            <td style="padding:7px 8px;text-align:center">30 min / 2h</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);background:#f8fafc">
+            <td style="padding:7px 8px;font-weight:600">3 – 5 ans</td>
+            <td style="padding:7px 8px;text-align:center;color:var(--red-dark);font-weight:700">3h</td>
+            <td style="padding:7px 8px;text-align:center">30 min / 2h</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:7px 8px;font-weight:600">6 – 11 ans</td>
+            <td style="padding:7px 8px;text-align:center;color:var(--amber-dark);font-weight:700">4h</td>
+            <td style="padding:7px 8px;text-align:center">30 min / 2h</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);background:#f8fafc">
+            <td style="padding:7px 8px;font-weight:600">12 – 15 ans</td>
+            <td style="padding:7px 8px;text-align:center;color:var(--green-dark);font-weight:700">6h</td>
+            <td style="padding:7px 8px;text-align:center">30 min / 4h</td>
+          </tr>
+          <tr>
+            <td style="padding:7px 8px;font-weight:600">16 – 17 ans</td>
+            <td style="padding:7px 8px;text-align:center;color:var(--green-dark);font-weight:700">8h</td>
+            <td style="padding:7px 8px;text-align:center">30 min / 4h</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="margin:10px 0">
+      <div class="card-title">🌙 Horaires de nuit interdits</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="background:#1a1a2e;color:#fff">
+            <th style="padding:7px 8px;text-align:left">Âge</th>
+            <th style="padding:7px 8px;text-align:center">Interdit entre</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:7px 8px;font-weight:600">Moins de 16 ans</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:700;color:#1d4ed8">20h00 – 06h00</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);background:#f8fafc">
+            <td style="padding:7px 8px;font-weight:600">16 – 17 ans</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:700;color:#1d4ed8">22h00 – 06h00</td>
+          </tr>
+          <tr>
+            <td colspan="2" style="padding:7px 8px;font-size:11px;color:var(--amber-dark);background:#fef3c7">⚠ Dérogation possible sur autorisation spécifique de l'inspection du travail. Pour les moins de 16 ans, jamais au-delà de 24h00.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="margin:10px 0">
+      <div class="card-title">✅ Ce qui compte / ne compte pas</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+        <div style="background:#d1fae5;border-radius:8px;padding:10px">
+          <div style="font-weight:700;color:#065f46;margin-bottom:6px">✅ COMPTE</div>
+          <div style="color:#065f46;padding:2px 0">🎥 Tournage</div>
+          <div style="color:#065f46;padding:2px 0">✂️ HMC / Préparation</div>
+          <div style="color:#065f46;padding:2px 0">🤸 Cascade</div>
+          
+          <div style="color:#065f46;padding:2px 0">🧩 Pause</div>
+        </div>
+        <div style="background:#fee2e2;border-radius:8px;padding:10px">
+          <div style="font-weight:700;color:#991b1b;margin-bottom:6px">❌ NE COMPTE PAS</div>
+          <div style="color:#991b1b;padding:2px 0">🍽 Repas</div>
+          <div style="color:#991b1b;padding:2px 0">☁️ Hors plateau</div>
+          <div style="color:#991b1b;padding:2px 0">🚗 Transport</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;background:#fef3c7;border-radius:8px;padding:10px;font-size:12px;color:#92400e">
+        <div style="font-weight:700;margin-bottom:4px">☁️ Quand utiliser "Hors plateau" ?</div>
+        <div>L'enfant est <strong>déshabillé, dans sa loge ou hors du plateau</strong>, non disponible pour tourner. Il ne peut pas être rappelé immédiatement. Ce temps <strong>ne compte pas</strong> dans le quota légal.<br><br>À ne pas confondre avec la <strong>Pause</strong> 🧩 où l'enfant reste en costume sur le plateau et peut être rappelé rapidement.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin:10px 0">
+      <div class="card-title">🏫 Scolarité et cours sur plateau</div>
+      <div style="font-size:13px;line-height:1.8;color:var(--text)">
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)">📅 <strong>À partir de 4 jours d'absence</strong> sur une période de tournage, un instituteur de plateau est obligatoire</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)">⏰ <strong>Minimum 2h de cours par jour</strong> pour les enfants en âge scolaire (6-16 ans)</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)">📚 <strong>Le temps de cours compte</strong> dans la durée de présence journalière</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)">🏠 <strong>Espace dédié obligatoire</strong> — calme, éclairé, séparé du plateau</div>
+        <div style="padding:6px 0">📝 <strong>Liaison avec l'école</strong> — programme fourni par l'établissement scolaire</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin:10px 0;background:#ede9fe;border-color:#8b5cf6">
+      <div class="card-title" style="color:#5b21b6">📞 Contacts utiles</div>
+      <div style="font-size:13px;color:#5b21b6;line-height:2">
+        <div>🩺 <strong>Talis Santé — Mme Abdokou</strong></div>
+        <div style="font-size:12px;color:#6b7280;margin-bottom:8px;padding-left:20px">Soutien psychologique enfants · À compléter</div>
+        <div>🏛 <strong>DRIEETS — Mme Rousseau</strong></div>
+        <div style="font-size:12px;color:#6b7280;padding-left:20px">Directrice · À compléter</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin:10px 0">
+      <div class="card-title">⚠️ Rappels plateau</div>
+      <div style="font-size:13px;line-height:1.8;color:var(--text)">
+        <div style="padding:4px 0">• La présence commence au <strong>début du HMC</strong></div>
+        <div style="padding:4px 0">• Le repas <strong>ne compte pas</strong> dans le quota journalier</div>
+        <div style="padding:4px 0">• Alerter la mise en scène <strong>1h avant</strong> la fin max</div>
+        <div style="padding:4px 0">• L'enfant peut refuser de tourner — <strong>ne jamais forcer</strong></div>
+        <div style="padding:4px 0">• En cas de malaise ou incident → <strong>arrêt immédiat</strong></div>
+      </div>
+    </div>
+
+    <div style="text-align:center;padding:10px 0;font-size:11px;color:var(--text-muted)">
+      Source : DRIEETS Île-de-France · Réglementation en vigueur
+    </div>
+
+  </div>
+</div>
+
+
+<div id="page-commission" class="page">
+  <div class="page-header">
+    <div class="page-title">Commission</div>
+    <div class="page-sub">Enfants du Spectacle — Île-de-France</div>
+  </div>
+  <div class="scroll-content" style="padding:0 12px 20px">
+
+    <div style="background:#1a1a2e;border-radius:12px;padding:14px 16px;margin:10px 0;text-align:center">
+      <div style="font-size:13px;font-weight:700;color:#fff">COMMISSION DES ENFANTS DU SPECTACLE</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">DRIEETS Île-de-France · Màj 3/10/2025</div>
+      <div style="font-size:11px;color:#f87171;margin-top:6px;font-weight:600">⚠ Les dossiers incomplets ne sont pas présentés en commission</div>
+    </div>
+
+    <!-- 2025 -->
+    <div class="card" style="margin:10px 0">
+      <div class="card-title">📅 2025</div>
+      
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:8px">Dép. 75, 77, 78, 91, 93, 94, 95</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px">
+        <thead>
+          <tr style="background:#1a1a2e;color:#fff">
+            <th style="padding:7px 10px;text-align:left">Date de réunion</th>
+            <th style="padding:7px 10px;text-align:left">Date limite dépôt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:7px 10px;font-weight:600">Jeudi 6 novembre</td>
+            <td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Mer. 1er octobre 2025</td>
+          </tr>
+          <tr style="background:#f8fafc">
+            <td style="padding:7px 10px;font-weight:600">Jeudi 4 décembre</td>
+            <td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Mar. 4 novembre</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:8px">Dép. 92</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="background:#1a1a2e;color:#fff">
+            <th style="padding:7px 10px;text-align:left">Date de réunion</th>
+            <th style="padding:7px 10px;text-align:left">Date limite dépôt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:7px 10px;font-weight:600">Mercredi 12 novembre</td>
+            <td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Mer. 1er octobre 2025</td>
+          </tr>
+          <tr style="background:#f8fafc">
+            <td style="padding:7px 10px;font-weight:600">Mercredi 10 décembre</td>
+            <td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Lun. 3 novembre</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 2026 -->
+    <div class="card" style="margin:10px 0">
+      <div class="card-title">📅 2026</div>
+
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:8px">Dép. 75, 77, 78, 91, 93, 94, 95</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px">
+        <thead>
+          <tr style="background:#1a1a2e;color:#fff">
+            <th style="padding:7px 10px;text-align:left">Date de réunion</th>
+            <th style="padding:7px 10px;text-align:left">Date limite dépôt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Jeudi 8 janvier</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Lun. 1er décembre 2025</td></tr>
+          <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Jeudi 5 février</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Ven. 2 janvier</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Jeudi 12 mars</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Lun. 2 février</td></tr>
+          <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Jeudi 9 avril</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Lun. 2 mars</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Jeudi 7 mai</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Mer. 1er avril</td></tr>
+          <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Jeudi 11 juin</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Ven. 1er mai</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Jeudi 9 juillet</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Lun. 1er juin</td></tr>
+          <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Jeudi 10 septembre</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Mer. 1er juillet</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Jeudi 8 octobre</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Mar. 1er septembre</td></tr>
+          <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Jeudi 5 novembre</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Jeu. 1er octobre</td></tr>
+          <tr><td style="padding:7px 10px;font-weight:600">Jeudi 3 décembre</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Lun. 2 novembre</td></tr>
+        </tbody>
+      </table>
+
+      <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:8px">Dép. 92</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="background:#1a1a2e;color:#fff">
+            <th style="padding:7px 10px;text-align:left">Date de réunion</th>
+            <th style="padding:7px 10px;text-align:left">Date limite dépôt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Jeudi 8 janvier</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Lun. 1er décembre 2025</td></tr>
+          <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Jeudi 5 février</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Ven. 2 janvier</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Mercredi 11 mars</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Lun. 2 février</td></tr>
+          <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Mercredi 8 avril</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Lun. 2 mars</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Mercredi 6 mai</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Mer. 1er avril</td></tr>
+          <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Mercredi 10 juin</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Ven. 1er mai</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Mercredi 8 juillet</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Lun. 1er juin</td></tr>
+          <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Mercredi 9 septembre</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Mer. 1er juillet</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Mercredi 7 octobre</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Mar. 1er septembre</td></tr>
+          <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:7px 10px;font-weight:600">Mercredi 4 novembre</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Jeu. 1er octobre</td></tr>
+          <tr><td style="padding:7px 10px;font-weight:600">Mercredi 2 décembre</td><td style="padding:7px 10px;color:var(--red-dark);font-weight:600">Lun. 2 novembre</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="text-align:center;padding:10px 0;font-size:11px;color:var(--text-muted)">
+      Source : DRIEETS Île-de-France · Màj 3/10/2025
+    </div>
+
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="showPage('live',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/></svg>
+    Live
+  </button>
+  <button class="nav-btn" onclick="showPage('planning',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Planning
+  </button>
+  <button class="nav-btn" onclick="showPage('calendrier',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8" y2="14" stroke-width="3"/><line x1="12" y1="14" x2="12" y2="14" stroke-width="3"/><line x1="16" y1="14" x2="16" y2="14" stroke-width="3"/></svg>
+    Agenda
+  </button>
+  <button class="nav-btn" onclick="showPage('resume',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    Résumé
+  </button>
+  <button class="nav-btn" onclick="showPage('films',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
+    Films
+  </button>
+  <button class="nav-btn" onclick="showPage('bilan',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+    Bilan
+  </button>
+  <button class="nav-btn" onclick="showPage('info',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="3"/></svg>
+    Info
+  </button>
+  <button class="nav-btn" onclick="showPage('commission',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="11" y2="14"/><line x1="8" y1="18" x2="11" y2="18"/></svg>
+    Commis.
+  </button>
+</nav>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-film">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-film')">✕</button>
+    <div class="modal-title">Nouveau film</div>
+    <div class="form-row"><label class="form-label">Titre du film / production</label><input class="form-input" id="new-film-nom" placeholder="ex: Les Aventuriers"></div>
+    <div class="form-row"><label class="form-label">Réalisateur</label><input class="form-input" id="new-film-real" placeholder="ex: Marie Dubois"></div>
+    <button class="form-btn" onclick="ajouterFilm()">Créer ce film</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-enfant">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-enfant')">✕</button>
+    <div class="modal-title">Ajouter un enfant</div>
+    <div class="form-row"><label class="form-label">Prénom Nom</label><input class="form-input" id="new-enf-nom" placeholder="ex: Léa Martin"></div>
+    <div class="form-row"><label class="form-label">Tranche d'âge</label>
+      <select class="form-input" id="new-enf-age">
+        <option value="&lt;3">Moins de 3 ans (max 2h)</option>
+        <option value="3-5">3 – 5 ans (max 3h)</option>
+        <option value="6-11">6 – 11 ans (max 4h)</option>
+        <option value="12-15" selected>12 – 15 ans (max 6h)</option>
+        <option value="16-17">16 – 17 ans (max 8h)</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">Couleur</label><input type="color" class="form-input" id="new-enf-color" value="#3b82f6" style="height:40px;padding:4px;cursor:pointer"></div>
+    <div class="form-row"><label class="form-label">📱 Numéro WhatsApp parent (optionnel)</label><input class="form-input" type="tel" id="new-enf-tel" placeholder="+336..."></div>
+    <button class="form-btn" style="background:var(--green)" onclick="ajouterEnfant()">Ajouter cet enfant</button>
+  </div>
+</div>
+<script>
+// ─── CONSTANTES ───────────────────────────────────────────────────
+const LIMITES = { '<3': 120, '3-5': 180, '6-11': 240, '12-15': 360, '16-17': 480 };
+const TYPE_LABEL = {
+  arrivee: 'Arrivée', hmc: 'HMC/Prép.', tournage: 'Tournage',
+  pause: 'Pause', repas: 'Repas', attente: 'Hors plateau',
+  cours: 'Cours', cascade: 'Cascade', sante: 'Santé', fin: 'Fin journée'
+};
+const TYPE_COLOR = {
+  arrivee: ['#d1fae5', '#065f46'], hmc: ['#dbeafe', '#1d4ed8'],
+  tournage: ['#a7f3d0', '#065f46'], pause: ['#f3f4f6', '#1f2937'],
+  repas: ['#fef9c3', '#713f12'], attente: ['#fef3c7', '#92400e'],
+  cours: ['#ede9fe', '#5b21b6'], cascade: ['#fee2e2', '#991b1b'],
+  sante: ['#fce7f3', '#9d174d'], fin: ['#fce7f3', '#9d174d']
+};
+const WORK_TYPES = ['tournage', 'hmc', 'cascade'];
+
+// ─── STATE ────────────────────────────────────────────────────────
+let state = {
+  films: [],
+  enfants: [],
+  logs: [],       // { id, filmId, enfantId, type, heure, fin, date }
+  activeFilmId: null,
+  contacts: { scripte: '', prod: '' }
+};
+
+let selectedEnfants = [];  // [] = tous
+let recognition = null;
+let isListening = false;
+let nextId = 1;
+
+// ─── SUPABASE AUTH ───────────────────────────────────────────────
+const SB_URL = 'https://ljregtoosrhetgocvrkg.supabase.co';
+const SB_KEY = 'sb_publishable_zBiWpvk73YHJepQ1Ds2PXA_naS3HTPB';
+let currentUser = null;
+let accessToken = null;
+
+async function sbLogin(email, password) {
+  try {
+    const res = await fetch(SB_URL + '/auth/v1/token?grant_type=password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY },
+      body: JSON.stringify({ email, password })
+    });
+    const d = await res.json();
+    if (d.access_token) {
+      accessToken = d.access_token;
+      currentUser = d.user;
+      localStorage.setItem('sb_token', d.access_token);
+      localStorage.setItem('sb_refresh', d.refresh_token);
+      return true;
+    }
+    return false;
+  } catch(e) { return false; }
+}
+
+async function sbRefreshToken() {
+  const refresh = localStorage.getItem('sb_refresh');
+  if (!refresh) return false;
+  try {
+    const res = await fetch(SB_URL + '/auth/v1/token?grant_type=refresh_token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY },
+      body: JSON.stringify({ refresh_token: refresh })
+    });
+    const d = await res.json();
+    if (d.access_token) {
+      accessToken = d.access_token;
+      currentUser = d.user;
+      localStorage.setItem('sb_token', d.access_token);
+      localStorage.setItem('sb_refresh', d.refresh_token);
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+
+function sbLogout() {
+  accessToken = null;
+  currentUser = null;
+  localStorage.removeItem('sb_token');
+  localStorage.removeItem('sb_refresh');
+  localStorage.removeItem('tournage_v2');
+  showLoginScreen();
+}
+
+async function sbSave(data) {
+  if (!accessToken) return;
+  const uid = currentUser ? currentUser.id : 'anon';
+  try {
+    await fetch(SB_URL + '/rest/v1/tournage_data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + accessToken,
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({ id: uid, user_id: uid, data: data, updated_at: new Date().toISOString() })
+    });
+  } catch(e) {}
+}
+
+async function sbLoad() {
+  if (!accessToken) return null;
+  const uid = currentUser ? currentUser.id : 'anon';
+  try {
+    const res = await fetch(SB_URL + '/rest/v1/tournage_data?id=eq.' + uid, {
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + accessToken }
+    });
+    if (res.ok) {
+      const rows = await res.json();
+      if (rows && rows.length > 0) return rows[0].data;
+    }
+  } catch(e) {}
+  return null;
+}
+
+function showLoginScreen() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.querySelectorAll('.page, .nav, .status-bar').forEach(el => el.style.display = 'none');
+}
+
+function hideLoginScreen() {
+  const ls = document.getElementById('login-screen');
+  if (ls) ls.style.display = 'none';
+  document.querySelectorAll('.page, .nav, .status-bar').forEach(el => el.style.removeProperty('display'));
+  showPage('live', document.querySelector('.nav-btn'));
+}
+
+async function handleLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const btn = document.getElementById('login-btn');
+  const err = document.getElementById('login-error');
+  if (!email || !password) { err.textContent = 'Entrez votre email et mot de passe.'; return; }
+  btn.textContent = 'Connexion...';
+  btn.disabled = true;
+  const ok = await sbLogin(email, password);
+  if (ok) {
+    hideLoginScreen();
+    await initApp();
+  } else {
+    err.textContent = 'Email ou mot de passe incorrect.';
+    btn.textContent = 'Se connecter';
+    btn.disabled = false;
+  }
+}
+
+// ─── PERSISTENCE ─────────────────────────────────────────────────
+let saveTimer = null;
+
+function save() {
+  // Mode démo - pas de sauvegarde
+}
+
+async function load() {
+  const remote = await sbLoad();
+  if (remote) {
+    try {
+      state = remote.state || state;
+      nextId = remote.nextId || 1;
+      selectedEnfants = remote.selectedEnfants || [];
+      localStorage.setItem('tournage_v2', JSON.stringify(remote));
+    } catch(e) {}
+  } else {
+    try {
+      const raw = localStorage.getItem('tournage_v2');
+      if (raw) {
+        const d = JSON.parse(raw);
+        state = d.state || state;
+        nextId = d.nextId || 1;
+        selectedEnfants = d.selectedEnfants || [];
+      }
+    } catch(e) {}
+  }
+  if (state.commentaireJour) {
+    const el = document.getElementById('commentaire-jour');
+    if (el) el.value = state.commentaireJour;
+  }
+  if (state.contacts) {
+    const sc = document.getElementById('contact-scripte');
+    const pr = document.getElementById('contact-prod');
+    if (sc) sc.value = state.contacts.scripte || '';
+    if (pr) pr.value = state.contacts.prod || '';
+    const ws = document.getElementById('wa-scripte');
+    const wp = document.getElementById('wa-prod');
+    if (ws) ws.value = state.contacts.scripte || '';
+    if (wp) wp.value = state.contacts.prod || '';
+  }
+}
+
+function saveCommentaire() {
+  const el = document.getElementById('commentaire-jour');
+  if (el) { state.commentaireJour = el.value; save(); }
+}
+
+function saveContacts() {
+  const sc = document.getElementById('contact-scripte');
+  const pr = document.getElementById('contact-prod');
+  state.contacts = { scripte: sc ? sc.value : '', prod: pr ? pr.value : '' };
+  const ws = document.getElementById('wa-scripte');
+  const wp = document.getElementById('wa-prod');
+  if (ws) ws.value = state.contacts.scripte;
+  if (wp) wp.value = state.contacts.prod;
+  save();
+}
+
+// ─── HELPERS ──────────────────────────────────────────────────────
+function toMin(t) { const [h, m] = t.split(':').map(Number); return h * 60 + m; }
+function fmt(min) {
+  if (!min || min <= 0) return '—';
+  const h = Math.floor(min / 60), m = min % 60;
+  return h > 0 ? (m > 0 ? `${h}h${String(m).padStart(2,'0')}` : `${h}h`) : `${m}min`;
+}
+function nowHM() {
+  const n = new Date();
+  return `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
+}
+function todayStr() { return new Date().toISOString().slice(0, 10); }
+function initials(nom) { return nom.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2); }
+function activeFilm() { return state.films.find(f => f.id === state.activeFilmId); }
+function activeEnfants() { return state.enfants.filter(e => e.filmId === state.activeFilmId); }
+function todayLogs() { return state.logs.filter(l => l.filmId === state.activeFilmId && l.date === todayStr()); }
+
+// ─── CLOCK ────────────────────────────────────────────────────────
+function tickClock() {
+  const n = new Date();
+  const hm = `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
+  const hms = hm + ':' + String(n.getSeconds()).padStart(2,'0');
+  const el = document.getElementById('live-clock');
+  if (el) el.textContent = hm;
+  const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const nd = new Date();
+  const ds = `${days[nd.getDay()]} ${nd.getDate()} ${months[nd.getMonth()]} ${nd.getFullYear()}`;
+  const ld = document.getElementById('live-date');
+  if (ld) ld.textContent = ds;
+  const lt = document.getElementById('live-date-top');
+  if (lt) lt.textContent = hm + '\n' + ds;
+}
+setInterval(tickClock, 1000);
+tickClock();
+
+// ─── NAVIGATION ───────────────────────────────────────────────────
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'planning') renderPlanning();
+  if (name === 'resume') renderResume();
+  if (name === 'films') renderFilmsPage();
+  if (name === 'calendrier') renderCal();
+  if (name === 'bilan') renderBilan();
+  if (name === 'resume') renderExtraContactsBtns();
+  if (name === 'live') { renderChips(); renderStatusBar(); renderLog(); updateFilmDisplay(); }
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ─── FILMS ────────────────────────────────────────────────────────
+function ajouterFilm() {
+  const nom = document.getElementById('new-film-nom').value.trim();
+  const real = document.getElementById('new-film-real').value.trim();
+  if (!nom) { alert('Entrez un titre de film.'); return; }
+  const film = { id: nextId++, nom, real };
+  state.films.push(film);
+  state.activeFilmId = film.id;
+  selectedEnfants = [];
+  document.getElementById('new-film-nom').value = '';
+  document.getElementById('new-film-real').value = '';
+  closeModal('modal-film');
+  save();
+  renderFilmsPage();
+  renderChips();
+  updateFilmDisplay();
+}
+
+function setActiveFilm(id) {
+  state.activeFilmId = id;
+  selectedEnfants = [];
+  save();
+  renderFilmsPage();
+  renderChips();
+  updateFilmDisplay();
+  renderStatusBar();
+  renderLog();
+}
+
+function supprimerFilm(id) {
+  if (!confirm('Supprimer ce film et toutes ses données ?')) return;
+  state.films = state.films.filter(f => f.id !== id);
+  state.enfants = state.enfants.filter(e => e.filmId !== id);
+  state.logs = state.logs.filter(l => l.filmId !== id);
+  if (state.activeFilmId === id) state.activeFilmId = state.films[0]?.id || null;
+  save();
+  renderFilmsPage();
+  renderChips();
+  updateFilmDisplay();
+}
+
+function updateFilmDisplay() {
+  const f = activeFilm();
+  const name = f ? f.nom : 'Aucun film sélectionné';
+  ['film-name-live', 'planning-film-name', 'resume-film-name', 'bilan-film-name'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = name;
+  });
+}
+
+function renderFilmsPage() {
+  const fl = document.getElementById('films-list');
+  if (!fl) return;
+  if (!state.films.length) {
+    fl.innerHTML = '<div class="empty"><div class="empty-icon">🎬</div>Aucun film. Créez votre premier projet.</div>';
+  } else {
+    fl.innerHTML = state.films.map(f => `
+      <div class="film-card ${f.id === state.activeFilmId ? 'active-film' : ''}" onclick="setActiveFilm(${f.id})">
+        <div class="film-card-icon">🎬</div>
+        <div class="film-card-info">
+          <div class="film-card-name">${f.nom}</div>
+          <div class="film-card-sub">${f.real ? 'Réal. ' + f.real : 'Appuyez pour sélectionner'}${f.id === state.activeFilmId ? ' ✓ Actif' : ''}</div>
+        </div>
+        <button class="film-card-del" onclick="event.stopPropagation();supprimerFilm(${f.id})">🗑</button>
+      </div>`).join('');
+  }
+  renderEnfantsList();
+  renderContactsExtra();
+}
+
+// ─── ENFANTS ──────────────────────────────────────────────────────
+function ajouterEnfant() {
+  if (!state.activeFilmId) { alert('Créez ou sélectionnez un film d\'abord.'); return; }
+  const nom = document.getElementById('new-enf-nom').value.trim();
+  const age = document.getElementById('new-enf-age').value;
+  const couleur = document.getElementById('new-enf-color').value;
+  if (!nom) { alert('Entrez un prénom.'); return; }
+  const tel = document.getElementById('new-enf-tel').value.trim();
+  state.enfants.push({ id: nextId++, filmId: state.activeFilmId, nom, age, couleur, tel });
+  document.getElementById('new-enf-nom').value = '';
+  document.getElementById('new-enf-tel').value = '';
+  closeModal('modal-enfant');
+  save();
+  renderEnfantsList();
+  renderChips();
+}
+
+function ouvrirModifierEnfant(id) {
+  const enf = state.enfants.find(e => e.id === id);
+  if (!enf) return;
+  document.getElementById('edit-enf-id').value = id;
+  document.getElementById('edit-enf-nom').value = enf.nom;
+  document.getElementById('edit-enf-age').value = enf.age;
+  document.getElementById('edit-enf-tel').value = enf.tel || '';
+  document.getElementById('edit-enf-color').value = enf.couleur || '#3b82f6';
+  openModal('modal-edit-enfant');
+}
+
+function sauvegarderEnfant() {
+  const id = parseInt(document.getElementById('edit-enf-id').value);
+  const enf = state.enfants.find(e => e.id === id);
+  if (!enf) return;
+  enf.nom = document.getElementById('edit-enf-nom').value.trim() || enf.nom;
+  enf.age = document.getElementById('edit-enf-age').value;
+  enf.tel = document.getElementById('edit-enf-tel').value.trim();
+  enf.couleur = document.getElementById('edit-enf-color').value;
+  save();
+  closeModal('modal-edit-enfant');
+  renderEnfantsList();
+  renderChips();
+  renderStatusBar();
+}
+
+function supprimerEnfant(id) {
+  if (!confirm('Supprimer cet enfant ?')) return;
+  state.enfants = state.enfants.filter(e => e.id !== id);
+  state.logs = state.logs.filter(l => l.enfantId !== id);
+  selectedEnfants = selectedEnfants.filter(x => x !== id);
+  save();
+  renderEnfantsList();
+  renderChips();
+  renderStatusBar();
+  renderLog();
+}
+
+function renderEnfantsList() {
+  const el = document.getElementById('enfants-list');
+  if (!el) return;
+  const enfs = activeEnfants();
+  if (!enfs.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">👦</div>Aucun enfant sur ce film.</div>';
+    return;
+  }
+  el.innerHTML = enfs.map(e => `
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="width:34px;height:34px;border-radius:50%;background:${e.couleur}22;color:${e.couleur};font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${initials(e.nom)}</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:600">${e.nom}</div>
+        <div style="font-size:11px;color:var(--text-muted)">${e.age} ans · max ${fmt(LIMITES[e.age])}/jour</div>
+        <div style="font-size:11px;color:${e.tel ? '#10b981' : 'var(--text-muted)'}">📱 ${e.tel || 'Pas de numéro parent'}</div>
+      </div>
+      <button onclick="ouvrirModifierEnfant(${e.id})" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);font-size:11px;font-weight:600;cursor:pointer">✏️</button>
+      <button onclick="supprimerEnfant(${e.id})" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)">✕</button>
+    </div>`).join('');
+}
+
+// ─── CHIPS ────────────────────────────────────────────────────────
+function renderChips() {
+  const c = document.getElementById('enfant-chips');
+  if (!c) return;
+  const enfs = activeEnfants();
+  if (!enfs.length) {
+    c.innerHTML = '<div style="font-size:13px;color:var(--text-muted)">Ajoutez des enfants dans l\'onglet Films</div>';
+    return;
+  }
+  let html = '';
+  if (enfs.length > 1) {
+    const allSel = selectedEnfants.length === 0;
+    html += `<div class="chip all-chip ${allSel ? 'sel' : ''}" onclick="selectEnfant('all')">Tous</div>`;
+  }
+  enfs.forEach(e => {
+    const sel = selectedEnfants.includes(e.id);
+    html += `<div class="chip ${sel ? 'sel' : ''}" style="${sel ? 'background:' + e.couleur + ';border-color:' + e.couleur : ''}" onclick="selectEnfant(${e.id})">${e.nom.split(' ')[0]}</div>`;
+  });
+  c.innerHTML = html;
+}
+
+function selectEnfant(id) {
+  if (id === 'all') { selectedEnfants = []; }
+  else {
+    if (selectedEnfants.includes(id)) selectedEnfants = selectedEnfants.filter(x => x !== id);
+    else selectedEnfants.push(id);
+  }
+  renderChips();
+  save();
+}
+
+// ─── LOG ACTION ───────────────────────────────────────────────────
+function logAction(type) {
+  if (!state.activeFilmId) { alert('Sélectionnez un film d\'abord (onglet Films).'); return; }
+  const enfs = activeEnfants();
+  if (!enfs.length) { alert('Ajoutez des enfants dans l\'onglet Films.'); return; }
+  const hm = nowHM();
+  const targets = selectedEnfants.length > 0 ? selectedEnfants : enfs.map(e => e.id);
+
+  targets.forEach(eid => {
+    // fermer l'entrée précédente ouverte pour cet enfant aujourd'hui
+    const prev = todayLogs()
+      .filter(l => l.enfantId === eid && !l.fin)
+      .sort((a, b) => b.heure.localeCompare(a.heure))[0];
+    if (prev) prev.fin = hm;
+
+    state.logs.push({
+      id: nextId++,
+      filmId: state.activeFilmId,
+      enfantId: eid,
+      type,
+      heure: hm,
+      fin: null,
+      date: todayStr()
+    });
+  });
+
+  // update last-time on button
+  const ltEl = document.getElementById('lt-' + type);
+  if (ltEl) ltEl.textContent = hm;
+
+  save();
+  renderLog();
+  renderStatusBar();
+
+  // vibration feedback
+  if (navigator.vibrate) navigator.vibrate(30);
+}
+
+function delLog(id) {
+  state.logs = state.logs.filter(l => l.id !== id);
+  save();
+  renderLog();
+  renderStatusBar();
+}
+
+function clearLog() {
+  if (!confirm('Effacer tout le journal d\'aujourd\'hui ?')) return;
+  state.logs = state.logs.filter(l => !(l.filmId === state.activeFilmId && l.date === todayStr()));
+  save();
+  renderLog();
+  renderStatusBar();
+}
+
+function clearDay() {
+  if (!confirm('Effacer le journal du jour ?')) return;
+  state.logs = state.logs.filter(l => !(l.filmId === state.activeFilmId && l.date === todayStr()));
+  save();
+  renderLog();
+  renderStatusBar();
+}
+
+function renderLog() {
+  const el = document.getElementById('log-list');
+  const lc = document.getElementById('log-count');
+  const logs = todayLogs().sort((a, b) => a.heure.localeCompare(b.heure) || a.id - b.id);
+  if (lc) lc.textContent = `(${logs.length})`;
+  if (!el) return;
+  if (!logs.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>Appuyez sur une action pour commencer</div>';
+    return;
+  }
+  const enfs = activeEnfants();
+  el.innerHTML = logs.map(l => {
+    const enf = enfs.find(e => e.id === l.enfantId);
+    const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6', '#1f2937'];
+    const dur = l.fin ? fmt(toMin(l.fin) - toMin(l.heure)) : 'en cours';
+    return `<div class="log-item">
+      <div class="log-time">${l.heure}</div>
+      <div class="log-tag" style="background:${bg};color:${tc}">${TYPE_LABEL[l.type] || l.type}</div>
+      <div class="log-who">${enf ? enf.nom.split(' ')[0] : '?'}${l.fin ? ' → ' + l.fin : ''}</div>
+      <div class="log-dur">${dur}</div>
+      <button class="log-del" onclick="delLog(${l.id})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ─── STATUS BAR ───────────────────────────────────────────────────
+function renderStatusBar() {
+  const sb = document.getElementById('status-bar');
+  if (!sb) return;
+  const enfs = activeEnfants();
+  if (!enfs.length) { sb.innerHTML = ''; return; }
+  sb.innerHTML = enfs.map(e => {
+    const logs = todayLogs().filter(l => l.enfantId === e.id);
+    const last = logs.sort((a, b) => b.heure.localeCompare(a.heure))[0];
+    const lim = LIMITES[e.age];
+    // Presence sans repas ni attente
+    const travail = logs.filter(l => WORK_TYPES.includes(l.type) && l.fin)
+      .reduce((s, l) => s + Math.max(0, toMin(l.fin) - toMin(l.heure)), 0);
+    const pct = Math.round(travail / lim * 100);
+    const warn = pct >= 90;
+    const [bg] = last ? TYPE_COLOR[last.type] || ['#f3f4f6'] : ['#f3f4f6'];
+    return `<div class="status-card ${warn ? 'status-warn' : ''}">
+      <div class="status-name">${e.nom.split(' ')[0]}</div>
+      <div class="status-state"><div class="dot" style="background:${bg}"></div>${last ? (TYPE_LABEL[last.type] || last.type) : 'Non arrivé'}</div>
+      <div class="status-time">${last ? last.heure : '—'} · plateau ${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── VOICE ────────────────────────────────────────────────────────
+function toggleMic() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert('La dictée vocale nécessite Chrome ou Safari récent.');
+    return;
+  }
+  if (isListening) { stopMic(); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = 'fr-FR';
+  recognition.interimResults = true;
+  recognition.continuous = false;
+  recognition.onstart = () => {
+    isListening = true;
+    document.getElementById('mic-btn').classList.add('on');
+    document.getElementById('mic-hint').textContent = 'Écoute… parlez !';
+  };
+  recognition.onresult = (e) => {
+    const t = Array.from(e.results).map(r => r[0].transcript).join('');
+    document.getElementById('mic-txt').textContent = t;
+    if (e.results[e.results.length - 1].isFinal) parseVoice(t.toLowerCase());
+  };
+  recognition.onerror = () => stopMic();
+  recognition.onend = () => stopMic();
+  recognition.start();
+}
+
+function stopMic() {
+  isListening = false;
+  if (recognition) try { recognition.stop(); } catch(e) {}
+  const btn = document.getElementById('mic-btn');
+  if (btn) btn.classList.remove('on');
+  const hint = document.getElementById('mic-hint');
+  if (hint) hint.textContent = 'Dicter : "tournage", "pause", "repas"…';
+  setTimeout(() => { const t = document.getElementById('mic-txt'); if (t) t.textContent = ''; }, 3000);
+}
+
+function parseVoice(text) {
+  const map = {
+    'arrivée': 'arrivee', 'arrivee': 'arrivee', 'arrivé': 'arrivee',
+    'hmc': 'hmc', 'maquillage': 'hmc', 'costume': 'hmc', 'préparation': 'hmc', 'prep': 'hmc',
+    'tournage': 'tournage', 'action': 'tournage', 'on tourne': 'tournage',
+    'pause': 'pause', 'coupure': 'pause',
+    'repas': 'repas', 'déjeuner': 'repas', 'manger': 'repas', 'lunch': 'repas',
+    'attente': 'attente',
+    'cours': 'cours', 'école': 'cours', 'scolaire': 'cours',
+    'cascade': 'cascade',
+    'santé': 'sante', 'médecin': 'sante', 'docteur': 'sante',
+    'fin': 'fin', 'départ': 'fin', 'terminé': 'fin', 'fini': 'fin'
+  };
+  for (const [k, v] of Object.entries(map)) {
+    if (text.includes(k)) { logAction(v); return; }
+  }
+  const t = document.getElementById('mic-txt');
+  if (t) t.textContent = `Pas compris : "${text}"`;
+}
+
+// ─── PLANNING ─────────────────────────────────────────────────────
+function renderPlanning() {
+  const sv = document.getElementById('gs')?.value || '06:00';
+  const ev = document.getElementById('ge')?.value || '22:00';
+  const sm = toMin(sv), em = toMin(ev), span = em - sm;
+  if (span <= 0) return;
+
+  const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
+  const nowPct = Math.min(100, Math.max(0, (nowMin - sm) / span * 100));
+
+  const ticks = [];
+  let h = Math.ceil(sm / 60);
+  while (h * 60 <= em) { ticks.push(h); h++; }
+
+  const enfs = activeEnfants();
+  const logs = todayLogs();
+  const rows = document.getElementById('gantt-rows');
+  if (!rows) return;
+
+  let html = `<div class="gantt-row"><div class="gantt-name-empty"></div><div class="gantt-ticks">${ticks.map(h => {
+    const p = ((h * 60 - sm) / span * 100).toFixed(1);
+    return `<span class="gantt-tick" style="left:${p}%">${String(h).padStart(2,'0')}h</span>`;
+  }).join('')}</div></div>`;
+
+  enfs.forEach(e => {
+    const evs = logs.filter(l => l.enfantId === e.id).sort((a, b) => a.heure.localeCompare(b.heure));
+    const lim = LIMITES[e.age];
+    const limPct = Math.min(100, lim / span * 100).toFixed(1);
+
+    const blocks = evs.map(l => {
+      const ls = Math.max(0, toMin(l.heure) - sm);
+      const le = l.fin ? toMin(l.fin) - sm : nowMin - sm;
+      const left = (ls / span * 100).toFixed(1);
+      const width = Math.max(0.5, ((le - ls) / span * 100)).toFixed(1);
+      if (parseFloat(left) >= 100) return '';
+      const [bg] = TYPE_COLOR[l.type] || ['#f3f4f6'];
+      return `<div class="gantt-block" style="left:${left}%;width:${Math.min(100 - parseFloat(left), parseFloat(width))}%;background:${bg}" title="${TYPE_LABEL[l.type]} ${l.heure}${l.fin ? '→' + l.fin : ''}"></div>`;
+    }).join('');
+
+    html += `<div class="gantt-row">
+      <div class="gantt-name" style="display:flex;align-items:center;gap:4px">
+        <div style="width:20px;height:20px;border-radius:50%;background:${e.couleur}22;color:${e.couleur};font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${initials(e.nom)}</div>
+        ${e.nom.split(' ')[0]}
+      </div>
+      <div class="gantt-track">
+        <div class="gantt-limit" style="width:${limPct}%"></div>
+        ${blocks}
+        <div class="gantt-now" style="left:${nowPct.toFixed(1)}%"></div>
+      </div>
+    </div>`;
+  });
+
+  rows.innerHTML = html || '<div class="empty">Aucun enfant</div>';
+
+  // progress bars
+  const pb = document.getElementById('prog-bars');
+  if (pb) pb.innerHTML = enfs.map(e => {
+    const lim = LIMITES[e.age];
+    const travail = logs.filter(l => l.enfantId === e.id && WORK_TYPES.includes(l.type) && l.fin)
+      .reduce((s, l) => s + Math.max(0, toMin(l.fin) - toMin(l.heure)), 0);
+    const pct = Math.min(100, Math.round(travail / lim * 100));
+    const col = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
+    return `<div class="prog-row">
+      <div class="prog-info">
+        <div class="name">${e.nom.split(' ')[0]}</div>
+        <div class="sub">${fmt(travail)} / ${fmt(lim)}</div>
+      </div>
+      <div class="prog-bar-wrap"><div class="prog-bar" style="width:${pct}%;background:${col}"></div></div>
+      <div class="prog-pct" style="color:${col}">${pct}%</div>
+    </div>`;
+  }).join('') || '<div class="empty">Aucun enfant</div>';
+}
+
+// ─── RÉSUMÉ ───────────────────────────────────────────────────────
+function buildSummary() {
+  const film = activeFilm();
+  const enfs = activeEnfants();
+  const logs = todayLogs().sort((a, b) => a.heure.localeCompare(b.heure));
+  const today = new Date();
+  const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const dateStr = `${days[today.getDay()]} ${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
+  const commentaire = document.getElementById('commentaire-jour')?.value?.trim() || '';
+
+  let txt = `${film ? film.nom.toUpperCase() : 'TOURNAGE'}\n${dateStr}\n\n`;
+
+  enfs.forEach(enf => {
+    const evs = logs.filter(l => l.enfantId === enf.id);
+    if (!evs.length) return;
+
+    const dur = {};
+    Object.keys(TYPE_LABEL).forEach(t => dur[t] = 0);
+    evs.forEach(l => {
+      if (l.fin) dur[l.type] = (dur[l.type] || 0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
+    });
+    const travail = WORK_TYPES.reduce((s, t) => s + (dur[t] || 0), 0);
+    const lim = LIMITES[enf.age];
+    const pct = Math.round(travail / lim * 100);
+    // Presence reelle = fin - debut HMC - repas (reglementation DRIEETS)
+    const debutEvt = evs.find(l => l.type === 'hmc') || evs.find(l => l.type === 'arrivee');
+    const finEvt = [...evs].reverse().find(l => l.type === 'fin');
+    let presenceDepuisHMC = 0;
+    if (debutEvt) {
+      const finM = finEvt ? toMin(finEvt.heure) : 0;
+      const debM = toMin(debutEvt.heure);
+      presenceDepuisHMC = finM > 0 ? Math.max(0, finM - debM - (dur.repas||0)) : travail + (dur.pause||0);
+    } else {
+      presenceDepuisHMC = travail + (dur.pause||0);
+    }
+
+    const hArrivee = evs.find(l => l.type === 'arrivee');
+    const hFin = [...evs].reverse().find(l => l.type === 'fin');
+    const hRepas = evs.find(l => l.type === 'repas');
+
+    txt += enf.nom + '\n';
+    if (hArrivee)     txt += 'Arrivee : ' + hArrivee.heure + '\n';
+    if (dur.hmc)      txt += 'HMC : ' + fmt(dur.hmc) + '\n';
+    if (dur.tournage) txt += 'Tournage : ' + fmt(dur.tournage) + '\n';
+    if (dur.pause)    txt += 'Pause : ' + fmt(dur.pause) + '\n';
+    if (hRepas)       txt += 'Repas : ' + hRepas.heure + (hRepas.fin ? ' - ' + hRepas.fin : '') + '\n';
+    if (dur.attente)  txt += 'Attente : ' + fmt(dur.attente) + '\n';
+    if (dur.cours)    txt += 'Cours : ' + fmt(dur.cours) + '\n';
+    if (dur.cascade)  txt += 'Cascade : ' + fmt(dur.cascade) + '\n';
+    if (hFin)         txt += 'Fin : ' + hFin.heure + '\n';
+    txt += 'Presence : ' + fmt(presenceDepuisHMC) + ' / ' + fmt(lim) + '\n\n';
+  });
+
+  if (commentaire) {
+    txt += 'Note : ' + commentaire + '\n\n';
+  }
+  txt += `— Liv ;-)`;
+  return txt;
+}
+
+function calcFinMax() {
+  // Calcule l'heure max de fin pour chaque enfant et l'alerte 1H avant
+  const enfs = activeEnfants();
+  const logs = todayLogs();
+  const now = new Date();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  
+  return enfs.map(enf => {
+    const evs = logs.filter(l => l.enfantId === enf.id);
+    const dur = {};
+    Object.keys(TYPE_LABEL).forEach(t => dur[t] = 0);
+    evs.forEach(l => {
+      if (l.fin) dur[l.type] = (dur[l.type]||0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
+    });
+    // Presence = HMC + tournage + cascade + cours + pause (sans repas ni attente)
+    const presence = (dur.hmc||0) + (dur.tournage||0) + (dur.cascade||0) + (dur.cours||0) + (dur.pause||0);
+    const lim = LIMITES[enf.age];
+    const reste = Math.max(0, lim - presence);
+    
+    // Trouver l'heure de début (HMC ou arrivée)
+    const debut = evs.find(l => l.type === 'hmc') || evs.find(l => l.type === 'arrivee');
+    let finMax = null;
+    let finMaxMin = null;
+    if (debut) {
+      finMaxMin = toMin(debut.heure) + lim;
+      const hh = Math.floor(finMaxMin / 60);
+      const mm = finMaxMin % 60;
+      finMax = String(hh).padStart(2,'0') + 'h' + String(mm).padStart(2,'0');
+    }
+    
+    const alerteMin = finMaxMin ? finMaxMin - 60 : null;
+    const alerteH = alerteMin ? (String(Math.floor(alerteMin/60)).padStart(2,'0') + 'h' + String(alerteMin%60).padStart(2,'0')) : null;
+    const enAlerte = alerteMin && nowMin >= alerteMin;
+    
+    return { enf, dur, presence, lim, reste, finMax, alerteH, enAlerte };
+  });
+}
+
+function renderResume() {
+  const sp = document.getElementById('summary-txt');
+  if (sp) sp.textContent = buildSummary();
+  
+  // Bloc résumé horaire en haut
+  const bilanDiv = document.getElementById('resume-bilan-haut');
+  if (bilanDiv) {
+    const stats = calcFinMax();
+    if (stats.length) {
+      let html = '';
+      stats.forEach(s => {
+        const pct = Math.round(s.presence / s.lim * 100);
+        const barColor = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
+        const alertClass = s.enAlerte ? 'background:#fee2e2;border:1px solid #ef4444;' : 'background:var(--gray-light);';
+        html += '<div style="' + alertClass + 'border-radius:10px;padding:10px 12px;margin-bottom:8px">';
+        html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">';
+        html += '<div style="font-size:13px;font-weight:700">' + s.enf.nom.split(' ')[0] + '</div>';
+        if (s.enAlerte) html += '<div style="font-size:11px;font-weight:700;color:#991b1b">⚠ ALERTER MISE EN SCENE</div>';
+        html += '</div>';
+        // Heure de début = HMC ou arrivée
+        const logsEnf = todayLogs().filter(l => l.enfantId === s.enf.id).sort((a,b) => a.heure.localeCompare(b.heure));
+        const debutEvR = logsEnf.find(l => l.type === 'hmc') || logsEnf.find(l => l.type === 'arrivee');
+        const debutH = debutEvR ? debutEvR.heure : '-';
+        html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Début</div><div style="font-size:14px;font-weight:600">' + debutH + '</div></div>';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.hmc||0) + '</div></div>';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Tournage</div><div style="font-size:14px;font-weight:600;color:#065f46">' + fmt(s.dur.tournage||0) + '</div></div>';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Pause</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.pause||0) + '</div></div>';
+        html += '</div>';
+        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">Repas non compté : ' + fmt(s.dur.repas||0) + ' · Hors plateau non compté : ' + fmt(s.dur.attente||0) + '</div>';
+        html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:6px">';
+        html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,pct) + '%"></div>';
+        html += '</div>';
+        html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted)">';
+        const presLabel = (pct >= 100 ? '⚠ DEPASSE : ' : 'Presence : ') + fmt(s.presence) + ' / ' + fmt(s.lim) + ' (' + pct + '%)';
+        html += '<span style="color:' + (pct>=100?'#991b1b':'var(--text-muted)') + ';font-weight:' + (pct>=100?'700':'400') + '">' + presLabel + '</span>';
+        let finInfo = '';
+        if (s.finMax) finInfo += 'Fin max : ' + s.finMax;
+        if (s.finReelH) finInfo += ' · Fin réelle : ' + s.finReelH;
+        if (s.depasseMin > 0) finInfo += ' · Dépassement : ' + fmt(s.depasseMin);
+        if (s.alerteH && !s.finReelH) finInfo += ' · Alerte : ' + s.alerteH;
+        if (finInfo) html += '<span style="font-weight:600;color:' + (s.depasse?'#991b1b':s.enAlerte?'#991b1b':'var(--text)') + '">' + finInfo + '</span>';
+        html += '</div>';
+        html += '</div>';
+      });
+      bilanDiv.innerHTML = html;
+    }
+  }
+
+  // contacts sync
+  const ws = document.getElementById('wa-scripte');
+  const wp = document.getElementById('wa-prod');
+  if (ws && state.contacts.scripte) ws.value = state.contacts.scripte;
+  if (wp && state.contacts.prod) wp.value = state.contacts.prod;
+
+  // alerts + metrics
+  const enfs = activeEnfants();
+  const logs = todayLogs();
+  const alertDiv = document.getElementById('resume-alerts');
+  const metrics = document.getElementById('resume-metrics');
+  const chrono = document.getElementById('chrono-enfants');
+
+  let alerts = '';
+  let totTournage = 0, present = new Set();
+  logs.forEach(l => {
+    if (l.type === 'tournage' && l.fin) { totTournage += Math.max(0, toMin(l.fin) - toMin(l.heure)); present.add(l.enfantId); }
+  });
+
+  if (metrics) metrics.innerHTML = `
+    <div class="metric"><div class="metric-val">${present.size}</div><div class="metric-lbl">Présents</div></div>
+    <div class="metric"><div class="metric-val">${fmt(totTournage) || '—'}</div><div class="metric-lbl">Tournage</div></div>
+    <div class="metric"><div class="metric-val">${logs.length}</div><div class="metric-lbl">Entrées</div></div>
+  `;
+
+  enfs.forEach(e => {
+    const lim = LIMITES[e.age];
+    const travail = logs.filter(l => l.enfantId === e.id && WORK_TYPES.includes(l.type) && l.fin)
+      .reduce((s, l) => s + Math.max(0, toMin(l.fin) - toMin(l.heure)), 0);
+    const pct = Math.round(travail / lim * 100);
+    if (pct >= 100) alerts += `<div class="alert alert-danger">⚠ ${e.nom} a dépassé la limite légale (${fmt(travail)} / ${fmt(lim)})</div>`;
+    else if (pct >= 80) alerts += `<div class="alert alert-warn">⚠ ${e.nom} proche de la limite (${pct}%)</div>`;
+  });
+  if (!alerts && logs.length) alerts = '<div class="alert alert-ok">✅ Tous les enfants respectent les limites légales</div>';
+  if (alertDiv) alertDiv.innerHTML = alerts;
+
+  if (chrono) {
+    chrono.innerHTML = enfs.map(e => {
+      const evs = logs.filter(l => l.enfantId === e.id).sort((a, b) => a.heure.localeCompare(b.heure));
+      if (!evs.length) return '';
+      const items = evs.map(l => {
+        const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6', '#1f2937'];
+        return `<span class="chrono-item"><span class="chrono-item-time">${l.heure}</span> <span style="background:${bg};color:${tc};padding:1px 7px;border-radius:8px;font-size:11px;font-weight:600">${TYPE_LABEL[l.type]}</span>${l.fin ? '<span style="font-size:11px;color:var(--text-muted)">→' + l.fin + '</span>' : ''}</span>`;
+      }).join(' ');
+      return `<div class="chrono-block">
+        <div class="chrono-name">
+          <div style="width:22px;height:22px;border-radius:50%;background:${e.couleur}22;color:${e.couleur};font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">${initials(e.nom)}</div>
+          ${e.nom}
+        </div>
+        <div class="chrono-items">${items}</div>
+      </div>`;
+    }).join('') || '<div class="empty">Aucune donnée pour aujourd\'hui</div>';
+  }
+}
+
+// ─── WHATSAPP / SMS ───────────────────────────────────────────────
+function getNumber(role) {
+  const fromResume = document.getElementById('wa-' + role)?.value;
+  const fromContacts = state.contacts[role];
+  const n = fromResume || fromContacts || '';
+  if (!n) { alert(`Entrez le numéro ${role === 'scripte' ? 'de la scripte' : 'de la production'} dans le champ ci-dessous.`); }
+  // save it
+  if (n) { state.contacts[role] = n; save(); }
+  return n;
+}
+
+function sendWhatsApp(role) {
+  const n = getNumber(role);
+  if (!n) return;
+  const clean = n.replace(/\s/g, '').replace(/^00/, '+');
+  const msg = encodeURIComponent(buildSummary());
+  window.open(`https://wa.me/${clean}?text=${msg}`);
+}
+
+function sendSMS(role) {
+  const n = getNumber(role);
+  if (!n) return;
+  const msg = encodeURIComponent(buildSummary());
+  // iOS uses &, Android uses ?
+  const sep = /iPhone|iPad|iPod/.test(navigator.userAgent) ? '&' : '?';
+  window.open(`sms:${n}${sep}body=${msg}`);
+}
+
+function copyResume() {
+  const txt = buildSummary();
+  navigator.clipboard.writeText(txt)
+    .then(() => alert('Résumé copié !'))
+    .catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = txt; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      alert('Résumé copié !');
+    });
+}
+
+
+
+// ─── CONTACTS EXTRA ──────────────────────────────────────────────
+function getContactsExtra() { return state.contactsExtra || []; }
+
+function ajouterContactExtra() {
+  const nom = document.getElementById('new-contact-nom').value.trim();
+  const tel = document.getElementById('new-contact-tel').value.trim();
+  if (!nom || !tel) { alert('Merci de renseigner un nom et un numéro.'); return; }
+  if (!state.contactsExtra) state.contactsExtra = [];
+  state.contactsExtra.push({ id: nextId++, nom, tel });
+  document.getElementById('new-contact-nom').value = '';
+  document.getElementById('new-contact-tel').value = '';
+  closeModal('modal-contact');
+  save();
+  renderContactsExtra();
+  renderExtraContactsBtns();
+}
+
+function supprimerContactExtra(id) {
+  state.contactsExtra = (state.contactsExtra || []).filter(c => c.id !== id);
+  save();
+  renderContactsExtra();
+  renderExtraContactsBtns();
+}
+
+function renderContactsExtra() {
+  const el = document.getElementById('contacts-extra-list');
+  if (!el) return;
+  const contacts = getContactsExtra();
+  if (!contacts.length) { el.innerHTML = ''; return; }
+  el.innerHTML = contacts.map(c => `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border)">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">${c.nom}</div>
+        <div style="font-size:11px;color:var(--text-muted)">${c.tel}</div>
+      </div>
+      <button onclick="sendWhatsAppExtra(${c.id})" style="padding:5px 10px;border-radius:8px;border:none;background:#25D366;color:#fff;font-size:11px;font-weight:600;cursor:pointer">WA</button>
+      <button onclick="supprimerContactExtra(${c.id})" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--text-muted)">✕</button>
+    </div>`).join('');
+}
+
+function renderExtraContactsBtns() {
+  const el = document.getElementById('extra-contacts-btns');
+  if (!el) return;
+  const contacts = getContactsExtra();
+  if (!contacts.length) { el.innerHTML = ''; return; }
+  el.innerHTML = contacts.map(c => `
+    <button class="send-btn btn-wa" onclick="sendWhatsAppExtra(${c.id})" style="background:#1a9e5a">
+      <span style="font-size:16px">💬</span>${c.nom}<span style="font-size:10px;opacity:.8">WhatsApp</span>
+    </button>`).join('');
+}
+
+function sendWhatsAppExtra(id) {
+  const c = getContactsExtra().find(x => x.id === id);
+  if (!c) return;
+  const clean = c.tel.replace(/\s/g, '').replace(/^00/, '+');
+  const msg = encodeURIComponent(buildSummary());
+  window.open(`https://wa.me/${clean}?text=${msg}`);
+}
+
+// ─── AGENDA PARENT + PDF ─────────────────────────────────────────
+function buildMsgEvenement(ev, enfId) {
+  const months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  const film = activeFilm();
+  const enf = state.enfants.find(e => e.id === enfId);
+  const d = new Date(ev.date);
+
+  let txt = '';
+  if (film) txt += film.nom + '\n';
+  txt += jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + '\n\n';
+  txt += ev.titre + '\n';
+  if (ev.debut) txt += 'Horaire : ' + ev.debut + (ev.fin ? ' - ' + ev.fin : '') + '\n';
+  if (ev.lieu) txt += 'Lieu : ' + ev.lieu + '\n';
+  if (ev.scenes) txt += 'Scenes : ' + ev.scenes + '\n';
+  if (ev.repasDebut) txt += 'Repas : ' + ev.repasDebut + (ev.repasFin ? ' - ' + ev.repasFin : '') + '\n';
+  if (ev.retour) txt += 'Retour estime : ' + ev.retour + '\n';
+  if (enf) txt += '\nPour : ' + enf.nom;
+  txt += '\n\n— Liv ;-)';
+  return txt;
+}
+
+function envoyerEvenementParent(evId, enfId) {
+  const ev = (state.calEvents || []).find(e => e.id === evId);
+  if (!ev) return;
+  const targetId = enfId || ev.enfantId;
+  const enf = state.enfants.find(e => e.id === targetId);
+  if (!enf || !enf.tel) { alert('Pas de numero pour ' + (enf ? enf.nom : 'cet enfant') + '. Ajoutez-le dans Films.'); return; }
+  const txt = buildMsgEvenement(ev, targetId);
+  const clean = enf.tel.replace(/\s/g, '').replace(/^00/, '+');
+  window.open('https://wa.me/' + clean + '?text=' + encodeURIComponent(txt));
+}
+
+function envoyerEvenementTous(evId) {
+  const ev = (state.calEvents || []).find(e => e.id === evId);
+  if (!ev) return;
+  const enfsAvecTel = activeEnfants().filter(en => en.tel);
+  if (!enfsAvecTel.length) { alert('Aucun parent avec numero. Ajoutez les numeros dans Films.'); return; }
+  // Envoyer à chacun
+  enfsAvecTel.forEach((enf, idx) => {
+    setTimeout(() => {
+      const txt = buildMsgEvenement(ev, enf.id);
+      const clean = enf.tel.replace(/\s/g, '').replace(/^00/, '+');
+      window.open('https://wa.me/' + clean + '?text=' + encodeURIComponent(txt));
+    }, idx * 1000);
+  });
+}
+
+function envoyerAgendaParent(enfantId) {
+  const enf = state.enfants.find(e => e.id === enfantId);
+  if (!enf || !enf.tel) { alert('Aucun numero pour cet enfant.'); return; }
+  const months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  const film = activeFilm();
+  const events = (state.calEvents || []).filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === calYear && d.getMonth() === calMonth &&
+      (!e.filmId || e.filmId === state.activeFilmId) &&
+      (!e.enfantId || e.enfantId === enfantId);
+  }).sort((a,b) => a.date.localeCompare(b.date));
+
+  if (!events.length) { alert('Aucun evenement pour ' + enf.nom + ' ce mois-ci.'); return; }
+
+  const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  let txt = 'Planning ' + months[calMonth] + ' ' + calYear;
+  if (film) txt += ' - ' + film.nom;
+  txt += '\nPour : ' + enf.nom + '\n\n';
+
+  events.forEach(e => {
+    const d = new Date(e.date);
+    txt += jours[d.getDay()] + ' ' + d.getDate() + ' - ' + e.titre;
+    if (e.debut) txt += ' de ' + e.debut + (e.fin ? ' a ' + e.fin : '');
+    if (e.lieu) txt += '\n    Lieu : ' + e.lieu;
+    if (e.scenes) txt += '\n    Scenes : ' + e.scenes;
+    if (e.repasDebut) txt += '\n    Repas : ' + e.repasDebut + (e.repasFin ? ' - ' + e.repasFin : '');
+    if (e.retour) txt += '\n    Retour estime : ' + e.retour;
+    txt += '\n';
+  });
+  txt += '\n— Liv ;-)';
+
+  const clean = enf.tel.replace(/\s/g, '').replace(/^00/, '+');
+  window.open('https://wa.me/' + clean + '?text=' + encodeURIComponent(txt));
+}
+function ouvrirModalPDF() {
+  // Remplir les jours disponibles
+  const months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  const events = (state.calEvents || []).filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
+  });
+
+  // Dates uniques triées
+  const dates = [...new Set(events.map(e => e.date))].sort();
+  const daysEl = document.getElementById('pdf-days-list');
+  if (!daysEl) return;
+
+  if (!dates.length) { alert('Aucun evenement ce mois-ci.'); return; }
+
+  daysEl.innerHTML = dates.map(date => {
+    const d = new Date(date);
+    const label = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
+    return '<label style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer">' +
+      '<input type="checkbox" class="pdf-day-cb" value="' + date + '" checked style="width:16px;height:16px;cursor:pointer">' +
+      '<span style="font-size:13px;font-weight:500">' + label + '</span>' +
+      '</label>';
+  }).join('');
+
+  // Remplir les enfants
+  const enfsEl = document.getElementById('pdf-enfs-list');
+  const enfs = activeEnfants();
+  enfsEl.innerHTML = '<label style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer">' +
+    '<input type="checkbox" class="pdf-enf-cb" value="all" checked style="width:16px;height:16px;cursor:pointer">' +
+    '<span style="font-size:13px;font-weight:500">Tous les enfants</span></label>' +
+    enfs.map(e => '<label style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer">' +
+      '<input type="checkbox" class="pdf-enf-cb" value="' + e.id + '" style="width:16px;height:16px;cursor:pointer">' +
+      '<span style="font-size:13px">' + e.nom + '</span></label>').join('');
+
+  openModal('modal-pdf');
+}
+
+function genererPDF() {
+  const months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const film = activeFilm();
+
+  // Récupérer jours sélectionnés
+  const selDays = [...document.querySelectorAll('.pdf-day-cb:checked')].map(cb => cb.value);
+  if (!selDays.length) { alert('Selectionnez au moins un jour.'); return; }
+
+  // Récupérer enfants sélectionnés
+  const allEnfs = document.querySelector('.pdf-enf-cb[value="all"]:checked');
+  const selEnfIds = allEnfs ? null : [...document.querySelectorAll('.pdf-enf-cb:checked')].map(cb => parseInt(cb.value));
+
+  const events = (state.calEvents || []).filter(e => {
+    const d = new Date(e.date);
+    return (!e.filmId || e.filmId === state.activeFilmId) &&
+      selDays.includes(e.date) &&
+      (selEnfIds === null || !e.enfantId || selEnfIds.includes(e.enfantId));
+  }).sort((a,b) => a.date.localeCompare(b.date));
+
+  if (!events.length) { alert('Aucun evenement pour cette selection.'); return; }
+
+  // Grouper par date
+  const byDate = {};
+  events.forEach(e => { if (!byDate[e.date]) byDate[e.date] = []; byDate[e.date].push(e); });
+
+  let rows = '';
+  Object.keys(byDate).sort().forEach(date => {
+    const d = new Date(date);
+    const dayLabel = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
+    byDate[date].forEach((e, idx) => {
+      const enf = state.enfants.find(en => en.id === e.enfantId);
+      const typeColor = e.type === 't' ? '#dbeafe' : '#fef3c7';
+      rows += '<tr>' +
+        '<td style="background:#f8fafc;font-weight:600;color:#334155;white-space:nowrap">' + (idx === 0 ? dayLabel : '') + '</td>' +
+        '<td style="background:' + typeColor + ';font-size:11px">' + (e.type === 't' ? 'Tournage' : 'Famille') + '</td>' +
+        '<td style="font-weight:600">' + e.titre + '</td>' +
+        '<td style="white-space:nowrap">' + (e.debut ? e.debut + (e.fin ? ' - ' + e.fin : '') : '-') + '</td>' +
+        '<td style="white-space:nowrap">' + (e.repasDebut ? e.repasDebut + (e.repasFin ? '-' + e.repasFin : '') : '-') + '</td>' +
+        '<td>' + (e.lieu || '-') + '</td>' +
+        '<td>' + (e.scenes || '-') + '</td>' +
+        '<td style="color:#10b981;font-weight:600;white-space:nowrap">' + (e.retour || '-') + '</td>' +
+        '<td>' + (enf ? enf.nom.split(' ')[0] : 'Tous') + '</td>' +
+        '</tr>';
+    });
+  });
+
+  const titre = (film ? film.nom + ' — ' : '') + months[calYear === new Date().getFullYear() ? calMonth : calMonth] + ' ' + calYear;
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' +
+    'body{font-family:Arial,sans-serif;padding:20px;color:#1e293b;font-size:13px}' +
+    'h1{font-size:18px;margin-bottom:4px;color:#1a1a2e}' +
+    '.sub{font-size:12px;color:#64748b;margin-bottom:16px}' +
+    'table{width:100%;border-collapse:collapse}' +
+    'th{background:#1a1a2e;color:#fff;padding:7px 8px;text-align:left;font-size:11px}' +
+    'td{padding:6px 8px;border-bottom:1px solid #e2e8f0;vertical-align:top}' +
+    'tr:nth-child(even) td{background:#f8fafc}' +
+    '.footer{margin-top:16px;font-size:11px;color:#94a3b8;text-align:right}' +
+    '@media print{body{padding:10px}}' +
+    '</style></head><body>' +
+    '<h1>' + titre + '</h1>' +
+    '<div class="sub">Planning — Liv · RESPONSABLE ENFANTS (ARECA)</div>' +
+    '<table><thead><tr>' +
+    '<th>Date</th><th>Type</th><th>Evenement</th><th>Horaires</th><th>Repas</th>' +
+    '<th>Lieu</th><th>Scenes</th><th>Retour</th><th>Enfant</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div class="footer">— Liv ;-) · ' + new Date().toLocaleDateString('fr-FR') + '</div>' +
+    '</body></html>';
+  const blob = new Blob([html], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url, '_blank');
+  if (win) { win.onload = () => { setTimeout(() => { win.print(); }, 500); }; }
+  closeModal('modal-pdf');
+}
+// ─── CALENDRIER ──────────────────────────────────────────────────
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+
+function calKey(y, m) { return `${y}-${String(m+1).padStart(2,'0')}`; }
+
+function getCalEvents() {
+  return state.calEvents || [];
+}
+
+function saveCalEvent(ev) {
+  if (!state.calEvents) state.calEvents = [];
+  state.calEvents.push(ev);
+  save();
+  renderCal();
+}
+
+function delCalEvent(id) {
+  state.calEvents = (state.calEvents || []).filter(e => e.id !== id);
+  save();
+  renderCal();
+}
+
+function calPrev() { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCal(); }
+function calNext() { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCal(); }
+
+function renderCal() {
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const lbl = document.getElementById('cal-month-label');
+  if (lbl) lbl.textContent = months[calMonth] + ' ' + calYear;
+
+  const film = activeFilm();
+  const fn = document.getElementById('cal-film-name');
+  if (fn) fn.textContent = film ? film.nom : 'Planning du film';
+
+  const grid = document.getElementById('cal-grid');
+  if (!grid) return;
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const today = new Date();
+  const events = getCalEvents().filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
+  });
+
+  const jours = ['Lu','Ma','Me','Je','Ve','Sa','Di'];
+  let html = jours.map(j => `<div class="cal-day-name">${j}</div>`).join('');
+
+  const startOffset = (firstDay + 6) % 7;
+  for (let i = 0; i < startOffset; i++) html += '<div class="cal-day empty"></div>';
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayEvs = events.filter(e => e.date === dateStr);
+    const isToday = today.getFullYear() === calYear && today.getMonth() === calMonth && today.getDate() === d;
+    const evHtml = dayEvs.slice(0,3).map(e => `<div class="cal-ev ${e.type}">${e.titre}</div>`).join('');
+    html += `<div class="cal-day ${isToday ? 'today' : ''}" onclick="openAddEvent('${dateStr}')">
+      <div class="cal-day-num">${d}</div>
+      ${evHtml}
+    </div>`;
+  }
+
+  grid.innerHTML = html;
+
+  // liste événements du mois
+  const list = document.getElementById('cal-events-list');
+  const title = document.getElementById('cal-events-title');
+  if (title) title.textContent = `Événements — ${months[calMonth]} ${calYear}`;
+  const monthEvs = events.sort((a,b) => a.date.localeCompare(b.date));
+  if (!monthEvs.length) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📅</div>Appuyez sur un jour pour ajouter un événement</div>';
+    return;
+  }
+  list.innerHTML = monthEvs.map(e => {
+    const col = e.type === 't' ? '#3b82f6' : '#f59e0b';
+    const d = new Date(e.date);
+    const jours2 = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+    const dateLabel = jours2[d.getDay()] + ' ' + d.getDate();
+    const enf = state.enfants.find(en => en.id === e.enfantId);
+    // Boutons d'envoi selon les enfants concernés
+    let sendBtns = '';
+    if (e.enfantId) {
+      // Événement pour un enfant spécifique
+      const enfEv = state.enfants.find(en => en.id === e.enfantId);
+      if (enfEv && enfEv.tel) {
+        sendBtns += `<button onclick="envoyerEvenementParent(${e.id})" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer;margin-right:4px">📱 ${enfEv.nom.split(' ')[0]}</button>`;
+      }
+    } else {
+      // Événement pour tous - un bouton par enfant qui a un numéro
+      activeEnfants().filter(en => en.tel).forEach(en => {
+        sendBtns += `<button onclick="envoyerEvenementParent(${e.id},${en.id})" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer;margin-right:4px">📱 ${en.nom.split(' ')[0]}</button>`;
+      });
+      if (activeEnfants().some(en => en.tel)) {
+        sendBtns += `<button onclick="envoyerEvenementTous(${e.id})" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#3b82f6;color:#fff;font-weight:600;cursor:pointer">📱 Tous</button>`;
+      }
+    }
+    return `<div class="ev-item">
+      <div class="ev-dot" style="background:${col}"></div>
+      <div class="ev-info">
+        <div class="ev-title">${e.titre}</div>
+        <div class="ev-sub">${dateLabel}${e.debut ? ' · ' + e.debut + (e.fin ? ' - ' + e.fin : '') : ''}${e.retour ? ' · 🏠' + e.retour : ''}${e.repasDebut ? ' · 🍽' + e.repasDebut + (e.repasFin ? '-' + e.repasFin : '') : ''}${e.lieu ? ' · 📍' + e.lieu : ''}${e.scenes ? ' · 🎬' + e.scenes : ''} ${enf ? '· ' + enf.nom.split(' ')[0] : '· Tous'}</div>
+        ${sendBtns ? '<div style="margin-top:5px">' + sendBtns + '</div>' : ''}
+      </div>
+      <button class="ev-del" onclick="delCalEvent(${e.id})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+let calSelectedEnfants = [];
+
+function openAddEvent(dateStr) {
+  const d = new Date(dateStr);
+  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const label = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
+
+  calSelectedEnfants = [];
+  document.getElementById('modal-cal-title').textContent = label;
+  document.getElementById('cal-ev-date').value = dateStr;
+  document.getElementById('cal-ev-titre').value = '';
+  document.getElementById('cal-ev-debut').value = '';
+  document.getElementById('cal-ev-fin').value = '';
+  document.getElementById('cal-ev-lieu').value = '';
+  document.getElementById('cal-ev-scenes').value = '';
+  document.getElementById('cal-ev-retour').value = '';
+  document.getElementById('cal-ev-repas-debut').value = '';
+  document.getElementById('cal-ev-repas-fin').value = '';
+  document.getElementById('cal-ev-type').value = 't';
+  renderCalChips();
+  openModal('modal-cal');
+}
+
+function renderCalChips() {
+  const enfs = activeEnfants();
+  const el = document.getElementById('cal-enfants-chips');
+  if (!el) return;
+  let html = '';
+  const allSel = calSelectedEnfants.length === 0;
+  html += `<div onclick="calSelectEnfant('all')" style="padding:7px 14px;border-radius:20px;border:1.5px solid ${allSel ? 'var(--blue)' : 'var(--border)'};background:${allSel ? 'var(--blue-light)' : 'var(--surface)'};color:${allSel ? 'var(--blue-dark)' : 'var(--text-muted)'};font-size:13px;font-weight:600;cursor:pointer">Tous</div>`;
+  enfs.forEach(e => {
+    const sel = calSelectedEnfants.includes(e.id);
+    html += `<div onclick="calSelectEnfant(${e.id})" style="padding:7px 14px;border-radius:20px;border:1.5px solid ${sel ? e.couleur : 'var(--border)'};background:${sel ? e.couleur : 'var(--surface)'};color:${sel ? '#fff' : 'var(--text-muted)'};font-size:13px;font-weight:600;cursor:pointer">${e.nom.split(' ')[0]}</div>`;
+  });
+  el.innerHTML = html;
+}
+
+function calSelectEnfant(id) {
+  if (id === 'all') { calSelectedEnfants = []; }
+  else {
+    if (calSelectedEnfants.includes(id)) calSelectedEnfants = calSelectedEnfants.filter(x => x !== id);
+    else calSelectedEnfants.push(id);
+  }
+  renderCalChips();
+}
+
+function validerCalEvent() {
+  const titre = document.getElementById('cal-ev-titre').value.trim();
+  if (!titre) { alert('Entrez un titre.'); return; }
+  const debut = document.getElementById('cal-ev-debut').value;
+  const fin = document.getElementById('cal-ev-fin').value;
+  const type = document.getElementById('cal-ev-type').value;
+  const date = document.getElementById('cal-ev-date').value;
+  const enfs = activeEnfants();
+  const targets = calSelectedEnfants.length > 0 ? calSelectedEnfants : [null];
+
+  targets.forEach(eid => {
+    const lieu = document.getElementById('cal-ev-lieu').value.trim();
+    const scenes = document.getElementById('cal-ev-scenes').value.trim();
+    const retour = document.getElementById('cal-ev-retour').value;
+    const repasDebut = document.getElementById('cal-ev-repas-debut').value;
+    const repasFin = document.getElementById('cal-ev-repas-fin').value;
+    const ev = {
+      id: nextId++,
+      filmId: state.activeFilmId,
+      enfantId: eid,
+      date,
+      debut,
+      fin,
+      heure: debut,
+      lieu,
+      scenes,
+      retour,
+      repasDebut,
+      repasFin,
+      titre,
+      type
+    };
+    if (!state.calEvents) state.calEvents = [];
+    state.calEvents.push(ev);
+  });
+  save();
+  renderCal();
+  closeModal('modal-cal');
+}
+
+function copierParents() {
+  const txt = buildParentsMessage();
+  if (!txt) return;
+  navigator.clipboard.writeText(txt)
+    .then(() => alert('Message copié ! Ouvrez votre groupe WhatsApp parents et collez le message.'))
+    .catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = txt; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      alert('Message copié ! Ouvrez votre groupe WhatsApp parents et collez le message.');
+    });
+}
+
+function buildParentsMessage() {
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const film = activeFilm();
+  const events = getCalEvents().filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
+  }).sort((a,b) => a.date.localeCompare(b.date));
+
+  if (!events.length) { alert('Aucun événement ce mois-ci.'); return null; }
+
+  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  let txt = 'Planning ' + months[calMonth] + ' ' + calYear;
+  if (film) txt += ' - ' + film.nom;
+  txt += '\n\n';
+
+  const byDate = {};
+  events.forEach(e => {
+    if (!byDate[e.date]) byDate[e.date] = [];
+    byDate[e.date].push(e);
+  });
+
+  Object.keys(byDate).sort().forEach(date => {
+    const d = new Date(date);
+    txt += jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + '\n';
+    byDate[date].forEach(e => {
+      const enf = state.enfants.find(en => en.id === e.enfantId);
+      txt += '  • ' + e.titre;
+      if (e.debut) txt += ' de ' + e.debut + (e.fin ? ' a ' + e.fin : '');
+      if (e.lieu) txt += '\n    Lieu : ' + e.lieu;
+      if (e.scenes) txt += '\n    Scenes : ' + e.scenes;
+      if (e.repasDebut) txt += '\n    Coupure repas : ' + e.repasDebut + (e.repasFin ? ' - ' + e.repasFin : '');
+      if (e.retour) txt += '\n    Retour estime : ' + e.retour;
+      if (enf) txt += '\n    Enfant : ' + enf.nom;
+      else txt += '\n    Tous les enfants';
+      txt += '\n';
+    });
+    txt += '\n';
+  });
+
+  txt += '— Liv ;-)';
+  return txt;
+}
+
+function partagerParents() {
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const film = activeFilm();
+  const events = getCalEvents().filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
+  }).sort((a,b) => a.date.localeCompare(b.date));
+
+  if (!events.length) { alert('Aucun événement ce mois-ci.'); return; }
+
+  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  let txt = `Planning ${months[calMonth]} ${calYear}`;
+  if (film) txt += ' - ' + film.nom;
+  txt += '\n\n';
+
+  // Grouper par date
+  const byDate = {};
+  events.forEach(e => {
+    if (!byDate[e.date]) byDate[e.date] = [];
+    byDate[e.date].push(e);
+  });
+
+  Object.keys(byDate).sort().forEach(date => {
+    const d = new Date(date);
+    txt += `${jours[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}` + '\n';
+    byDate[date].forEach(e => {
+      const enf = state.enfants.find(en => en.id === e.enfantId);
+      const typeLabel = e.type === 't' ? 'Tournage' : 'Info';
+      txt += `  • ${e.titre}`;
+      if (e.debut) txt += ` de ${e.debut}${e.fin ? ' a ' + e.fin : ''}`;
+      if (e.lieu) txt += '\n    Lieu : ' + e.lieu;
+      if (enf) txt += '\n    Enfant : ' + enf.nom;
+      else txt += '\n    Tous les enfants';
+      txt += '\n';
+    });
+    txt += '\n';
+  });
+
+  txt += `— Liv ;-)`;
+
+  const n = state.contacts.scripte || state.contacts.prod || '';
+  if (n) {
+    const clean = n.replace(/\s/g, '').replace(/^00/, '+');
+    window.open(`https://wa.me/${clean}?text=${encodeURIComponent(txt)}`);
+  } else {
+    navigator.clipboard.writeText(txt)
+      .then(() => alert('Planning parents copié ! Collez-le dans WhatsApp.'))
+      .catch(() => alert(txt));
+  }
+}
+
+function partagerCalendrier() {
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const film = activeFilm();
+  const events = getCalEvents().filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
+  }).sort((a,b) => a.date.localeCompare(b.date));
+
+  if (!events.length) { alert('Aucun événement ce mois-ci.'); return; }
+
+  const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  let txt = `${film ? film.nom.toUpperCase() : 'PLANNING'} - ${months[calMonth]} ${calYear}\n\n`;
+
+  events.forEach(e => {
+    const d = new Date(e.date);
+    const enf = state.enfants.find(en => en.id === e.enfantId);
+    const typeLabel = e.type === 't' ? '[Tournage]' : '[Famille]';
+    txt += `${jours[d.getDay()]} ${d.getDate()} - ${e.titre} ${typeLabel}`;
+    if (e.debut) txt += ` ${e.debut}${e.fin ? ' - ' + e.fin : ''}`;
+    if (e.lieu) txt += ' - ' + e.lieu;
+    if (e.repasDebut) txt += ' - Repas ' + e.repasDebut + (e.repasFin ? '-' + e.repasFin : '');
+    if (e.scenes) txt += ' [' + e.scenes + ']';
+    if (enf) txt += ' (' + enf.nom.split(' ')[0] + ')';
+    txt += '\n';
+  });
+
+  const n = state.contacts.scripte || state.contacts.prod || '';
+  if (n) {
+    const clean = n.replace(/\s/g, '').replace(/^00/, '+');
+    window.open(`https://wa.me/${clean}?text=${encodeURIComponent(txt)}`);
+  } else {
+    navigator.clipboard.writeText(txt).then(() => alert('Planning copié ! Collez-le dans WhatsApp.')).catch(() => alert(txt));
+  }
+}
+
+
+// ─── BILAN FILM ──────────────────────────────────────────────────
+function supprimerJour(date) {
+  if (!confirm('Supprimer toute la journee du ' + date + ' ?')) return;
+  state.logs = state.logs.filter(l => !(l.filmId === state.activeFilmId && l.date === date));
+  delete state['comment_' + date];
+  save();
+  renderBilan();
+}
+
+function saveNoteJour(date, note) {
+  state['comment_' + date] = note;
+  save();
+}
+
+function getStatsByDate(date) {
+  const dayLogs = state.logs.filter(l => l.filmId === state.activeFilmId && l.date === date);
+  const enfs = activeEnfants();
+  return enfs.map(enf => {
+    const evs = dayLogs.filter(l => l.enfantId === enf.id).sort((a,b) => a.heure.localeCompare(b.heure));
+    if (!evs.length) return null;
+    const dur = {};
+    Object.keys(TYPE_LABEL).forEach(t => dur[t] = 0);
+    evs.forEach(l => {
+      if (l.fin) dur[l.type] = (dur[l.type] || 0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
+    });
+    const hArrivee = evs.find(l => l.type === 'arrivee');
+    const hFin = [...evs].reverse().find(l => l.type === 'fin');
+    const hRepas = evs.find(l => l.type === 'repas');
+    const travail = WORK_TYPES.reduce((s,t) => s + (dur[t]||0), 0);
+    const lim = LIMITES[enf.age];
+    const pct = Math.round(travail/lim*100);
+    return { enf, dur, hArrivee, hFin, hRepas, travail, lim, pct, hasCascade: dur.cascade > 0, hasSante: dur.sante > 0 };
+  }).filter(Boolean);
+}
+
+function getAllDates() {
+  const dates = [...new Set(
+    state.logs.filter(l => l.filmId === state.activeFilmId).map(l => l.date)
+  )].sort();
+  return dates;
+}
+
+function renderBilan() {
+  const el = document.getElementById('bilan-content');
+  if (!el) return;
+  const dates = getAllDates();
+  if (!dates.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📊</div>Aucune journee enregistree pour ce film.</div>';
+    return;
+  }
+  const months = ['Jan','Fev','Mar','Avr','Mai','Jun','Jul','Aou','Sep','Oct','Nov','Dec'];
+  const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  
+  let html = '';
+  dates.forEach(date => {
+    const d = new Date(date);
+    const dayLabel = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+    const stats = getStatsByDate(date);
+    if (!stats.length) return;
+    
+    const comment = state['comment_' + date] || '';
+    
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden">';
+    html += '<div style="background:#1a1a2e;color:#fff;padding:8px 14px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">';
+    html += '<span>' + dayLabel + '</span>';
+    html += '<button onclick="supprimerJour(' + "'" + date + "'" + ')" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:3px 10px;border-radius:6px;font-size:11px;cursor:pointer">🗑 Supprimer</button>';
+    html += '</div>';
+    html += '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px">';
+    html += '<thead><tr style="background:var(--gray-light)">';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Enfant</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Arrivee</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">HMC</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Tournage</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Pause</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Repas</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Hors plateau</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Cascade</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Sante</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Fin</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Plateau</th>';
+    html += '</tr></thead><tbody>';
+    
+    stats.forEach(s => {
+      const col = s.pct >= 100 ? '#fee2e2' : s.pct >= 80 ? '#fef3c7' : '';
+      html += '<tr style="border-bottom:1px solid var(--border);' + (col ? 'background:' + col : '') + '">';
+      html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
+      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.dur.pause ? fmt(s.dur.pause) : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin ? '-' + s.hRepas.fin : '') : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
+      html += '<td style="padding:6px 8px;color:' + (s.hasCascade ? '#991b1b' : 'var(--text-muted)') + '">' + (s.hasCascade ? fmt(s.dur.cascade) : '-') + '</td>';
+      html += '<td style="padding:6px 8px;color:' + (s.hasSante ? '#9d174d' : 'var(--text-muted)') + '">' + (s.hasSante ? '⚠' : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure : '-') + '</td>';
+      html += '<td style="padding:6px 8px;font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+    const noteId = 'note_bilan_' + date;
+    html += '<div style="padding:8px 12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px">';
+    html += '<span style="font-size:18px">📝</span>';
+    html += '<input type="text" id="' + noteId + '"';
+    html += ' value="' + (comment || '').replace(/"/g, '&quot;') + '"';
+    html += ' placeholder="Ajouter une note pour cette journee..."';
+    html += ' onchange="saveNoteJour(' + "'" + date + "'" + ', this.value)"';
+    html += ' style="flex:1;font-size:13px;border:1px solid var(--border);border-radius:8px;padding:6px 10px;background:var(--bg);color:var(--text)">';
+    html += '</div>';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function genererPDFBilan() {
+  const film = activeFilm();
+  const dates = getAllDates();
+  if (!dates.length) { alert('Aucune journee enregistree.'); return; }
+  const months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  
+  let rows = '';
+  dates.forEach(date => {
+    const d = new Date(date);
+    const dayLabel = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
+    const stats = getStatsByDate(date);
+    stats.forEach((s, idx) => {
+      rows += '<tr>';
+      rows += '<td style="background:#f8fafc;font-weight:600;white-space:nowrap">' + (idx===0 ? dayLabel : '') + '</td>';
+      rows += '<td style="font-weight:600">' + s.enf.nom.split(' ')[0] + '</td>';
+      rows += '<td>' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
+      rows += '<td>' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
+      rows += '<td style="font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
+      rows += '<td>' + (s.dur.pause ? fmt(s.dur.pause) : '-') + '</td>';
+      rows += '<td>' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin ? '-'+s.hRepas.fin : '') : '-') + '</td>';
+      rows += '<td>' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
+      rows += '<td style="color:#991b1b">' + (s.hasCascade ? fmt(s.dur.cascade) : '-') + '</td>';
+      rows += '<td style="color:#9d174d">' + (s.hasSante ? 'Oui' : '-') + '</td>';
+      rows += '<td style="font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
+      rows += '</tr>';
+    });
+  });
+
+  const titre = film ? 'Bilan ' + film.nom : 'Bilan Film';
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' +
+    'body{font-family:Arial,sans-serif;padding:15px;color:#1e293b;font-size:12px}' +
+    'h1{font-size:16px;margin-bottom:4px;color:#1a1a2e}' +
+    '.sub{font-size:11px;color:#64748b;margin-bottom:14px}' +
+    'table{width:100%;border-collapse:collapse}' +
+    'th{background:#1a1a2e;color:#fff;padding:6px 7px;text-align:left;font-size:10px;white-space:nowrap}' +
+    'td{padding:5px 7px;border-bottom:1px solid #e2e8f0;vertical-align:middle}' +
+    'tr:nth-child(even) td{background:#f8fafc}' +
+    '.footer{margin-top:14px;font-size:10px;color:#94a3b8;text-align:right}' +
+    '@media print{body{padding:8px}}' +
+    '</style></head><body>' +
+    '<h1>' + titre + '</h1>' +
+    '<div class="sub">Bilan complet — Liv · RESPONSABLE ENFANTS (ARECA)</div>' +
+    '<table><thead><tr>' +
+    '<th>Date</th><th>Enfant</th><th>Arrivee</th><th>HMC</th><th>Tournage</th>' +
+    '<th>Pause</th><th>Repas</th><th>Hors plateau</th><th>Cascade</th><th>Sante</th><th>Plateau</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div class="footer">— Liv ;-) · ' + new Date().toLocaleDateString('fr-FR') + '</div>' +
+    '</body></html>';
+
+  const blob = new Blob([html], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url, '_blank');
+  if (win) { win.onload = () => { setTimeout(() => { win.print(); }, 500); }; }
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────
+async function initApp() {
+  await load();
+  try {
+    renderChips();
+    renderLog();
+    renderStatusBar();
+    updateFilmDisplay();
+    renderContactsExtra();
+    renderExtraContactsBtns();
+  } catch(e) { console.error('Init error:', e); }
+}
+
+// VERSION DEMO - chargement automatique avec données fictives
+(async () => {
+  // Données démo pré-remplies
+  const demoData = {
+    state: {
+      films: [{ id: 1, nom: 'Les Enfants de Paris', real: 'Marie Dubois' }],
+      activeFilmId: 1,
+      enfants: [
+        { id: 2, filmId: 1, nom: 'Léa Martin', age: '12-15', couleur: '#3b82f6', tel: '+33600000001' },
+        { id: 3, filmId: 1, nom: 'Tom Dupont', age: '12-15', couleur: '#10b981', tel: '+33600000002' },
+        { id: 4, filmId: 1, nom: 'Nina Rossi', age: '6-11', couleur: '#f59e0b', tel: '+33600000003' }
+      ],
+      logs: [
+        { id: 5, filmId: 1, enfantId: 2, type: 'arrivee', heure: '07:30', fin: '07:30', date: new Date().toISOString().slice(0,10) },
+        { id: 6, filmId: 1, enfantId: 2, type: 'hmc', heure: '07:30', fin: '08:15', date: new Date().toISOString().slice(0,10) },
+        { id: 7, filmId: 1, enfantId: 2, type: 'tournage', heure: '08:15', fin: '10:30', date: new Date().toISOString().slice(0,10) },
+        { id: 8, filmId: 1, enfantId: 2, type: 'pause', heure: '10:30', fin: '11:00', date: new Date().toISOString().slice(0,10) },
+        { id: 9, filmId: 1, enfantId: 2, type: 'tournage', heure: '11:00', fin: '12:30', date: new Date().toISOString().slice(0,10) },
+        { id: 10, filmId: 1, enfantId: 2, type: 'repas', heure: '12:30', fin: '13:30', date: new Date().toISOString().slice(0,10) },
+        { id: 11, filmId: 1, enfantId: 3, type: 'arrivee', heure: '08:00', fin: '08:00', date: new Date().toISOString().slice(0,10) },
+        { id: 12, filmId: 1, enfantId: 3, type: 'hmc', heure: '08:00', fin: '08:45', date: new Date().toISOString().slice(0,10) },
+        { id: 13, filmId: 1, enfantId: 3, type: 'tournage', heure: '08:45', fin: '12:00', date: new Date().toISOString().slice(0,10) },
+        { id: 14, filmId: 1, enfantId: 3, type: 'repas', heure: '12:00', fin: '13:00', date: new Date().toISOString().slice(0,10) },
+        { id: 15, filmId: 1, enfantId: 4, type: 'arrivee', heure: '09:00', fin: '09:00', date: new Date().toISOString().slice(0,10) },
+        { id: 16, filmId: 1, enfantId: 4, type: 'hmc', heure: '09:00', fin: '09:30', date: new Date().toISOString().slice(0,10) },
+        { id: 17, filmId: 1, enfantId: 4, type: 'tournage', heure: '09:30', fin: '11:30', date: new Date().toISOString().slice(0,10) }
+      ],
+      contacts: { scripte: '+33600000010', prod: '+33600000011' },
+      calEvents: [
+        { id: 18, filmId: 1, enfantId: null, date: new Date().toISOString().slice(0,10), debut: '07:30', fin: '18:00', titre: 'Tournage ext. Paris 11e', type: 't', lieu: 'Rue de la Roquette, Paris 11e', scenes: 'Scènes 3A, 7B, 12', repasDebut: '12:30', repasFin: '13:30', retour: '18:30' },
+        { id: 19, filmId: 1, enfantId: 2, date: new Date(Date.now()+86400000).toISOString().slice(0,10), debut: '14:00', fin: '18:00', titre: 'Coaching', type: 't', lieu: 'Studio Billancourt', scenes: '', repasDebut: '', repasFin: '', retour: '18:30' },
+        { id: 20, filmId: 1, enfantId: null, date: new Date(Date.now()+172800000).toISOString().slice(0,10), debut: '08:00', fin: '19:00', titre: 'Tournage studio', type: 't', lieu: 'Studio 5 — Bry-sur-Marne', scenes: 'Scènes 15, 16, 17A', repasDebut: '12:00', repasFin: '13:00', retour: '19:30' }
+      ],
+      contactsExtra: [
+        { id: 21, nom: 'Directeur de prod', tel: '+33600000020' }
+      ]
+    },
+    nextId: 30,
+    selectedEnfants: []
+  };
+
+  state = demoData.state;
+  nextId = demoData.nextId;
+  selectedEnfants = demoData.selectedEnfants;
+
+  // Masquer l'écran de login et afficher l'appli
+  const ls = document.getElementById('login-screen');
+  if (ls) ls.style.display = 'none';
+
+  try {
+    renderChips();
+    renderLog();
+    renderStatusBar();
+    updateFilmDisplay();
+    renderContactsExtra();
+    renderExtraContactsBtns();
+  } catch(e) { console.error('Demo init error:', e); }
+})();
+
+// Splash screen - se ferme toujours même en cas d'erreur
+function closeSplash() {
+  const splash = document.getElementById('splash');
+  if (splash) { splash.style.opacity = '0'; setTimeout(() => { try { splash.remove(); } catch(e) {} }, 600); }
+}
+setTimeout(() => { const bar = document.getElementById('splash-bar'); if (bar) bar.style.width = '100%'; }, 100);
+setTimeout(closeSplash, 1800);
+// Sécurité : ferme dans tous les cas après 3s
+setTimeout(closeSplash, 3000);
+
+// refresh planning + status every minute
+setInterval(() => {
+  const activePage = document.querySelector('.page.active');
+  if (activePage && activePage.id === 'page-planning') renderPlanning();
+  renderStatusBar();
+}, 60000);
+
+// Désactiver et supprimer tous les service workers
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+}
+
+
+// ─── INIT ─────────────────────────────────────────────────────────
+async function initApp() {
+  await load();
+  try {
+    renderChips();
+    renderLog();
+    renderStatusBar();
+    updateFilmDisplay();
+    renderContactsExtra();
+    renderExtraContactsBtns();
+  } catch(e) { console.error('Init error:', e); }
+}
+
+// VERSION DEMO - chargement automatique avec données fictives
+(async () => {
+  // Données démo pré-remplies
+  const demoData = {
+    state: {
+      films: [{ id: 1, nom: 'Les Enfants de Paris', real: 'Marie Dubois' }],
+      activeFilmId: 1,
+      enfants: [
+        { id: 2, filmId: 1, nom: 'Léa Martin', age: '12-15', couleur: '#3b82f6', tel: '+33600000001' },
+        { id: 3, filmId: 1, nom: 'Tom Dupont', age: '12-15', couleur: '#10b981', tel: '+33600000002' },
+        { id: 4, filmId: 1, nom: 'Nina Rossi', age: '6-11', couleur: '#f59e0b', tel: '+33600000003' }
+      ],
+      logs: [
+        { id: 5, filmId: 1, enfantId: 2, type: 'arrivee', heure: '07:30', fin: '07:30', date: new Date().toISOString().slice(0,10) },
+        { id: 6, filmId: 1, enfantId: 2, type: 'hmc', heure: '07:30', fin: '08:15', date: new Date().toISOString().slice(0,10) },
+        { id: 7, filmId: 1, enfantId: 2, type: 'tournage', heure: '08:15', fin: '10:30', date: new Date().toISOString().slice(0,10) },
+        { id: 8, filmId: 1, enfantId: 2, type: 'pause', heure: '10:30', fin: '11:00', date: new Date().toISOString().slice(0,10) },
+        { id: 9, filmId: 1, enfantId: 2, type: 'tournage', heure: '11:00', fin: '12:30', date: new Date().toISOString().slice(0,10) },
+        { id: 10, filmId: 1, enfantId: 2, type: 'repas', heure: '12:30', fin: '13:30', date: new Date().toISOString().slice(0,10) },
+        { id: 11, filmId: 1, enfantId: 3, type: 'arrivee', heure: '08:00', fin: '08:00', date: new Date().toISOString().slice(0,10) },
+        { id: 12, filmId: 1, enfantId: 3, type: 'hmc', heure: '08:00', fin: '08:45', date: new Date().toISOString().slice(0,10) },
+        { id: 13, filmId: 1, enfantId: 3, type: 'tournage', heure: '08:45', fin: '12:00', date: new Date().toISOString().slice(0,10) },
+        { id: 14, filmId: 1, enfantId: 3, type: 'repas', heure: '12:00', fin: '13:00', date: new Date().toISOString().slice(0,10) },
+        { id: 15, filmId: 1, enfantId: 4, type: 'arrivee', heure: '09:00', fin: '09:00', date: new Date().toISOString().slice(0,10) },
+        { id: 16, filmId: 1, enfantId: 4, type: 'hmc', heure: '09:00', fin: '09:30', date: new Date().toISOString().slice(0,10) },
+        { id: 17, filmId: 1, enfantId: 4, type: 'tournage', heure: '09:30', fin: '11:30', date: new Date().toISOString().slice(0,10) }
+      ],
+      contacts: { scripte: '+33600000010', prod: '+33600000011' },
+      calEvents: [
+        { id: 18, filmId: 1, enfantId: null, date: new Date().toISOString().slice(0,10), debut: '07:30', fin: '18:00', titre: 'Tournage ext. Paris 11e', type: 't', lieu: 'Rue de la Roquette, Paris 11e', scenes: 'Scènes 3A, 7B, 12', repasDebut: '12:30', repasFin: '13:30', retour: '18:30' },
+        { id: 19, filmId: 1, enfantId: 2, date: new Date(Date.now()+86400000).toISOString().slice(0,10), debut: '14:00', fin: '18:00', titre: 'Coaching', type: 't', lieu: 'Studio Billancourt', scenes: '', repasDebut: '', repasFin: '', retour: '18:30' },
+        { id: 20, filmId: 1, enfantId: null, date: new Date(Date.now()+172800000).toISOString().slice(0,10), debut: '08:00', fin: '19:00', titre: 'Tournage studio', type: 't', lieu: 'Studio 5 — Bry-sur-Marne', scenes: 'Scènes 15, 16, 17A', repasDebut: '12:00', repasFin: '13:00', retour: '19:30' }
+      ],
+      contactsExtra: [
+        { id: 21, nom: 'Directeur de prod', tel: '+33600000020' }
+      ]
+    },
+    nextId: 30,
+    selectedEnfants: []
+  };
+
+  state = demoData.state;
+  nextId = demoData.nextId;
+  selectedEnfants = demoData.selectedEnfants;
+
+  // Masquer l'écran de login et afficher l'appli
+  const ls = document.getElementById('login-screen');
+  if (ls) ls.style.display = 'none';
+
+  try {
+    renderChips();
+    renderLog();
+    renderStatusBar();
+    updateFilmDisplay();
+    renderContactsExtra();
+    renderExtraContactsBtns();
+  } catch(e) { console.error('Demo init error:', e); }
+})();
+
+// Splash screen - se ferme toujours même en cas d'erreur
+function closeSplash() {
+  const splash = document.getElementById('splash');
+  if (splash) { splash.style.opacity = '0'; setTimeout(() => { try { splash.remove(); } catch(e) {} }, 600); }
+}
+setTimeout(() => { const bar = document.getElementById('splash-bar'); if (bar) bar.style.width = '100%'; }, 100);
+setTimeout(closeSplash, 1800);
+// Sécurité : ferme dans tous les cas après 3s
+setTimeout(closeSplash, 3000);
+
+// refresh planning + status every minute
+setInterval(() => {
+  const activePage = document.querySelector('.page.active');
+  if (activePage && activePage.id === 'page-planning') renderPlanning();
+  renderStatusBar();
+}, 60000);
+
+// Désactiver et supprimer tous les service workers
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+}
+
+
+</script>
+
+<div class="modal-overlay" id="modal-cal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-cal')">✕</button>
+    <div class="modal-title" id="modal-cal-title">Ajouter un événement</div>
+    <input type="hidden" id="cal-ev-date">
+    <div class="form-row">
+      <label class="form-label">Type</label>
+      <select class="form-input" id="cal-ev-type">
+        <option value="t">Tournage (répétition, HMC, essai santé, assurance…)</option>
+        <option value="f">Famille / Personnel (examen, brevet, RDV, vacances…)</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Titre de l'événement</label>
+      <input class="form-input" id="cal-ev-titre" placeholder="ex: Coaching, Répétition scène 3, Brevet…">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Lieu</label>
+      <input class="form-input" id="cal-ev-lieu" placeholder="ex: Studio 5, Salle de répétition Paris 11e…">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Scènes prévues (optionnel)</label>
+      <input class="form-input" id="cal-ev-scenes" placeholder="ex: Scènes 12B, 15A, 23…">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div>
+        <label class="form-label">Heure début</label>
+        <input class="form-input" type="time" id="cal-ev-debut">
+      </div>
+      <div>
+        <label class="form-label">Heure fin tournage</label>
+        <input class="form-input" type="time" id="cal-ev-fin">
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">🏠 Heure de retour estimée (pour les parents)</label>
+      <input class="form-input" type="time" id="cal-ev-retour">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div>
+        <label class="form-label">🍽 Coupure repas début</label>
+        <input class="form-input" type="time" id="cal-ev-repas-debut">
+      </div>
+      <div>
+        <label class="form-label">🍽 Coupure repas fin</label>
+        <input class="form-input" type="time" id="cal-ev-repas-fin">
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Enfants concernés (appuyez pour sélectionner)</label>
+      <div id="cal-enfants-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px"></div>
+    </div>
+    <button class="form-btn" onclick="validerCalEvent()">Ajouter cet événement</button>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="modal-contact">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-contact')">✕</button>
+    <div class="modal-title">Ajouter un contact</div>
+    <div class="form-row">
+      <label class="form-label">Nom / rôle</label>
+      <input class="form-input" id="new-contact-nom" placeholder="ex: Directeur de prod, Parent de Léa…">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Numéro WhatsApp (avec indicatif)</label>
+      <input class="form-input" type="tel" id="new-contact-tel" placeholder="+336...">
+    </div>
+    <button class="form-btn" style="background:var(--purple)" onclick="ajouterContactExtra()">Ajouter ce contact</button>
+  </div>
+</div>
+
+
+<div class="modal-overlay" id="modal-edit-enfant">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-edit-enfant')">✕</button>
+    <div class="modal-title">Modifier l'enfant</div>
+    <input type="hidden" id="edit-enf-id">
+    <div class="form-row"><label class="form-label">Prénom Nom</label><input class="form-input" id="edit-enf-nom"></div>
+    <div class="form-row"><label class="form-label">Tranche d'âge</label>
+      <select class="form-input" id="edit-enf-age">
+        <option value="<3">Moins de 3 ans (max 2h)</option>
+        <option value="3-5">3 – 5 ans (max 3h)</option>
+        <option value="6-11">6 – 11 ans (max 4h)</option>
+        <option value="12-15">12 – 15 ans (max 6h)</option>
+        <option value="16-17">16 – 17 ans (max 8h)</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">📱 Numéro WhatsApp parent</label><input class="form-input" type="tel" id="edit-enf-tel" placeholder="+336..."></div>
+    <div class="form-row"><label class="form-label">Couleur</label><input type="color" class="form-input" id="edit-enf-color" style="height:40px;padding:4px;cursor:pointer"></div>
+    <button class="form-btn" style="background:var(--green)" onclick="sauvegarderEnfant()">Enregistrer</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-edit-enfant">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-edit-enfant')">✕</button>
+    <div class="modal-title">Modifier l'enfant</div>
+    <input type="hidden" id="edit-enf-id">
+    <div class="form-row"><label class="form-label">Prenom Nom</label><input class="form-input" id="edit-enf-nom"></div>
+    <div class="form-row"><label class="form-label">Tranche age</label>
+      <select class="form-input" id="edit-enf-age">
+        <option value="<3">Moins de 3 ans (max 2h)</option>
+        <option value="3-5">3-5 ans (max 3h)</option>
+        <option value="6-11">6-11 ans (max 4h)</option>
+        <option value="12-15">12-15 ans (max 6h)</option>
+        <option value="16-17">16-17 ans (max 8h)</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">Numero WhatsApp parent</label><input class="form-input" type="tel" id="edit-enf-tel" placeholder="+336..."></div>
+    <div class="form-row"><label class="form-label">Couleur</label><input type="color" class="form-input" id="edit-enf-color" style="height:40px;padding:4px;cursor:pointer"></div>
+    <button class="form-btn" style="background:var(--green)" onclick="sauvegarderEnfant()">Enregistrer</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-pdf">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-pdf')">&#10005;</button>
+    <div class="modal-title">Generer un PDF</div>
+    <div class="form-row">
+      <label class="form-label">Jours a inclure</label>
+      <div id="pdf-days-list"></div>
+    </div>
+    <div class="form-row" style="margin-top:10px">
+      <label class="form-label">Enfants</label>
+      <div id="pdf-enfs-list"></div>
+    </div>
+    <button class="form-btn" style="background:#ef4444;margin-top:8px" onclick="genererPDF()">Generer le PDF</button>
+  </div>
+</div>
+</div>
+</body>
+</html>
