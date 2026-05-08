@@ -268,6 +268,7 @@
     <div style="display:flex;align-items:center;gap:8px">
       <div style="font-size:18px;font-family:'Fredoka One',cursive;opacity:.9;letter-spacing:.1em">Liv</div>
       <div id="live-date-top" style="font-size:12px;opacity:.6;text-align:right"></div>
+      <button onclick="if(confirm('Se déconnecter ?'))sbLogout()" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.5);font-size:12px;padding:5px 8px;border-radius:6px;cursor:pointer">🔒</button>
     </div>
   </div>
   <div class="scroll-content">
@@ -326,6 +327,8 @@
       <div class="status-grid" id="status-bar"></div>
     </div>
 
+    <div id="live-progress-bars" style="padding:0 12px 4px"></div>
+
     <div class="card">
       <div class="card-title" style="display:flex;justify-content:space-between">
         <span>Journal <span id="log-count" style="font-weight:400;color:var(--text-muted)"></span></span>
@@ -372,15 +375,14 @@
     <div class="card">
       <div id="resume-alerts"></div>
       <div class="metrics-grid" id="resume-metrics"></div>
-      <div class="card-title" style="margin-bottom:8px">Chronologie par enfant</div>
-      <div id="chrono-enfants"></div>
+
     </div>
     <div class="card">
       <div class="card-title">Message WhatsApp / SMS</div>
       <div class="summary-box" id="summary-txt"></div>
       <div style="margin-bottom:10px">
         <div class="form-row">
-          <label class="form-label">📝 Note / commentaire du jour (santé, incident, remarque…)</label>
+          <label class="form-label">Note / commentaire du jour (santé, incident, remarque…)</label>
           <textarea class="form-input" id="commentaire-jour" rows="3" placeholder="Ex : Léa s'est plainte d'un mal de tête à 14h, repos 20 min. Tom fatigué en fin de journée." style="resize:vertical;line-height:1.5" oninput="saveCommentaire()"></textarea>
         </div>
         <div class="form-row">
@@ -443,15 +445,7 @@
       <div id="contacts-extra-list"></div>
       <button class="form-btn" onclick="openModal('modal-contact')" style="margin-top:4px;background:var(--purple)">+ Ajouter un contact</button>
     </div>
-    <div class="card">
-      <div class="card-title" style="color:var(--red-dark)">Données</div>
-      <button onclick="clearDay()" style="width:100%;padding:10px;border-radius:8px;border:1.5px solid var(--red);background:var(--red-light);color:var(--red-dark);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px">
-        Effacer journal du jour
-      </button>
-      <button onclick="sbLogout()" style="width:100%;padding:10px;border-radius:8px;border:1.5px solid #6b7280;background:#f3f4f6;color:#374151;font-size:13px;font-weight:600;cursor:pointer">
-        🔒 Se déconnecter
-      </button>
-    </div>
+
   </div>
 </div>
 
@@ -512,7 +506,7 @@
   <div class="scroll-content" style="padding:0 12px 20px">
 
     <div class="card" style="margin:10px 0">
-      <div class="card-title">⏱ Durée maximale de présence par âge</div>
+      <div class="card-title">Durée maximale de présence par âge</div>
       <table style="width:100%;border-collapse:collapse;font-size:12px">
         <thead>
           <tr style="background:#1a1a2e;color:#fff">
@@ -562,7 +556,7 @@
     </div>
 
     <div class="card" style="margin:10px 0">
-      <div class="card-title">🌙 Horaires de nuit interdits</div>
+      <div class="card-title">Horaires de nuit interdits</div>
       <table style="width:100%;border-collapse:collapse;font-size:12px">
         <thead>
           <tr style="background:#1a1a2e;color:#fff">
@@ -587,42 +581,42 @@
     </div>
 
     <div class="card" style="margin:10px 0">
-      <div class="card-title">✅ Ce qui compte / ne compte pas</div>
+      <div class="card-title">Ce qui compte dans le temps de présence</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
         <div style="background:#d1fae5;border-radius:8px;padding:10px">
-          <div style="font-weight:700;color:#065f46;margin-bottom:6px">✅ COMPTE</div>
-          <div style="color:#065f46;padding:2px 0">🎥 Tournage</div>
-          <div style="color:#065f46;padding:2px 0">✂️ HMC / Préparation</div>
-          <div style="color:#065f46;padding:2px 0">🤸 Cascade</div>
+          <div style="font-weight:700;color:#065f46;margin-bottom:6px">COMPTE</div>
+          <div style="color:#065f46;padding:2px 0">Tournage</div>
+          <div style="color:#065f46;padding:2px 0">HMC / Préparation</div>
+          <div style="color:#065f46;padding:2px 0">Cascade</div>
           
-          <div style="color:#065f46;padding:2px 0">🧩 Pause</div>
+          <div style="color:#065f46;padding:2px 0">Pause</div>
         </div>
         <div style="background:#fee2e2;border-radius:8px;padding:10px">
-          <div style="font-weight:700;color:#991b1b;margin-bottom:6px">❌ NE COMPTE PAS</div>
-          <div style="color:#991b1b;padding:2px 0">🍽 Repas</div>
+          <div style="font-weight:700;color:#991b1b;margin-bottom:6px">NE COMPTE PAS</div>
+          <div style="color:#991b1b;padding:2px 0">Repas</div>
           <div style="color:#991b1b;padding:2px 0">☁️ Hors plateau</div>
-          <div style="color:#991b1b;padding:2px 0">🚗 Transport</div>
+          <div style="color:#991b1b;padding:2px 0">Transport</div>
         </div>
       </div>
       <div style="margin-top:10px;background:#fef3c7;border-radius:8px;padding:10px;font-size:12px;color:#92400e">
-        <div style="font-weight:700;margin-bottom:4px">☁️ Quand utiliser "Hors plateau" ?</div>
+        <div style="font-weight:700;margin-bottom:4px">Quand utiliser "Temps d'attente" ?</div>
         <div>L'enfant est <strong>déshabillé, dans sa loge ou hors du plateau</strong>, non disponible pour tourner. Il ne peut pas être rappelé immédiatement. Ce temps <strong>ne compte pas</strong> dans le quota légal.<br><br>À ne pas confondre avec la <strong>Pause</strong> 🧩 où l'enfant reste en costume sur le plateau et peut être rappelé rapidement.</div>
       </div>
     </div>
 
     <div class="card" style="margin:10px 0">
-      <div class="card-title">🏫 Scolarité et cours sur plateau</div>
+      <div class="card-title">Scolarité et cours sur plateau</div>
       <div style="font-size:13px;line-height:1.8;color:var(--text)">
-        <div style="padding:6px 0;border-bottom:1px solid var(--border)">📅 <strong>À partir de 4 jours d'absence</strong> sur une période de tournage, un instituteur de plateau est obligatoire</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong>À partir de 4 jours d'absence</strong> sur une période de tournage, un instituteur de plateau est obligatoire</div>
         <div style="padding:6px 0;border-bottom:1px solid var(--border)">⏰ <strong>Minimum 2h de cours par jour</strong> pour les enfants en âge scolaire (6-16 ans)</div>
         <div style="padding:6px 0;border-bottom:1px solid var(--border)">📚 <strong>Le temps de cours compte</strong> dans la durée de présence journalière</div>
         <div style="padding:6px 0;border-bottom:1px solid var(--border)">🏠 <strong>Espace dédié obligatoire</strong> — calme, éclairé, séparé du plateau</div>
-        <div style="padding:6px 0">📝 <strong>Liaison avec l'école</strong> — programme fourni par l'établissement scolaire</div>
+        <div style="padding:6px 0"><strong>Liaison avec l'école</strong> — programme fourni par l'établissement scolaire</div>
       </div>
     </div>
 
     <div class="card" style="margin:10px 0;background:#ede9fe;border-color:#8b5cf6">
-      <div class="card-title" style="color:#5b21b6">📞 Contacts utiles</div>
+      <div class="card-title" style="color:#5b21b6">Contacts utiles</div>
       <div style="font-size:13px;color:#5b21b6;line-height:2">
         <div>🩺 <strong>Talis Santé — Mme Abdokou</strong></div>
         <div style="font-size:12px;color:#6b7280;margin-bottom:8px;padding-left:20px">Soutien psychologique enfants · À compléter</div>
@@ -632,13 +626,13 @@
     </div>
 
     <div class="card" style="margin:10px 0">
-      <div class="card-title">📅 Jours de travail et repos hebdomadaire</div>
+      <div class="card-title">Jours de travail et repos hebdomadaire</div>
       <div style="font-size:13px;line-height:1.8;color:var(--text)">
-        <div style="padding:6px 0;border-bottom:1px solid var(--border)">🔴 <strong>Moins de 16 ans</strong> — maximum <strong>5 jours consécutifs</strong> · 2 jours de repos consécutifs obligatoires</div>
-        <div style="padding:6px 0;border-bottom:1px solid var(--border)">🟠 <strong>16 – 17 ans</strong> — maximum <strong>5 jours consécutifs</strong> · 2 jours de repos consécutifs obligatoires</div>
-        <div style="padding:6px 0;border-bottom:1px solid var(--border)">⚠️ <strong>Dérogation possible</strong> (accord d'entreprise) → repos minimum de <strong>36h dont 24h consécutives</strong></div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong>Moins de 16 ans</strong> — maximum <strong>5 jours consécutifs</strong> · 2 jours de repos consécutifs obligatoires</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong>16 – 17 ans</strong> — maximum <strong>5 jours consécutifs</strong> · 2 jours de repos consécutifs obligatoires</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong>Dérogation possible</strong> (accord d'entreprise) → repos minimum de <strong>36h dont 24h consécutives</strong></div>
         <div style="padding:6px 0;background:#fee2e2;border-radius:8px;padding:10px;margin-top:6px">
-          <div style="font-weight:700;color:#991b1b;margin-bottom:4px">🚫 Heures supplémentaires interdites</div>
+          <div style="font-weight:700;color:#991b1b;margin-bottom:4px">Heures supplémentaires interdites</div>
           <div style="color:#991b1b;font-size:12px">• <strong>Moins de 16 ans</strong> : aucune heure supplémentaire autorisée</div>
           <div style="color:#991b1b;font-size:12px">• <strong>16 – 17 ans</strong> : aucune heure supplémentaire autorisée</div>
           <div style="color:#991b1b;font-size:12px;margin-top:4px">Les mineurs ne peuvent en aucun cas dépasser leur quota journalier légal.</div>
@@ -647,13 +641,13 @@
     </div>
 
     <div class="card" style="margin:10px 0">
-      <div class="card-title">⚠️ Rappels plateau</div>
+      <div class="card-title">Rappels plateau</div>
       <div style="font-size:13px;line-height:1.8;color:var(--text)">
-        <div style="padding:4px 0">• La présence commence au <strong>début du HMC</strong></div>
-        <div style="padding:4px 0">• Le repas <strong>ne compte pas</strong> dans le quota journalier</div>
-        <div style="padding:4px 0">• Alerter la mise en scène <strong>1h avant</strong> la fin max</div>
-        <div style="padding:4px 0">• L'enfant peut refuser de tourner — <strong>ne jamais forcer</strong></div>
-        <div style="padding:4px 0">• En cas de malaise ou incident → <strong>arrêt immédiat</strong></div>
+        <div style="padding:4px 0">La présence commence au <strong>début du HMC</strong></div>
+        <div style="padding:4px 0">Le repas <strong>ne compte pas</strong> dans le quota journalier</div>
+        <div style="padding:4px 0">Alerter la mise en scène <strong>1h avant</strong> la fin max</div>
+        <div style="padding:4px 0">L'enfant peut refuser de tourner — <strong>ne jamais forcer</strong></div>
+        <div style="padding:4px 0">En cas de malaise ou incident → <strong>arrêt immédiat</strong></div>
       </div>
     </div>
 
@@ -680,7 +674,7 @@
 
     <!-- 2025 -->
     <div class="card" style="margin:10px 0">
-      <div class="card-title">📅 2025</div>
+      <div class="card-title">2025</div>
       
       <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:8px">Dép. 75, 77, 78, 91, 93, 94, 95</div>
       <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px">
@@ -725,7 +719,7 @@
 
     <!-- 2026 -->
     <div class="card" style="margin:10px 0">
-      <div class="card-title">📅 2026</div>
+      <div class="card-title">2026</div>
 
       <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:8px">Dép. 75, 77, 78, 91, 93, 94, 95</div>
       <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px">
@@ -841,11 +835,23 @@
         <option value="16-17">16 – 17 ans (max 8h)</option>
       </select>
     </div>
+    <div class="form-row"><label class="form-label">Statut</label>
+      <select class="form-input" id="new-enf-statut">
+        <option value="role">Rôle</option>
+        <option value="petit-role">Petit rôle</option>
+        <option value="silhouette-parlante">Silhouette parlante</option>
+        <option value="silhouette">Silhouette</option>
+        <option value="figurant">Figurant</option>
+        <option value="cascadeur">Cascadeur</option>
+        <option value="doublure">Doublure</option>
+      </select>
+    </div>
     <div class="form-row"><label class="form-label">Couleur</label><input type="color" class="form-input" id="new-enf-color" value="#3b82f6" style="height:40px;padding:4px;cursor:pointer"></div>
     <div class="form-row"><label class="form-label">📱 Numéro WhatsApp parent (optionnel)</label><input class="form-input" type="tel" id="new-enf-tel" placeholder="+336..."></div>
     <button class="form-btn" style="background:var(--green)" onclick="ajouterEnfant()">Ajouter cet enfant</button>
   </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 // ─── CONSTANTES ───────────────────────────────────────────────────
 const LIMITES = { '<3': 120, '3-5': 180, '6-11': 240, '12-15': 360, '16-17': 480 };
@@ -1057,6 +1063,18 @@ function saveContacts() {
 }
 
 // ─── HELPERS ──────────────────────────────────────────────────────
+function statutLabel(statut) {
+  const map = {
+    'role': 'Role',
+    'petit-role': 'Petit role',
+    'silhouette-parlante': 'Silhouette parlante',
+    'silhouette': 'Silhouette',
+    'figurant': 'Figurant',
+    'cascadeur': 'Cascadeur',
+    'doublure': 'Doublure'
+  };
+  return map[statut] || 'Role';
+}
 function toMin(t) { const [h, m] = t.split(':').map(Number); return h * 60 + m; }
 function fmt(min) {
   if (!min || min <= 0) return '—';
@@ -1104,7 +1122,7 @@ function showPage(name, btn) {
   if (name === 'calendrier') renderCal();
   if (name === 'bilan') renderBilan();
   if (name === 'resume') renderExtraContactsBtns();
-  if (name === 'live') { renderChips(); renderStatusBar(); renderLog(); updateFilmDisplay(); }
+  if (name === 'live') { renderChips(); renderStatusBar(); renderLog(); updateFilmDisplay(); renderProgressBars(); }
 }
 
 function openModal(id) { document.getElementById(id).classList.add('open'); }
@@ -1188,7 +1206,8 @@ function ajouterEnfant() {
   const couleur = document.getElementById('new-enf-color').value;
   if (!nom) { alert('Entrez un prénom.'); return; }
   const tel = document.getElementById('new-enf-tel').value.trim();
-  state.enfants.push({ id: nextId++, filmId: state.activeFilmId, nom, age, couleur, tel });
+  const statut = document.getElementById('new-enf-statut').value;
+  state.enfants.push({ id: nextId++, filmId: state.activeFilmId, nom, age, couleur, tel, statut });
   document.getElementById('new-enf-nom').value = '';
   document.getElementById('new-enf-tel').value = '';
   closeModal('modal-enfant');
@@ -1205,6 +1224,7 @@ function ouvrirModifierEnfant(id) {
   document.getElementById('edit-enf-age').value = enf.age;
   document.getElementById('edit-enf-tel').value = enf.tel || '';
   document.getElementById('edit-enf-color').value = enf.couleur || '#3b82f6';
+  document.getElementById('edit-enf-statut').value = enf.statut || 'role';
   openModal('modal-edit-enfant');
 }
 
@@ -1216,6 +1236,7 @@ function sauvegarderEnfant() {
   enf.age = document.getElementById('edit-enf-age').value;
   enf.tel = document.getElementById('edit-enf-tel').value.trim();
   enf.couleur = document.getElementById('edit-enf-color').value;
+  enf.statut = document.getElementById('edit-enf-statut').value;
   save();
   closeModal('modal-edit-enfant');
   renderEnfantsList();
@@ -1249,6 +1270,7 @@ function renderEnfantsList() {
       <div style="flex:1">
         <div style="font-size:14px;font-weight:600">${e.nom}</div>
         <div style="font-size:11px;color:var(--text-muted)">${e.age} ans · max ${fmt(LIMITES[e.age])}/jour</div>
+        <div style="font-size:11px;color:var(--purple-dark);font-weight:600">${statutLabel(e.statut)}</div>
         <div style="font-size:11px;color:${e.tel ? '#10b981' : 'var(--text-muted)'}">📱 ${e.tel || 'Pas de numéro parent'}</div>
       </div>
       <button onclick="ouvrirModifierEnfant(${e.id})" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);font-size:11px;font-weight:600;cursor:pointer">✏️</button>
@@ -1320,6 +1342,7 @@ function logAction(type) {
   save();
   renderLog();
   renderStatusBar();
+  renderProgressBars();
 
   // vibration feedback
   if (navigator.vibrate) navigator.vibrate(30);
@@ -1330,6 +1353,7 @@ function delLog(id) {
   save();
   renderLog();
   renderStatusBar();
+  renderProgressBars();
 }
 
 function clearLog() {
@@ -1338,6 +1362,7 @@ function clearLog() {
   save();
   renderLog();
   renderStatusBar();
+  renderProgressBars();
 }
 
 function clearDay() {
@@ -1346,6 +1371,7 @@ function clearDay() {
   save();
   renderLog();
   renderStatusBar();
+  renderProgressBars();
 }
 
 function renderLog() {
@@ -1374,6 +1400,39 @@ function renderLog() {
 }
 
 // ─── STATUS BAR ───────────────────────────────────────────────────
+function renderProgressBars() {
+  const el = document.getElementById('live-progress-bars');
+  if (!el) return;
+  const enfs = activeEnfants();
+  if (!enfs.length) { el.innerHTML = ''; return; }
+  const logs = todayLogs();
+  el.innerHTML = enfs.map(enf => {
+    const evs = logs.filter(l => l.enfantId === enf.id);
+    const dur = {};
+    Object.keys(TYPE_LABEL).forEach(t => dur[t] = 0);
+    evs.forEach(l => { if (l.fin) dur[l.type] = (dur[l.type]||0) + Math.max(0, toMin(l.fin) - toMin(l.heure)); });
+    const travail = WORK_TYPES.reduce((sum,t) => sum+(dur[t]||0), 0);
+    const lim = LIMITES[enf.age];
+    const pct = Math.min(100, Math.round(travail/lim*100));
+    const reste = Math.max(0, lim - travail);
+    const col = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : enf.couleur || '#10b981';
+    const statutTxt = statutLabel(enf.statut || 'role');
+    const resteLabel = pct >= 100 ? 'LIMITE ATTEINTE' : 'Reste ' + fmt(reste);
+    return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;margin-bottom:6px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">' +
+      '<div><span style="font-size:13px;font-weight:700">' + enf.nom.split(' ')[0] + '</span>' +
+      '<span style="font-size:10px;color:var(--text-muted);margin-left:6px">' + statutTxt + '</span></div>' +
+      '<div style="font-size:11px;font-weight:700;color:' + col + '">' + resteLabel + '</div>' +
+      '</div>' +
+      '<div style="background:var(--border);border-radius:4px;height:7px;overflow:hidden">' +
+      '<div style="height:100%;border-radius:4px;background:' + col + ';width:' + pct + '%"></div>' +
+      '</div>' +
+      '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:3px">' +
+      '<span>' + fmt(travail) + ' sur plateau</span><span>Max ' + fmt(lim) + '</span>' +
+      '</div></div>';
+  }).join('');
+}
+
 function renderStatusBar() {
   const sb = document.getElementById('status-bar');
   if (!sb) return;
@@ -1534,11 +1593,11 @@ function buildSummary() {
   const logs = todayLogs().sort((a, b) => a.heure.localeCompare(b.heure));
   const today = new Date();
   const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-  const dateStr = `${days[today.getDay()]} ${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
+  const months = ['janvier','fevrier','mars','avril','mai','juin','juillet','aout','septembre','octobre','novembre','decembre'];
+  const dateStr = days[today.getDay()] + ' ' + today.getDate() + ' ' + months[today.getMonth()] + ' ' + today.getFullYear();
   const commentaire = document.getElementById('commentaire-jour')?.value?.trim() || '';
 
-  let txt = `${film ? film.nom.toUpperCase() : 'TOURNAGE'}\n${dateStr}\n\n`;
+  let txt = (film ? film.nom.toUpperCase() : 'TOURNAGE') + '\n' + dateStr + '\n\n';
 
   enfs.forEach(enf => {
     const evs = logs.filter(l => l.enfantId === enf.id);
@@ -1549,42 +1608,25 @@ function buildSummary() {
     evs.forEach(l => {
       if (l.fin) dur[l.type] = (dur[l.type] || 0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
     });
-    const travail = WORK_TYPES.reduce((s, t) => s + (dur[t] || 0), 0);
-    const lim = LIMITES[enf.age];
-    const pct = Math.round(travail / lim * 100);
-    // Presence reelle = fin - debut HMC - repas (reglementation DRIEETS)
-    const debutEvt = evs.find(l => l.type === 'hmc') || evs.find(l => l.type === 'arrivee');
-    const finEvt = [...evs].reverse().find(l => l.type === 'fin');
-    let presenceDepuisHMC = 0;
-    if (debutEvt) {
-      const finM = finEvt ? toMin(finEvt.heure) : 0;
-      const debM = toMin(debutEvt.heure);
-      presenceDepuisHMC = finM > 0 ? Math.max(0, finM - debM - (dur.repas||0)) : travail + (dur.pause||0);
-    } else {
-      presenceDepuisHMC = travail + (dur.pause||0);
-    }
 
     const hArrivee = evs.find(l => l.type === 'arrivee');
+    const hHmc = evs.find(l => l.type === 'hmc');
     const hFin = [...evs].reverse().find(l => l.type === 'fin');
     const hRepas = evs.find(l => l.type === 'repas');
 
-    txt += enf.nom + '\n';
-    if (hArrivee)     txt += 'Arrivee : ' + hArrivee.heure + '\n';
-    if (dur.hmc)      txt += 'HMC : ' + fmt(dur.hmc) + '\n';
+    txt += enf.nom + ' — ' + statutLabel(enf.statut || 'role') + '\n';
+    if (hArrivee) txt += 'Debut : ' + hArrivee.heure + '\n';
     if (dur.tournage) txt += 'Tournage : ' + fmt(dur.tournage) + '\n';
-    if (dur.pause)    txt += 'Pause : ' + fmt(dur.pause) + '\n';
-    if (hRepas)       txt += 'Repas : ' + hRepas.heure + (hRepas.fin ? ' - ' + hRepas.fin : '') + '\n';
-    if (dur.attente)  txt += 'Attente : ' + fmt(dur.attente) + '\n';
-    if (dur.cours)    txt += 'Cours : ' + fmt(dur.cours) + '\n';
-    if (dur.cascade)  txt += 'Cascade : ' + fmt(dur.cascade) + '\n';
-    if (hFin)         txt += 'Fin : ' + hFin.heure + '\n';
-    txt += 'Presence : ' + fmt(presenceDepuisHMC) + ' / ' + fmt(lim) + '\n\n';
+    if (dur.pause) txt += 'Pause : ' + fmt(dur.pause) + '\n';
+    if (dur.attente) txt += 'Temps d’attente : ' + fmt(dur.attente) + '\n';
+    if (hRepas) txt += 'Repas : ' + hRepas.heure + (hRepas.fin ? ' - ' + hRepas.fin : '') + '\n';
+    if (dur.cours) txt += 'Cours : ' + fmt(dur.cours) + '\n';
+    if (hFin) txt += 'Fin : ' + hFin.heure + '\n';
+    txt += '\n';
   });
 
-  if (commentaire) {
-    txt += 'Note : ' + commentaire + '\n\n';
-  }
-  txt += `— Liv ;-)`;
+  if (commentaire) txt += 'Observation : ' + commentaire + '\n\n';
+  txt += '— Liv ;-)';
   return txt;
 }
 
@@ -1686,7 +1728,7 @@ function renderResume() {
   const logs = todayLogs();
   const alertDiv = document.getElementById('resume-alerts');
   const metrics = document.getElementById('resume-metrics');
-  const chrono = document.getElementById('chrono-enfants');
+
 
   let alerts = '';
   let totTournage = 0, present = new Set();
@@ -2448,7 +2490,7 @@ function renderBilan() {
     stats.forEach(s => {
       const col = s.pct >= 100 ? '#fee2e2' : s.pct >= 80 ? '#fef3c7' : '';
       html += '<tr style="border-bottom:1px solid var(--border);' + (col ? 'background:' + col : '') + '">';
-      html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '</td>';
+      html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '<br><span style="font-size:10px;font-weight:400;color:var(--text-muted)">' + statutLabel(s.enf.statut || 'role') + '</span></td>';
       html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
       html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
@@ -2539,6 +2581,7 @@ async function initApp() {
     renderChips();
     renderLog();
     renderStatusBar();
+    renderProgressBars();
     updateFilmDisplay();
     renderContactsExtra();
     renderExtraContactsBtns();
@@ -2590,6 +2633,7 @@ async function initApp() {
     renderChips();
     renderLog();
     renderStatusBar();
+    renderProgressBars();
     updateFilmDisplay();
     renderContactsExtra();
     renderExtraContactsBtns();
@@ -2723,6 +2767,17 @@ if ('serviceWorker' in navigator) {
         <option value="6-11">6 – 11 ans (max 4h)</option>
         <option value="12-15">12 – 15 ans (max 6h)</option>
         <option value="16-17">16 – 17 ans (max 8h)</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">Statut</label>
+      <select class="form-input" id="edit-enf-statut">
+        <option value="role">Rôle</option>
+        <option value="petit-role">Petit rôle</option>
+        <option value="silhouette-parlante">Silhouette parlante</option>
+        <option value="silhouette">Silhouette</option>
+        <option value="figurant">Figurant</option>
+        <option value="cascadeur">Cascadeur</option>
+        <option value="doublure">Doublure</option>
       </select>
     </div>
     <div class="form-row"><label class="form-label">📱 Numéro WhatsApp parent</label><input class="form-input" type="tel" id="edit-enf-tel" placeholder="+336..."></div>
