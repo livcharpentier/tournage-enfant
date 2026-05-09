@@ -269,8 +269,9 @@
       <div style="font-size:18px;font-family:'Fredoka One',cursive;opacity:.9;letter-spacing:.1em">Liv</div>
       <div id="live-date-top" style="font-size:12px;opacity:.6;text-align:right"></div>
       <div style="display:flex;align-items:center;gap:4px">
-        <button id="btn-scolaire" onclick="toggleVacances(false)" style="background:rgba(255,255,255,.15);border:none;color:#fff;font-size:10px;padding:4px 7px;border-radius:6px;cursor:pointer">Scolaire</button>
-        <button id="btn-vacances" onclick="toggleVacances(true)" style="background:rgba(255,255,255,.15);border:none;color:#fff;font-size:10px;padding:4px 7px;border-radius:6px;cursor:pointer">Vacances</button>
+        <span id="btn-auto-periode" onclick="toggleVacances(null)" style="background:rgba(59,130,246,.3);border:none;color:#fff;font-size:10px;padding:4px 8px;border-radius:6px;cursor:pointer;white-space:nowrap">Auto</span>
+        <button id="btn-scolaire" onclick="toggleVacances(false)" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.6);font-size:10px;padding:4px 6px;border-radius:6px;cursor:pointer">S</button>
+        <button id="btn-vacances" onclick="toggleVacances(true)" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.6);font-size:10px;padding:4px 6px;border-radius:6px;cursor:pointer">V</button>
       </div>
       <button onclick="if(confirm('Se déconnecter ?'))sbLogout()" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.5);font-size:12px;padding:5px 8px;border-radius:6px;cursor:pointer">🔒</button>
     </div>
@@ -343,28 +344,6 @@
   </div>
 </div>
 
-<div id="page-planning" class="page">
-  <div class="page-header">
-    <div class="page-title">Planning</div>
-    <div class="page-sub" id="planning-film-name">Vue chronologique de la journée</div>
-  </div>
-  <div class="scroll-content">
-    <div style="display:flex;gap:6px;padding:10px 12px;align-items:center;flex-wrap:wrap">
-      <input type="time" id="gs" value="06:00" style="width:85px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text)">
-      <span style="font-size:12px;color:var(--text-muted)">→</span>
-      <input type="time" id="ge" value="22:00" style="width:85px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text)">
-      <button onclick="renderPlanning()" style="padding:6px 12px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer">OK</button>
-    </div>
-    <div class="card">
-      <div class="card-title">Timeline</div>
-      <div class="gantt-wrap"><div class="gantt-inner" id="gantt-rows"></div></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Progression légale</div>
-      <div id="prog-bars"></div>
-    </div>
-  </div>
-</div>
 
 <div id="page-resume" class="page">
   <div class="page-header">
@@ -645,6 +624,28 @@
     </div>
 
     <div class="card" style="margin:10px 0">
+      <div class="card-title">Repos obligatoire</div>
+      <div style="font-size:13px;color:var(--text)">
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)">
+          <strong>Repos quotidien</strong><br>
+          <span style="color:#1d4ed8">Moins de 16 ans</span> — minimum <strong>14h consécutives</strong> entre deux journées<br>
+          <span style="color:#1d4ed8">16-18 ans</span> — minimum <strong>12h consécutives</strong>
+        </div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)">
+          <strong>Repos hebdomadaire</strong><br>
+          2 jours consécutifs incluant le dimanche<br>
+          <span style="font-size:11px;color:var(--text-muted)">Dérogation possible : 36h dont 24h consécutives</span>
+        </div>
+        <div style="padding:6px 0;background:#fef3c7;border-radius:8px;padding:10px;margin-top:6px">
+          <strong>Règle des 50% pendant les vacances</strong><br>
+          L'enfant ne peut pas travailler plus de la <strong>moitié</strong> de la durée totale de chaque période de vacances scolaires.<br>
+          <span style="color:#92400e;font-size:12px">Été : un mois entier de repos obligatoire (juillet OU août complet)</span><br>
+          <span style="color:#92400e;font-size:12px">Cette règle s'applique quel que soit le nombre d'employeurs</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin:10px 0">
       <div class="card-title">Rappels plateau</div>
       <div style="font-size:13px;line-height:1.8;color:var(--text)">
         <div style="padding:4px 0">La présence commence au <strong>début du HMC</strong></div>
@@ -784,10 +785,7 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/></svg>
     Live
   </button>
-  <button class="nav-btn" onclick="showPage('planning',this)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-    Planning
-  </button>
+
   <button class="nav-btn" onclick="showPage('calendrier',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8" y2="14" stroke-width="3"/><line x1="12" y1="14" x2="12" y2="14" stroke-width="3"/><line x1="16" y1="14" x2="16" y2="14" stroke-width="3"/></svg>
     Agenda
@@ -839,6 +837,12 @@
         <option value="16-17">16 – 17 ans (max 8h)</option>
       </select>
     </div>
+    <div class="form-row"><label class="form-label">Genre</label>
+      <select class="form-input" id="new-enf-genre">
+        <option value="m">Garçon</option>
+        <option value="f">Fille</option>
+      </select>
+    </div>
     <div class="form-row"><label class="form-label">Statut</label>
       <select class="form-input" id="new-enf-statut">
         <option value="role">Rôle</option>
@@ -848,6 +852,9 @@
         <option value="figurant">Figurant</option>
         <option value="cascadeur">Cascadeur</option>
         <option value="doublure">Doublure</option>
+        <option value="doublure-image">Doublure image</option>
+        <option value="danseur">Danseur</option>
+        <option value="artiste-cirque">Artiste de cirque</option>
       </select>
     </div>
     <div class="form-row"><label class="form-label">Couleur</label><input type="color" class="form-input" id="new-enf-color" value="#3b82f6" style="height:40px;padding:4px;cursor:pointer"></div>
@@ -861,9 +868,56 @@
 // Limites selon période (scolaire ou vacances)
 const LIMITES_SCOLAIRE = { '<3': 60, '3-5': 120, '6-11': 180, '12-15': 240, '16-17': 480 };
 const LIMITES_VACANCES = { '<3': 60, '3-5': 120, '6-11': 240, '12-15': 360, '16-17': 480 };
-let modeVacances = false;
 
-function getLimites() { return modeVacances ? LIMITES_VACANCES : LIMITES_SCOLAIRE; }
+// Vacances scolaires Zone C (Paris/Ile-de-France) 2025-2026
+const VACANCES_ZONE_C = [
+  { debut: '2025-10-18', fin: '2025-11-03', label: 'Toussaint 2025' },
+  { debut: '2025-12-20', fin: '2026-01-05', label: 'Noël 2025' },
+  { debut: '2026-02-14', fin: '2026-03-02', label: 'Hiver 2026' },
+  { debut: '2026-04-18', fin: '2026-05-04', label: 'Printemps 2026' },
+  { debut: '2026-07-04', fin: '2026-09-01', label: 'Été 2026' },
+  // Mercredis et week-ends sont toujours hors scolaire
+];
+
+// Jours fériés 2025-2026
+const JOURS_FERIES = [
+  '2025-11-01','2025-11-11','2025-12-25',
+  '2026-01-01','2026-04-06','2026-05-01','2026-05-08','2026-05-14','2026-05-25','2026-06-15','2026-07-14','2026-08-15','2026-11-01','2026-11-11','2026-12-25'
+];
+
+function estEnVacances(dateStr) {
+  // Si mode manuel forcé, utiliser ça
+  if (modeVacancesForce !== null) return modeVacancesForce;
+  
+  const d = dateStr ? new Date(dateStr) : new Date();
+  const str = d.toISOString().slice(0,10);
+  const jour = d.getDay(); // 0=dim, 6=sam
+  
+  // Week-end = vacances pour le calcul
+  if (jour === 0 || jour === 6) return true;
+  // Jour férié = vacances
+  if (JOURS_FERIES.includes(str)) return true;
+  // Périodes de vacances
+  return VACANCES_ZONE_C.some(v => str >= v.debut && str <= v.fin);
+}
+
+function getPeriodeLabel(dateStr) {
+  if (modeVacancesForce !== null) return modeVacancesForce ? 'Vacances (forcé)' : 'Scolaire (forcé)';
+  const d = dateStr ? new Date(dateStr) : new Date();
+  const str = d.toISOString().slice(0,10);
+  const v = VACANCES_ZONE_C.find(v => str >= v.debut && str <= v.fin);
+  if (v) return v.label;
+  const jour = d.getDay();
+  if (jour === 0 || jour === 6) return 'Week-end';
+  return 'Période scolaire';
+}
+
+let modeVacancesForce = null; // null = auto, true = vacances forcé, false = scolaire forcé
+let modeVacances = false; // calculé automatiquement
+
+function getLimites(dateStr) { 
+  return estEnVacances(dateStr) ? LIMITES_VACANCES : LIMITES_SCOLAIRE; 
+}
 const LIMITES = new Proxy({}, { get: (t, k) => getLimites()[k] });
 const TYPE_LABEL = {
   arrivee: 'Arrivée', hmc: 'HMC/Prép.', tournage: 'Tournage',
@@ -1074,24 +1128,34 @@ function saveContacts() {
 
 // ─── MODE SCOLAIRE / VACANCES ────────────────────────────────────
 function toggleVacances(val) {
-  modeVacances = val;
-  localStorage.setItem('modeVacances', val ? '1' : '0');
+  // null = auto, true/false = forcé
+  if (modeVacancesForce === val) {
+    modeVacancesForce = null; // toggle off = retour auto
+  } else {
+    modeVacancesForce = val;
+  }
+  modeVacances = estEnVacances();
+  localStorage.setItem('modeVacancesForce', modeVacancesForce === null ? 'auto' : (modeVacancesForce ? '1' : '0'));
   renderStatusBar();
   renderProgressBars();
-  renderResume();
   updatePeriodeLabel();
 }
 
 function updatePeriodeLabel() {
-  const el = document.getElementById('periode-label');
-  if (el) {
-    el.textContent = modeVacances ? 'Vacances scolaires' : 'Période scolaire';
-    el.style.background = modeVacances ? '#10b981' : '#3b82f6';
-  }
+  modeVacances = estEnVacances();
+  const label = getPeriodeLabel();
+  const isVac = modeVacances;
+  
   const btn1 = document.getElementById('btn-scolaire');
   const btn2 = document.getElementById('btn-vacances');
-  if (btn1) btn1.style.opacity = modeVacances ? '0.5' : '1';
-  if (btn2) btn2.style.opacity = modeVacances ? '1' : '0.5';
+  const autoEl = document.getElementById('btn-auto-periode');
+  
+  if (btn1) btn1.style.opacity = (!isVac && modeVacancesForce !== null) ? '1' : '0.6';
+  if (btn2) btn2.style.opacity = (isVac && modeVacancesForce !== null) ? '1' : '0.6';
+  if (autoEl) {
+    autoEl.textContent = (modeVacancesForce === null ? '● ' : '') + label;
+    autoEl.style.background = isVac ? 'rgba(16,185,129,.3)' : 'rgba(59,130,246,.3)';
+  }
 }
 
 // ─── HELPERS ──────────────────────────────────────────────────────
@@ -1148,7 +1212,7 @@ function showPage(name, btn) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   if (btn) btn.classList.add('active');
-  if (name === 'planning') renderPlanning();
+  if (name === 'planning') 
   if (name === 'resume') renderResume();
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
@@ -1239,7 +1303,8 @@ function ajouterEnfant() {
   if (!nom) { alert('Entrez un prénom.'); return; }
   const tel = document.getElementById('new-enf-tel').value.trim();
   const statut = document.getElementById('new-enf-statut').value;
-  state.enfants.push({ id: nextId++, filmId: state.activeFilmId, nom, age, couleur, tel, statut });
+  const genre = document.getElementById('new-enf-genre').value;
+  state.enfants.push({ id: nextId++, filmId: state.activeFilmId, nom, age, couleur, tel, statut, genre });
   document.getElementById('new-enf-nom').value = '';
   document.getElementById('new-enf-tel').value = '';
   closeModal('modal-enfant');
@@ -1257,6 +1322,7 @@ function ouvrirModifierEnfant(id) {
   document.getElementById('edit-enf-tel').value = enf.tel || '';
   document.getElementById('edit-enf-color').value = enf.couleur || '#3b82f6';
   document.getElementById('edit-enf-statut').value = enf.statut || 'role';
+  document.getElementById('edit-enf-genre').value = enf.genre || 'm';
   openModal('modal-edit-enfant');
 }
 
@@ -1269,6 +1335,7 @@ function sauvegarderEnfant() {
   enf.tel = document.getElementById('edit-enf-tel').value.trim();
   enf.couleur = document.getElementById('edit-enf-color').value;
   enf.statut = document.getElementById('edit-enf-statut').value;
+  enf.genre = document.getElementById('edit-enf-genre').value;
   save();
   closeModal('modal-edit-enfant');
   renderEnfantsList();
@@ -1448,7 +1515,7 @@ function renderProgressBars() {
     const pct = Math.min(100, Math.round(travail/lim*100));
     const reste = Math.max(0, lim - travail);
     const col = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : enf.couleur || '#10b981';
-    const statutTxt = statutLabel(enf.statut || 'role');
+    const statutTxt = statutLabel(enf.statut || 'role', enf.genre);
     const resteLabel = pct >= 100 ? 'LIMITE ATTEINTE' : 'Reste ' + fmt(reste);
     return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;margin-bottom:6px">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">' +
@@ -1546,79 +1613,6 @@ function parseVoice(text) {
 }
 
 // ─── PLANNING ─────────────────────────────────────────────────────
-function renderPlanning() {
-  const sv = document.getElementById('gs')?.value || '06:00';
-  const ev = document.getElementById('ge')?.value || '22:00';
-  const sm = toMin(sv), em = toMin(ev), span = em - sm;
-  if (span <= 0) return;
-
-  const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
-  const nowPct = Math.min(100, Math.max(0, (nowMin - sm) / span * 100));
-
-  const ticks = [];
-  let h = Math.ceil(sm / 60);
-  while (h * 60 <= em) { ticks.push(h); h++; }
-
-  const enfs = activeEnfants();
-  const logs = todayLogs();
-  const rows = document.getElementById('gantt-rows');
-  if (!rows) return;
-
-  let html = `<div class="gantt-row"><div class="gantt-name-empty"></div><div class="gantt-ticks">${ticks.map(h => {
-    const p = ((h * 60 - sm) / span * 100).toFixed(1);
-    return `<span class="gantt-tick" style="left:${p}%">${String(h).padStart(2,'0')}h</span>`;
-  }).join('')}</div></div>`;
-
-  enfs.forEach(e => {
-    const evs = logs.filter(l => l.enfantId === e.id).sort((a, b) => a.heure.localeCompare(b.heure));
-    const lim = LIMITES[e.age];
-    const limPct = Math.min(100, lim / span * 100).toFixed(1);
-
-    const blocks = evs.map(l => {
-      const ls = Math.max(0, toMin(l.heure) - sm);
-      const le = l.fin ? toMin(l.fin) - sm : nowMin - sm;
-      const left = (ls / span * 100).toFixed(1);
-      const width = Math.max(0.5, ((le - ls) / span * 100)).toFixed(1);
-      if (parseFloat(left) >= 100) return '';
-      const [bg] = TYPE_COLOR[l.type] || ['#f3f4f6'];
-      return `<div class="gantt-block" style="left:${left}%;width:${Math.min(100 - parseFloat(left), parseFloat(width))}%;background:${bg}" title="${TYPE_LABEL[l.type]} ${l.heure}${l.fin ? '→' + l.fin : ''}"></div>`;
-    }).join('');
-
-    html += `<div class="gantt-row">
-      <div class="gantt-name" style="display:flex;align-items:center;gap:4px">
-        <div style="width:20px;height:20px;border-radius:50%;background:${e.couleur}22;color:${e.couleur};font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${initials(e.nom)}</div>
-        ${e.nom.split(' ')[0]}
-      </div>
-      <div class="gantt-track">
-        <div class="gantt-limit" style="width:${limPct}%"></div>
-        ${blocks}
-        <div class="gantt-now" style="left:${nowPct.toFixed(1)}%"></div>
-      </div>
-    </div>`;
-  });
-
-  rows.innerHTML = html || '<div class="empty">Aucun enfant</div>';
-
-  // progress bars
-  const pb = document.getElementById('prog-bars');
-  if (pb) pb.innerHTML = enfs.map(e => {
-    const lim = LIMITES[e.age];
-    const travail = logs.filter(l => l.enfantId === e.id && WORK_TYPES.includes(l.type) && l.fin)
-      .reduce((s, l) => s + Math.max(0, toMin(l.fin) - toMin(l.heure)), 0);
-    const pct = Math.min(100, Math.round(travail / lim * 100));
-    const col = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
-    return `<div class="prog-row">
-      <div class="prog-info">
-        <div class="name">${e.nom.split(' ')[0]}</div>
-        <div class="sub">${fmt(travail)} / ${fmt(lim)}</div>
-      </div>
-      <div class="prog-bar-wrap"><div class="prog-bar" style="width:${pct}%;background:${col}"></div></div>
-      <div class="prog-pct" style="color:${col}">${pct}%</div>
-    </div>`;
-  }).join('') || '<div class="empty">Aucun enfant</div>';
-}
-
-// ─── RÉSUMÉ ───────────────────────────────────────────────────────
 function buildSummary() {
   const film = activeFilm();
   const enfs = activeEnfants();
@@ -1646,7 +1640,7 @@ function buildSummary() {
     const hFin = [...evs].reverse().find(l => l.type === 'fin');
     const hRepas = evs.find(l => l.type === 'repas');
 
-    txt += enf.nom + ' — ' + statutLabel(enf.statut || 'role') + '\n';
+    txt += enf.nom + ' — ' + statutLabel(enf.statut || 'role', enf.genre) + '\n';
     if (hArrivee) txt += 'Debut : ' + hArrivee.heure + '\n';
     if (dur.tournage) txt += 'Tournage : ' + fmt(dur.tournage) + '\n';
     if (dur.pause) txt += 'Pause : ' + fmt(dur.pause) + '\n';
@@ -2522,7 +2516,7 @@ function renderBilan() {
     stats.forEach(s => {
       const col = s.pct >= 100 ? '#fee2e2' : s.pct >= 80 ? '#fef3c7' : '';
       html += '<tr style="border-bottom:1px solid var(--border);' + (col ? 'background:' + col : '') + '">';
-      html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '<br><span style="font-size:10px;font-weight:400;color:var(--text-muted)">' + statutLabel(s.enf.statut || 'role') + '</span></td>';
+      html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '<br><span style="font-size:10px;font-weight:400;color:var(--text-muted)">' + statutLabel(s.enf.statut || 'role', s.enf.genre) + '</span></td>';
       html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
       html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
@@ -2609,8 +2603,12 @@ function genererPDFBilan() {
 // ─── INIT ─────────────────────────────────────────────────────────
 async function initApp() {
   await load();
-  // Restaurer mode vacances
-  modeVacances = localStorage.getItem('modeVacances') === '1';
+  // Mode vacances : auto par défaut
+  const savedMode = localStorage.getItem('modeVacancesForce');
+  if (savedMode === '1') modeVacancesForce = true;
+  else if (savedMode === '0') modeVacancesForce = false;
+  else modeVacancesForce = null;
+  modeVacances = estEnVacances();
   try {
     renderChips();
     renderLog();
@@ -2651,7 +2649,7 @@ setTimeout(closeSplash, 3000);
 // refresh planning + status every minute
 setInterval(() => {
   const activePage = document.querySelector('.page.active');
-  if (activePage && activePage.id === 'page-planning') renderPlanning();
+  if (activePage && activePage.id === 'page-planning') 
   renderStatusBar();
 }, 60000);
 
@@ -2664,8 +2662,12 @@ if ('serviceWorker' in navigator) {
 // ─── INIT ─────────────────────────────────────────────────────────
 async function initApp() {
   await load();
-  // Restaurer mode vacances
-  modeVacances = localStorage.getItem('modeVacances') === '1';
+  // Mode vacances : auto par défaut
+  const savedMode = localStorage.getItem('modeVacancesForce');
+  if (savedMode === '1') modeVacancesForce = true;
+  else if (savedMode === '0') modeVacancesForce = false;
+  else modeVacancesForce = null;
+  modeVacances = estEnVacances();
   try {
     renderChips();
     renderLog();
@@ -2706,7 +2708,7 @@ setTimeout(closeSplash, 3000);
 // refresh planning + status every minute
 setInterval(() => {
   const activePage = document.querySelector('.page.active');
-  if (activePage && activePage.id === 'page-planning') renderPlanning();
+  if (activePage && activePage.id === 'page-planning') 
   renderStatusBar();
 }, 60000);
 
@@ -2807,6 +2809,12 @@ if ('serviceWorker' in navigator) {
         <option value="16-17">16 – 17 ans (max 8h)</option>
       </select>
     </div>
+    <div class="form-row"><label class="form-label">Genre</label>
+      <select class="form-input" id="edit-enf-genre">
+        <option value="m">Garçon</option>
+        <option value="f">Fille</option>
+      </select>
+    </div>
     <div class="form-row"><label class="form-label">Statut</label>
       <select class="form-input" id="edit-enf-statut">
         <option value="role">Rôle</option>
@@ -2816,6 +2824,9 @@ if ('serviceWorker' in navigator) {
         <option value="figurant">Figurant</option>
         <option value="cascadeur">Cascadeur</option>
         <option value="doublure">Doublure</option>
+        <option value="doublure-image">Doublure image</option>
+        <option value="danseur">Danseur</option>
+        <option value="artiste-cirque">Artiste de cirque</option>
       </select>
     </div>
     <div class="form-row"><label class="form-label">📱 Numéro WhatsApp parent</label><input class="form-input" type="tel" id="edit-enf-tel" placeholder="+336..."></div>
