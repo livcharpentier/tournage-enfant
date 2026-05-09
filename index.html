@@ -268,6 +268,10 @@
     <div style="display:flex;align-items:center;gap:8px">
       <div style="font-size:18px;font-family:'Fredoka One',cursive;opacity:.9;letter-spacing:.1em">Liv</div>
       <div id="live-date-top" style="font-size:12px;opacity:.6;text-align:right"></div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <button id="btn-scolaire" onclick="toggleVacances(false)" style="background:rgba(255,255,255,.15);border:none;color:#fff;font-size:10px;padding:4px 7px;border-radius:6px;cursor:pointer">Scolaire</button>
+        <button id="btn-vacances" onclick="toggleVacances(true)" style="background:rgba(255,255,255,.15);border:none;color:#fff;font-size:10px;padding:4px 7px;border-radius:6px;cursor:pointer">Vacances</button>
+      </div>
       <button onclick="if(confirm('Se déconnecter ?'))sbLogout()" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.5);font-size:12px;padding:5px 8px;border-radius:6px;cursor:pointer">🔒</button>
     </div>
   </div>
@@ -854,7 +858,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 // ─── CONSTANTES ───────────────────────────────────────────────────
-const LIMITES = { '<3': 120, '3-5': 180, '6-11': 240, '12-15': 360, '16-17': 480 };
+// Limites selon période (scolaire ou vacances)
+const LIMITES_SCOLAIRE = { '<3': 60, '3-5': 120, '6-11': 180, '12-15': 240, '16-17': 480 };
+const LIMITES_VACANCES = { '<3': 60, '3-5': 120, '6-11': 240, '12-15': 360, '16-17': 480 };
+let modeVacances = false;
+
+function getLimites() { return modeVacances ? LIMITES_VACANCES : LIMITES_SCOLAIRE; }
+const LIMITES = new Proxy({}, { get: (t, k) => getLimites()[k] });
 const TYPE_LABEL = {
   arrivee: 'Arrivée', hmc: 'HMC/Prép.', tournage: 'Tournage',
   pause: 'Pause', repas: 'Repas', attente: 'Hors plateau',
@@ -1060,6 +1070,28 @@ function saveContacts() {
   if (ws) ws.value = state.contacts.scripte;
   if (wp) wp.value = state.contacts.prod;
   save();
+}
+
+// ─── MODE SCOLAIRE / VACANCES ────────────────────────────────────
+function toggleVacances(val) {
+  modeVacances = val;
+  localStorage.setItem('modeVacances', val ? '1' : '0');
+  renderStatusBar();
+  renderProgressBars();
+  renderResume();
+  updatePeriodeLabel();
+}
+
+function updatePeriodeLabel() {
+  const el = document.getElementById('periode-label');
+  if (el) {
+    el.textContent = modeVacances ? 'Vacances scolaires' : 'Période scolaire';
+    el.style.background = modeVacances ? '#10b981' : '#3b82f6';
+  }
+  const btn1 = document.getElementById('btn-scolaire');
+  const btn2 = document.getElementById('btn-vacances');
+  if (btn1) btn1.style.opacity = modeVacances ? '0.5' : '1';
+  if (btn2) btn2.style.opacity = modeVacances ? '1' : '0.5';
 }
 
 // ─── HELPERS ──────────────────────────────────────────────────────
@@ -2577,6 +2609,8 @@ function genererPDFBilan() {
 // ─── INIT ─────────────────────────────────────────────────────────
 async function initApp() {
   await load();
+  // Restaurer mode vacances
+  modeVacances = localStorage.getItem('modeVacances') === '1';
   try {
     renderChips();
     renderLog();
@@ -2585,6 +2619,7 @@ async function initApp() {
     updateFilmDisplay();
     renderContactsExtra();
     renderExtraContactsBtns();
+    updatePeriodeLabel();
   } catch(e) { console.error('Init error:', e); }
 }
 
@@ -2629,6 +2664,8 @@ if ('serviceWorker' in navigator) {
 // ─── INIT ─────────────────────────────────────────────────────────
 async function initApp() {
   await load();
+  // Restaurer mode vacances
+  modeVacances = localStorage.getItem('modeVacances') === '1';
   try {
     renderChips();
     renderLog();
@@ -2637,6 +2674,7 @@ async function initApp() {
     updateFilmDisplay();
     renderContactsExtra();
     renderExtraContactsBtns();
+    updatePeriodeLabel();
   } catch(e) { console.error('Init error:', e); }
 }
 
