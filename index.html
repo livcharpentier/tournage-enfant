@@ -422,6 +422,16 @@
     </div>
     <div class="card">
       <div class="card-title">Enfants du film actif</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        <button id="ftab-tous" onclick="setFiltreFilms('tous')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--blue);background:var(--blue);color:#fff;font-weight:600;cursor:pointer">Tous</button>
+        <button id="ftab-role" onclick="setFiltreFilms('role')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Rôle</button>
+        <button id="ftab-petit-role" onclick="setFiltreFilms('petit-role')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Petit rôle</button>
+        <button id="ftab-silhouette-parlante" onclick="setFiltreFilms('silhouette-parlante')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Silhouette parl.</button>
+        <button id="ftab-silhouette" onclick="setFiltreFilms('silhouette')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Silhouette</button>
+        <button id="ftab-figurant" onclick="setFiltreFilms('figurant')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Figurant(e)</button>
+        <button id="ftab-cascadeur" onclick="setFiltreFilms('cascadeur')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Cascadeur</button>
+        <button id="ftab-doublure" onclick="setFiltreFilms('doublure')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Doublure</button>
+      </div>
       <div id="enfants-list"></div>
       <button class="form-btn" onclick="openModal('modal-enfant')" style="margin-top:8px;background:var(--green)">+ Ajouter un enfant</button>
     </div>
@@ -959,6 +969,22 @@ let state = {
 
 let selectedEnfants = [];  // [] = tous
 let filtreStatut = 'tous'; // 'tous', 'role', 'figurant'
+let filtreFilms = 'tous'; // filtre dans la page Films
+
+function setFiltreFilms(f) {
+  filtreFilms = f;
+  // Mettre à jour les boutons
+  const tabs = ['tous','role','petit-role','silhouette-parlante','silhouette','figurant','cascadeur','doublure'];
+  tabs.forEach(k => {
+    const btn = document.getElementById('ftab-' + k);
+    if (!btn) return;
+    const active = k === f;
+    btn.style.background = active ? 'var(--blue)' : 'var(--surface)';
+    btn.style.color = active ? '#fff' : 'var(--text-muted)';
+    btn.style.borderColor = active ? 'var(--blue)' : 'var(--border)';
+  });
+  renderEnfantsList();
+}
 
 function setFiltreStatut(f) {
   filtreStatut = f;
@@ -1413,9 +1439,11 @@ function supprimerEnfant(id) {
 function renderEnfantsList() {
   const el = document.getElementById('enfants-list');
   if (!el) return;
-  const enfs = activeEnfants();
+  const tous = activeEnfants();
+  const enfs = filtreFilms === 'tous' ? tous : tous.filter(e => (e.statut || 'role') === filtreFilms);
   if (!enfs.length) {
-    el.innerHTML = '<div class="empty"><div class="empty-icon">👦</div>Aucun enfant sur ce film.</div>';
+    const msg = filtreFilms === 'tous' ? 'Aucun enfant sur ce film.' : 'Aucun enfant avec ce statut.';
+    el.innerHTML = '<div class="empty"><div class="empty-icon">👦</div>' + msg + '</div>';
     return;
   }
   el.innerHTML = enfs.map(e => `
