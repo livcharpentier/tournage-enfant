@@ -282,7 +282,14 @@
       <div class="clock-date" id="live-date"></div>
     </div>
     <div style="padding:0 12px 4px">
-      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Pour qui ?</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em">Pour qui ?</div>
+        <div style="display:flex;gap:6px">
+          <button id="filtre-tous" onclick="setFiltreStatut('tous')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;font-weight:600;cursor:pointer">Tous</button>
+          <button id="filtre-role" onclick="setFiltreStatut('role')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Rôles</button>
+          <button id="filtre-figurant" onclick="setFiltreStatut('figurant')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Figurants</button>
+        </div>
+      </div>
       <div class="chips-wrap" id="enfant-chips" style="padding:0"></div>
     </div>
     <div style="padding:8px 12px 4px">
@@ -942,6 +949,31 @@ let state = {
 };
 
 let selectedEnfants = [];  // [] = tous
+let filtreStatut = 'tous'; // 'tous', 'role', 'figurant'
+
+function setFiltreStatut(f) {
+  filtreStatut = f;
+  // Mettre à jour les boutons
+  ['tous','role','figurant'].forEach(k => {
+    const btn = document.getElementById('filtre-' + k);
+    if (!btn) return;
+    const active = k === f;
+    btn.style.background = active ? 'var(--blue)' : 'var(--surface)';
+    btn.style.color = active ? '#fff' : 'var(--text-muted)';
+    btn.style.borderColor = active ? 'var(--blue)' : 'var(--border)';
+  });
+  selectedEnfants = [];
+  renderChips();
+  renderProgressBars();
+}
+
+function enfantsFiltres() {
+  const enfs = activeEnfants();
+  if (filtreStatut === 'tous') return enfs;
+  if (filtreStatut === 'role') return enfs.filter(e => ['role','petit-role','silhouette-parlante','silhouette','doublure','doublure-image','cascadeur','danseur','artiste-cirque'].includes(e.statut || 'role'));
+  if (filtreStatut === 'figurant') return enfs.filter(e => e.statut === 'figurant');
+  return enfs;
+}
 let recognition = null;
 let isListening = false;
 let nextId = 1;
@@ -1158,17 +1190,21 @@ function updatePeriodeLabel() {
 }
 
 // ─── HELPERS ──────────────────────────────────────────────────────
-function statutLabel(statut) {
+function statutLabel(statut, genre) {
+  const f = genre === 'f';
   const map = {
-    'role': 'Role',
-    'petit-role': 'Petit role',
+    'role': 'Rôle',
+    'petit-role': 'Petit rôle',
     'silhouette-parlante': 'Silhouette parlante',
     'silhouette': 'Silhouette',
-    'figurant': 'Figurant',
-    'cascadeur': 'Cascadeur',
-    'doublure': 'Doublure'
+    'figurant': f ? 'Figurante' : 'Figurant',
+    'cascadeur': f ? 'Cascadeuse' : 'Cascadeur',
+    'doublure': 'Doublure',
+    'doublure-image': 'Doublure image',
+    'danseur': f ? 'Danseuse' : 'Danseur',
+    'artiste-cirque': 'Artiste de cirque'
   };
-  return map[statut] || 'Role';
+  return map[statut] || 'Rôle';
 }
 function toMin(t) { const [h, m] = t.split(':').map(Number); return h * 60 + m; }
 function fmt(min) {
@@ -1380,7 +1416,7 @@ function renderEnfantsList() {
 function renderChips() {
   const c = document.getElementById('enfant-chips');
   if (!c) return;
-  const enfs = activeEnfants();
+  const enfs = enfantsFiltres();
   if (!enfs.length) {
     c.innerHTML = '<div style="font-size:13px;color:var(--text-muted)">Ajoutez des enfants dans l\'onglet Films</div>';
     return;
@@ -1501,7 +1537,7 @@ function renderLog() {
 function renderProgressBars() {
   const el = document.getElementById('live-progress-bars');
   if (!el) return;
-  const enfs = activeEnfants();
+  const enfs = enfantsFiltres();
   if (!enfs.length) { el.innerHTML = ''; return; }
   const logs = todayLogs();
   el.innerHTML = enfs.map(enf => {
@@ -2834,25 +2870,6 @@ if ('serviceWorker' in navigator) {
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-edit-enfant">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-edit-enfant')">✕</button>
-    <div class="modal-title">Modifier l'enfant</div>
-    <input type="hidden" id="edit-enf-id">
-    <div class="form-row"><label class="form-label">Prenom Nom</label><input class="form-input" id="edit-enf-nom"></div>
-    <div class="form-row"><label class="form-label">Tranche age</label>
-      <select class="form-input" id="edit-enf-age">
-        <option value="<3">Moins de 3 ans (max 2h)</option>
-        <option value="3-5">3-5 ans (max 3h)</option>
-        <option value="6-11">6-11 ans (max 4h)</option>
-        <option value="12-15">12-15 ans (max 6h)</option>
-        <option value="16-17">16-17 ans (max 8h)</option>
-      </select>
-    </div>
-    <div class="form-row"><label class="form-label">Numero WhatsApp parent</label><input class="form-input" type="tel" id="edit-enf-tel" placeholder="+336..."></div>
-    <div class="form-row"><label class="form-label">Couleur</label><input type="color" class="form-input" id="edit-enf-color" style="height:40px;padding:4px;cursor:pointer"></div>
-    <button class="form-btn" style="background:var(--green)" onclick="sauvegarderEnfant()">Enregistrer</button>
-  </div>
 </div>
 
 <div class="modal-overlay" id="modal-pdf">
