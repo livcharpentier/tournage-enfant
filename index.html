@@ -287,10 +287,15 @@
     <div style="padding:0 12px 4px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
         <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em">Pour qui ?</div>
-        <div style="display:flex;gap:6px">
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
           <button id="filtre-tous" onclick="setFiltreStatut('tous')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;font-weight:600;cursor:pointer">Tous</button>
-          <button id="filtre-role" onclick="setFiltreStatut('role')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Rôles</button>
-          <button id="filtre-figurant" onclick="setFiltreStatut('figurant')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Figurants</button>
+          <button id="filtre-role" onclick="setFiltreStatut('role')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Rôle</button>
+          <button id="filtre-petit-role" onclick="setFiltreStatut('petit-role')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Petit rôle</button>
+          <button id="filtre-silhouette-parlante" onclick="setFiltreStatut('silhouette-parlante')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Silhouette parl.</button>
+          <button id="filtre-silhouette" onclick="setFiltreStatut('silhouette')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Silhouette</button>
+          <button id="filtre-figurant" onclick="setFiltreStatut('figurant')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Figurant(e)</button>
+          <button id="filtre-cascadeur" onclick="setFiltreStatut('cascadeur')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Cascadeur</button>
+          <button id="filtre-doublure" onclick="setFiltreStatut('doublure')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Doublure</button>
         </div>
       </div>
       <div class="chips-wrap" id="enfant-chips" style="padding:0"></div>
@@ -988,8 +993,8 @@ function setFiltreFilms(f) {
 
 function setFiltreStatut(f) {
   filtreStatut = f;
-  // Mettre à jour les boutons
-  ['tous','role','figurant'].forEach(k => {
+  const tabs = ['tous','role','petit-role','silhouette-parlante','silhouette','figurant','cascadeur','doublure'];
+  tabs.forEach(k => {
     const btn = document.getElementById('filtre-' + k);
     if (!btn) return;
     const active = k === f;
@@ -1005,9 +1010,7 @@ function setFiltreStatut(f) {
 function enfantsFiltres() {
   const enfs = activeEnfants();
   if (filtreStatut === 'tous') return enfs;
-  if (filtreStatut === 'role') return enfs.filter(e => ['role','petit-role','silhouette-parlante','silhouette','doublure','doublure-image','cascadeur','danseur','artiste-cirque'].includes(e.statut || 'role'));
-  if (filtreStatut === 'figurant') return enfs.filter(e => e.statut === 'figurant');
-  return enfs;
+  return enfs.filter(e => (e.statut || 'role') === filtreStatut);
 }
 let recognition = null;
 let isListening = false;
