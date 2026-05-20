@@ -268,11 +268,6 @@
     <div style="display:flex;align-items:center;gap:8px">
       <div style="font-size:18px;font-family:'Fredoka One',cursive;opacity:.9;letter-spacing:.1em">Liv</div>
       <div id="live-date-top" style="font-size:12px;opacity:.6;text-align:right"></div>
-      <div style="display:flex;align-items:center;gap:4px">
-        <span id="btn-auto-periode" onclick="toggleVacances(null)" style="background:rgba(59,130,246,.3);border:none;color:#fff;font-size:10px;padding:4px 8px;border-radius:6px;cursor:pointer;white-space:nowrap">Auto</span>
-        <button id="btn-scolaire" onclick="toggleVacances(false)" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.6);font-size:10px;padding:4px 6px;border-radius:6px;cursor:pointer">S</button>
-        <button id="btn-vacances" onclick="toggleVacances(true)" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.6);font-size:10px;padding:4px 6px;border-radius:6px;cursor:pointer">V</button>
-      </div>
       <button onclick="if(confirm('Se déconnecter ?'))sbLogout()" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.5);font-size:12px;padding:5px 8px;border-radius:6px;cursor:pointer">🔒</button>
     </div>
   </div>
@@ -280,6 +275,14 @@
     <div class="clock-block">
       <div class="clock" id="live-clock">00:00</div>
       <div class="clock-date" id="live-date"></div>
+    </div>
+    <div style="margin:0 12px 10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px">
+      <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;text-align:center">Période</div>
+      <div style="display:flex;gap:6px">
+        <button id="btn-scolaire" onclick="toggleVacances(false)" style="flex:1;padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-size:11px;font-weight:600;cursor:pointer;color:var(--text-muted)">Scolaire</button>
+        <button id="btn-auto-periode" onclick="toggleVacances(null)" style="flex:1.4;padding:8px 4px;border-radius:8px;border:1.5px solid var(--blue);background:var(--blue-light);font-size:10px;font-weight:600;cursor:pointer;color:var(--blue-dark);text-align:center">● Auto</button>
+        <button id="btn-vacances" onclick="toggleVacances(true)" style="flex:1;padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-size:11px;font-weight:600;cursor:pointer;color:var(--text-muted)">Vacances</button>
+      </div>
     </div>
     <div style="padding:0 12px 4px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
@@ -1176,16 +1179,29 @@ function updatePeriodeLabel() {
   modeVacances = estEnVacances();
   const label = getPeriodeLabel();
   const isVac = modeVacances;
-  
+  const isAuto = modeVacancesForce === null;
+
   const btn1 = document.getElementById('btn-scolaire');
   const btn2 = document.getElementById('btn-vacances');
   const autoEl = document.getElementById('btn-auto-periode');
-  
-  if (btn1) btn1.style.opacity = (!isVac && modeVacancesForce !== null) ? '1' : '0.6';
-  if (btn2) btn2.style.opacity = (isVac && modeVacancesForce !== null) ? '1' : '0.6';
+
+  if (btn1) {
+    const active = !isVac && !isAuto;
+    btn1.style.background = active ? '#1d4ed8' : 'var(--surface)';
+    btn1.style.color = active ? '#fff' : 'var(--text-muted)';
+    btn1.style.borderColor = active ? '#1d4ed8' : 'var(--border)';
+  }
+  if (btn2) {
+    const active = isVac && !isAuto;
+    btn2.style.background = active ? '#10b981' : 'var(--surface)';
+    btn2.style.color = active ? '#fff' : 'var(--text-muted)';
+    btn2.style.borderColor = active ? '#10b981' : 'var(--border)';
+  }
   if (autoEl) {
-    autoEl.textContent = (modeVacancesForce === null ? '● ' : '') + label;
-    autoEl.style.background = isVac ? 'rgba(16,185,129,.3)' : 'rgba(59,130,246,.3)';
+    autoEl.textContent = '● ' + label;
+    autoEl.style.background = isAuto ? (isVac ? '#d1fae5' : '#dbeafe') : '#f3f4f6';
+    autoEl.style.color = isAuto ? (isVac ? '#065f46' : '#1d4ed8') : 'var(--text-muted)';
+    autoEl.style.borderColor = isAuto ? (isVac ? '#10b981' : '#3b82f6') : 'var(--border)';
   }
 }
 
