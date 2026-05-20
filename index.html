@@ -277,11 +277,11 @@
       <div class="clock-date" id="live-date"></div>
     </div>
     <div style="margin:0 12px 10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px">
-      <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;text-align:center">Période</div>
-      <div style="display:flex;gap:6px">
-        <button id="btn-scolaire" onclick="toggleVacances(false)" style="flex:1;padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-size:11px;font-weight:600;cursor:pointer;color:var(--text-muted)">Scolaire</button>
-        <button id="btn-auto-periode" onclick="toggleVacances(null)" style="flex:1.4;padding:8px 4px;border-radius:8px;border:1.5px solid var(--blue);background:var(--blue-light);font-size:10px;font-weight:600;cursor:pointer;color:var(--blue-dark);text-align:center">● Auto</button>
-        <button id="btn-vacances" onclick="toggleVacances(true)" style="flex:1;padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-size:11px;font-weight:600;cursor:pointer;color:var(--text-muted)">Vacances</button>
+      <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;text-align:center">Période de tournage</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+        <button id="btn-scolaire" onclick="toggleVacances('scolaire')" style="padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-size:11px;font-weight:700;cursor:pointer;color:var(--text-muted)">Scolaire</button>
+        <button id="btn-vacances" onclick="toggleVacances('vacances')" style="padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-size:11px;font-weight:700;cursor:pointer;color:var(--text-muted)">Vacances</button>
+        <button id="btn-ferie" onclick="toggleVacances('ferie')" style="padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-size:11px;font-weight:700;cursor:pointer;color:var(--text-muted)">Férié</button>
       </div>
     </div>
     <div style="padding:0 12px 4px">
@@ -896,7 +896,10 @@ const JOURS_FERIES = [
 
 function estEnVacances(dateStr) {
   // Si mode manuel forcé, utiliser ça
-  if (modeVacancesForce !== null) return modeVacancesForce;
+  if (modeVacancesForce === 'vacances') return true;
+  if (modeVacancesForce === 'ferie') return true;
+  if (modeVacancesForce === 'scolaire') return false;
+  if (modeVacancesForce !== null) return modeVacancesForce === true;
   
   const d = dateStr ? new Date(dateStr) : new Date();
   const str = d.toISOString().slice(0,10);
@@ -911,6 +914,9 @@ function estEnVacances(dateStr) {
 }
 
 function getPeriodeLabel(dateStr) {
+  if (modeVacancesForce === 'scolaire') return 'Scolaire (forcé)';
+  if (modeVacancesForce === 'vacances') return 'Vacances (forcé)';
+  if (modeVacancesForce === 'ferie') return 'Férié (forcé)';
   if (modeVacancesForce !== null) return modeVacancesForce ? 'Vacances (forcé)' : 'Scolaire (forcé)';
   const d = dateStr ? new Date(dateStr) : new Date();
   const str = d.toISOString().slice(0,10);
@@ -1162,14 +1168,14 @@ function saveContacts() {
 
 // ─── MODE SCOLAIRE / VACANCES ────────────────────────────────────
 function toggleVacances(val) {
-  // null = auto, true/false = forcé
+  // null = auto, 'scolaire'/'vacances'/'ferie' = forcé
   if (modeVacancesForce === val) {
-    modeVacancesForce = null; // toggle off = retour auto
+    modeVacancesForce = null; // re-clic = retour auto
   } else {
     modeVacancesForce = val;
   }
   modeVacances = estEnVacances();
-  localStorage.setItem('modeVacancesForce', modeVacancesForce === null ? 'auto' : (modeVacancesForce ? '1' : '0'));
+  localStorage.setItem('modeVacancesForce', modeVacancesForce === null ? 'auto' : modeVacancesForce);
   renderStatusBar();
   renderProgressBars();
   updatePeriodeLabel();
@@ -1177,31 +1183,29 @@ function toggleVacances(val) {
 
 function updatePeriodeLabel() {
   modeVacances = estEnVacances();
-  const label = getPeriodeLabel();
-  const isVac = modeVacances;
-  const isAuto = modeVacancesForce === null;
+  const btnScol = document.getElementById('btn-scolaire');
+  const btnVac  = document.getElementById('btn-vacances');
+  const btnFer  = document.getElementById('btn-ferie');
 
-  const btn1 = document.getElementById('btn-scolaire');
-  const btn2 = document.getElementById('btn-vacances');
-  const autoEl = document.getElementById('btn-auto-periode');
+  // Reset tous
+  [btnScol, btnVac, btnFer].forEach(b => {
+    if (!b) return;
+    b.style.background = 'var(--surface)';
+    b.style.color = 'var(--text-muted)';
+    b.style.borderColor = 'var(--border)';
+  });
 
-  if (btn1) {
-    const active = !isVac && !isAuto;
-    btn1.style.background = active ? '#1d4ed8' : 'var(--surface)';
-    btn1.style.color = active ? '#fff' : 'var(--text-muted)';
-    btn1.style.borderColor = active ? '#1d4ed8' : 'var(--border)';
-  }
-  if (btn2) {
-    const active = isVac && !isAuto;
-    btn2.style.background = active ? '#10b981' : 'var(--surface)';
-    btn2.style.color = active ? '#fff' : 'var(--text-muted)';
-    btn2.style.borderColor = active ? '#10b981' : 'var(--border)';
-  }
-  if (autoEl) {
-    autoEl.textContent = '● ' + label;
-    autoEl.style.background = isAuto ? (isVac ? '#d1fae5' : '#dbeafe') : '#f3f4f6';
-    autoEl.style.color = isAuto ? (isVac ? '#065f46' : '#1d4ed8') : 'var(--text-muted)';
-    autoEl.style.borderColor = isAuto ? (isVac ? '#10b981' : '#3b82f6') : 'var(--border)';
+  // Activer le bouton correspondant
+  if (modeVacancesForce === 'scolaire' && btnScol) {
+    btnScol.style.background = '#1d4ed8'; btnScol.style.color = '#fff'; btnScol.style.borderColor = '#1d4ed8';
+  } else if (modeVacancesForce === 'vacances' && btnVac) {
+    btnVac.style.background = '#10b981'; btnVac.style.color = '#fff'; btnVac.style.borderColor = '#10b981';
+  } else if (modeVacancesForce === 'ferie' && btnFer) {
+    btnFer.style.background = '#f59e0b'; btnFer.style.color = '#fff'; btnFer.style.borderColor = '#f59e0b';
+  } else {
+    // Auto — on colore selon la période détectée en grisé
+    if (modeVacances && btnVac) { btnVac.style.borderColor = '#10b981'; btnVac.style.color = '#10b981'; }
+    else if (btnScol) { btnScol.style.borderColor = '#1d4ed8'; btnScol.style.color = '#1d4ed8'; }
   }
 }
 
@@ -2656,8 +2660,11 @@ async function initApp() {
   await load();
   // Mode vacances : auto par défaut
   const savedMode = localStorage.getItem('modeVacancesForce');
-  if (savedMode === '1') modeVacancesForce = true;
-  else if (savedMode === '0') modeVacancesForce = false;
+  if (savedMode === 'scolaire') modeVacancesForce = 'scolaire';
+  else if (savedMode === 'vacances') modeVacancesForce = 'vacances';
+  else if (savedMode === 'ferie') modeVacancesForce = 'ferie';
+  else if (savedMode === '1') modeVacancesForce = 'vacances';
+  else if (savedMode === '0') modeVacancesForce = 'scolaire';
   else modeVacancesForce = null;
   modeVacances = estEnVacances();
   try {
@@ -2715,8 +2722,11 @@ async function initApp() {
   await load();
   // Mode vacances : auto par défaut
   const savedMode = localStorage.getItem('modeVacancesForce');
-  if (savedMode === '1') modeVacancesForce = true;
-  else if (savedMode === '0') modeVacancesForce = false;
+  if (savedMode === 'scolaire') modeVacancesForce = 'scolaire';
+  else if (savedMode === 'vacances') modeVacancesForce = 'vacances';
+  else if (savedMode === 'ferie') modeVacancesForce = 'ferie';
+  else if (savedMode === '1') modeVacancesForce = 'vacances';
+  else if (savedMode === '0') modeVacancesForce = 'scolaire';
   else modeVacancesForce = null;
   modeVacances = estEnVacances();
   try {
