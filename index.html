@@ -1330,7 +1330,7 @@ function showPage(name, btn) {
   if (name === 'live') { renderChips(); renderStatusBar(); renderLog(); updateFilmDisplay(); renderProgressBars(); }
 }
 
-function openModal(id) { document.getElementById(id).classList.add('open'); }
+function openModal(id) { document.getElementById(id).classList.add('open'); if(id==='modal-groupe') ouvrirGroupe(); if(id==='modal-cours') ouvrirModalCours(); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
 // ─── FILMS ────────────────────────────────────────────────────────
