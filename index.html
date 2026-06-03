@@ -307,7 +307,7 @@
       <button class="action-btn btn-arrivee" onclick="logAction('arrivee')">
         <span class="icon">🎬</span><span class="lbl">Arrivée</span><span class="last-t" id="lt-arrivee"></span>
       </button>
-      <button class="action-btn btn-hmc" onclick="logAction('hmc')">
+      <button class="action-btn btn-hmc" onclick="ouvrirChecklistHMC()">
         <span class="icon">✂️👗🎨</span><span class="lbl">HMC / Prép.</span><span class="last-t" id="lt-hmc"></span>
       </button>
       <button class="action-btn btn-tournage" onclick="logAction('tournage')">
@@ -909,6 +909,42 @@
 
 <div class="modal-overlay" id="modal-cours"><div class="modal"><button class="modal-close" onclick="closeModal('modal-cours')">X</button><div class="modal-title">Ajouter un cours</div><div class="form-row"><label class="form-label">Enfant</label><select class="form-input" id="cours-enfant-id"></select></div><div class="form-row"><label class="form-label">Matiere</label><select class="form-input" id="cours-matiere"><option>Mathematiques</option><option>Francais</option><option>Histoire-Geo</option><option>Sciences</option><option>Anglais</option><option>Arts</option><option>Sport</option><option>Autre</option></select></div><div class="form-row"><label class="form-label">Matiere perso (optionnel)</label><input class="form-input" id="cours-matiere-custom" placeholder="ex: Espagnol..."></div><div class="form-row"><label class="form-label">Date</label><input class="form-input" type="date" id="cours-date"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Debut</label><input class="form-input" type="time" id="cours-debut"></div><div><label class="form-label">Fin</label><input class="form-input" type="time" id="cours-fin"></div></div><div class="form-row"><label class="form-label">Precepteur (optionnel)</label><input class="form-input" id="cours-prof" placeholder="ex: M. Martin"></div><button class="form-btn" style="background:var(--purple)" onclick="ajouterCours()">Ajouter ce cours</button></div></div>
 <div class="modal-overlay" id="modal-edit-log"><div class="modal"><button class="modal-close" onclick="closeModal('modal-edit-log')">X</button><div class="modal-title">Modifier cette action</div><input type="hidden" id="edit-log-id"><div class="form-row"><label class="form-label">Action</label><select class="form-input" id="edit-log-type"><option value="arrivee">Arrivee</option><option value="hmc">HMC</option><option value="tournage">Tournage</option><option value="pause">Pause</option><option value="repas">Repas/Cantine</option><option value="attente">Attente</option><option value="cours">Cours</option><option value="cascade">Cascade</option><option value="sante">Sante</option><option value="son">Equipage son</option><option value="fin">Fin journee</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Heure debut</label><input class="form-input" type="time" id="edit-log-heure"></div><div><label class="form-label">Heure fin</label><input class="form-input" type="time" id="edit-log-fin"></div></div><button class="form-btn" style="background:var(--blue)" onclick="sauvegarderLog()">Enregistrer</button></div></div>
+
+<div class="modal-overlay" id="modal-hmc">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-hmc')">✕</button>
+    <div class="modal-title">HMC — Checklist</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Cochez ce qui est fait pour l'enfant</div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
+      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--blue-light);border-radius:8px;cursor:pointer">
+        <input type="checkbox" id="hmc-habillage" style="width:20px;height:20px;cursor:pointer">
+        <span style="font-size:15px">👗</span>
+        <span style="font-size:14px;font-weight:600;color:var(--blue-dark)">Habillage</span>
+      </label>
+      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:#fce7f3;border-radius:8px;cursor:pointer">
+        <input type="checkbox" id="hmc-maquillage" style="width:20px;height:20px;cursor:pointer">
+        <span style="font-size:15px">💄</span>
+        <span style="font-size:14px;font-weight:600;color:#9d174d">Maquillage</span>
+      </label>
+      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--amber-light);border-radius:8px;cursor:pointer">
+        <input type="checkbox" id="hmc-coiffure" style="width:20px;height:20px;cursor:pointer">
+        <span style="font-size:15px">✂️</span>
+        <span style="font-size:14px;font-weight:600;color:var(--amber-dark)">Coiffure</span>
+      </label>
+      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--gray-light);border-radius:8px;cursor:pointer">
+        <input type="checkbox" id="hmc-son" style="width:20px;height:20px;cursor:pointer">
+        <span style="font-size:15px">🎙️</span>
+        <span style="font-size:14px;font-weight:600;color:var(--gray-dark)">Son (micro)</span>
+      </label>
+      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--purple-light);border-radius:8px;cursor:pointer">
+        <input type="checkbox" id="hmc-coaching" style="width:20px;height:20px;cursor:pointer">
+        <span style="font-size:15px">🎭</span>
+        <span style="font-size:14px;font-weight:600;color:var(--purple-dark)">Coaching</span>
+      </label>
+    </div>
+    <button class="form-btn" onclick="validerHMC()">Valider et démarrer le chrono</button>
+  </div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 // ─── CONSTANTES ───────────────────────────────────────────────────
@@ -1602,7 +1638,7 @@ function renderLog() {
     return `<div class="log-item">
       <div class="log-time">${l.heure}</div>
       <div class="log-tag" style="background:${bg};color:${tc}">${TYPE_LABEL[l.type] || l.type}</div>
-      <div class="log-who">${enf ? enf.nom.split(' ')[0] : '?'}${l.fin ? ' → ' + l.fin : ''}</div>
+      <div class="log-who">${enf ? enf.nom.split(' ')[0] : '?'}${l.fin ? ' → ' + l.fin : ''}${l.detail ? ' · ' + l.detail : ''}</div>
       <div class="log-dur">${dur}</div>
       <button class="log-del" onclick="ouvrirEditLog(${l.id})" style="color:var(--blue)">&#9998;</button>
       <button class="log-del" onclick="delLog(${l.id})">✕</button>
@@ -2845,6 +2881,37 @@ function copierCours() {
   var txt = buildCoursMessage();
   if (!txt) { alert('Aucun cours.'); return; }
   navigator.clipboard.writeText(txt).then(function(){ alert('Copie!'); }).catch(function(){ alert(txt); });
+}
+
+
+function ouvrirChecklistHMC() {
+  // Enregistrer l'heure dès le clic
+  if (!window._hmcHeureDebut) window._hmcHeureDebut = nowHM();
+  // Reset les cases
+  ['hmc-habillage','hmc-maquillage','hmc-coiffure','hmc-son','hmc-coaching'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.checked = false;
+  });
+  openModal('modal-hmc');
+}
+
+function validerHMC() {
+  var checked = [];
+  var labels = { 'hmc-habillage': 'Habillage', 'hmc-maquillage': 'Maquillage', 'hmc-coiffure': 'Coiffure', 'hmc-son': 'Son', 'hmc-coaching': 'Coaching' };
+  Object.keys(labels).forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && el.checked) checked.push(labels[id]);
+  });
+  // Enregistrer l'action HMC avec le détail
+  logAction('hmc');
+  // Mettre à jour la note dans le dernier log HMC
+  var logs = todayLogs().filter(function(l){ return l.type === 'hmc'; });
+  if (logs.length && checked.length) {
+    logs[logs.length-1].detail = checked.join(', ');
+  }
+  window._hmcHeureDebut = null;
+  closeModal('modal-hmc');
+  save();
 }
 
 async function initApp() {
