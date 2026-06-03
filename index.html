@@ -1796,6 +1796,9 @@ function buildSummary() {
     if (hRepas) txt += 'Repas : ' + hRepas.heure + (hRepas.fin ? ' - ' + hRepas.fin : '') + '\n';
     if (dur.cours) txt += 'Cours : ' + fmt(dur.cours) + '\n';
     if (hFin) txt += 'Fin : ' + hFin.heure + '\n';
+    const travailEnf = WORK_TYPES.reduce((s,t) => s+(dur[t]||0), 0);
+    const limEnf = LIMITES[enf.age];
+    if (travailEnf > limEnf) txt += '⚠ DEPASSEMENT : +' + fmt(travailEnf - limEnf) + '\n';
     txt += '\n';
   });
 
@@ -1876,8 +1879,10 @@ function renderResume() {
         html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,pct) + '%"></div>';
         html += '</div>';
         html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted)">';
+        const depasse = s.presence - s.lim;
         const presLabel = (pct >= 100 ? '⚠ DEPASSE : ' : 'Presence : ') + fmt(s.presence) + ' / ' + fmt(s.lim) + ' (' + pct + '%)';
-        html += '<span style="color:' + (pct>=100?'#991b1b':'var(--text-muted)') + ';font-weight:' + (pct>=100?'700':'400') + '">' + presLabel + '</span>';
+        const depasseLabel = depasse > 0 ? ' · Depassement : +' + fmt(depasse) : '';
+        html += '<span style="color:' + (pct>=100?'#991b1b':'var(--text-muted)') + ';font-weight:' + (pct>=100?'700':'400') + '">' + presLabel + (depasse>0?'<span style=\'color:#ef4444;font-weight:700\'>' + depasseLabel + '</span>':'') + '</span>';
         let finInfo = '';
         if (s.finMax) finInfo += 'Fin max : ' + s.finMax;
         if (s.finReelH) finInfo += ' · Fin réelle : ' + s.finReelH;
