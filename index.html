@@ -2842,19 +2842,28 @@ function renderCoursList() {
 }
 function buildCoursMessage() {
   var film = activeFilm();
-  var cours = (state.coursJour||[]).filter(function(c){ return c.date===todayStr(); })
-    .sort(function(a,b){ return a.debut.localeCompare(b.debut); });
-  if (!cours.length) return null;
+  // Prendre TOUS les cours, groupés par date
+  var allCours = (state.coursJour||[]).slice().sort(function(a,b){
+    return ((a.date||'').localeCompare(b.date||'')) || a.debut.localeCompare(b.debut);
+  });
+  if (!allCours.length) return null;
   var enfs = activeEnfants();
-  var today = new Date();
-  var days = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
   var mths = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
-  var txt = 'Cours ' + days[today.getDay()] + ' ' + today.getDate() + ' ' + mths[today.getMonth()] + '\n';
-  if (film) txt += film.nom + '\n';
-  txt += '\n';
-  cours.forEach(function(c) {
-    var enf = enfs.find(function(e){ return e.id===c.enfantId; });
-    txt += (enf?enf.nom:'?') + ' - ' + c.matiere + ' ' + c.debut + (c.fin?' - '+c.fin:'') + '\n';
+  var txt = 'Planning cours';
+  if (film) txt += ' - ' + film.nom;
+  txt += '\n\n';
+  // Grouper par date
+  var byDate = {};
+  allCours.forEach(function(c){ var d=c.date||todayStr(); if(!byDate[d]) byDate[d]=[]; byDate[d].push(c); });
+  Object.keys(byDate).sort().forEach(function(date) {
+    var d = new Date(date);
+    txt += jrs[d.getDay()] + ' ' + d.getDate() + ' ' + mths[d.getMonth()] + '\n';
+    byDate[date].forEach(function(c) {
+      var enf = enfs.find(function(e){ return e.id===c.enfantId; });
+      txt += '  ' + (enf?enf.nom:'?') + ' - ' + c.matiere + ' ' + c.debut + (c.fin?' -> '+c.fin:'') + (c.prof?' ('+c.prof+')':'') + '\n';
+    });
+    txt += '\n';
   });
   txt += '- Liv ;-)';
   return txt;
