@@ -884,6 +884,7 @@
       <select class="form-input" id="new-enf-genre">
         <option value="m">Garçon</option>
         <option value="f">Fille</option>
+        <option value="x">Mixte (garçons + filles)</option>
       </select>
     </div>
     <div class="form-row"><label class="form-label">Statut</label>
@@ -906,7 +907,7 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-cours"><div class="modal"><button class="modal-close" onclick="closeModal('modal-cours')">X</button><div class="modal-title">Ajouter un cours</div><div class="form-row"><label class="form-label">Enfant</label><select class="form-input" id="cours-enfant-id"></select></div><div class="form-row"><label class="form-label">Matiere</label><select class="form-input" id="cours-matiere"><option>Mathematiques</option><option>Francais</option><option>Histoire-Geo</option><option>Sciences</option><option>Anglais</option><option>Arts</option><option>Sport</option><option>Autre</option></select></div><div class="form-row"><label class="form-label">Matiere perso (optionnel)</label><input class="form-input" id="cours-matiere-custom" placeholder="ex: Espagnol..."></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Debut</label><input class="form-input" type="time" id="cours-debut"></div><div><label class="form-label">Fin</label><input class="form-input" type="time" id="cours-fin"></div></div><div class="form-row"><label class="form-label">Precepteur (optionnel)</label><input class="form-input" id="cours-prof" placeholder="ex: M. Martin"></div><button class="form-btn" style="background:var(--purple)" onclick="ajouterCours()">Ajouter ce cours</button></div></div>
+<div class="modal-overlay" id="modal-cours"><div class="modal"><button class="modal-close" onclick="closeModal('modal-cours')">X</button><div class="modal-title">Ajouter un cours</div><div class="form-row"><label class="form-label">Enfant</label><select class="form-input" id="cours-enfant-id"></select></div><div class="form-row"><label class="form-label">Matiere</label><select class="form-input" id="cours-matiere"><option>Mathematiques</option><option>Francais</option><option>Histoire-Geo</option><option>Sciences</option><option>Anglais</option><option>Arts</option><option>Sport</option><option>Autre</option></select></div><div class="form-row"><label class="form-label">Matiere perso (optionnel)</label><input class="form-input" id="cours-matiere-custom" placeholder="ex: Espagnol..."></div><div class="form-row"><label class="form-label">Date</label><input class="form-input" type="date" id="cours-date"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Debut</label><input class="form-input" type="time" id="cours-debut"></div><div><label class="form-label">Fin</label><input class="form-input" type="time" id="cours-fin"></div></div><div class="form-row"><label class="form-label">Precepteur (optionnel)</label><input class="form-input" id="cours-prof" placeholder="ex: M. Martin"></div><button class="form-btn" style="background:var(--purple)" onclick="ajouterCours()">Ajouter ce cours</button></div></div>
 <div class="modal-overlay" id="modal-edit-log"><div class="modal"><button class="modal-close" onclick="closeModal('modal-edit-log')">X</button><div class="modal-title">Modifier cette action</div><input type="hidden" id="edit-log-id"><div class="form-row"><label class="form-label">Action</label><select class="form-input" id="edit-log-type"><option value="arrivee">Arrivee</option><option value="hmc">HMC</option><option value="tournage">Tournage</option><option value="pause">Pause</option><option value="repas">Repas/Cantine</option><option value="attente">Attente</option><option value="cours">Cours</option><option value="cascade">Cascade</option><option value="sante">Sante</option><option value="son">Equipage son</option><option value="fin">Fin journee</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Heure debut</label><input class="form-input" type="time" id="edit-log-heure"></div><div><label class="form-label">Heure fin</label><input class="form-input" type="time" id="edit-log-fin"></div></div><button class="form-btn" style="background:var(--blue)" onclick="sauvegarderLog()">Enregistrer</button></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
@@ -1263,16 +1264,17 @@ function updatePeriodeLabel() {
 // ─── HELPERS ──────────────────────────────────────────────────────
 function statutLabel(statut, genre) {
   const f = genre === 'f';
+  const m = genre === 'm';
   const map = {
     'role': 'Rôle',
     'petit-role': 'Petit rôle',
     'silhouette-parlante': 'Silhouette parlante',
     'silhouette': 'Silhouette',
-    'figurant': f ? 'Figurante' : 'Figurant',
-    'cascadeur': f ? 'Cascadeuse' : 'Cascadeur',
+    'figurant': f ? 'Figurante' : (m ? 'Figurant' : 'Figurant(e)'),
+    'cascadeur': f ? 'Cascadeuse' : (m ? 'Cascadeur' : 'Cascadeur/euse'),
     'doublure': 'Doublure',
     'doublure-image': 'Doublure image',
-    'danseur': f ? 'Danseuse' : 'Danseur',
+    'danseur': f ? 'Danseuse' : (m ? 'Danseur' : 'Danseur/euse'),
     'artiste-cirque': 'Artiste de cirque'
   };
   return map[statut] || 'Rôle';
@@ -2619,6 +2621,7 @@ function renderBilan() {
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Hors plateau</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Cascade</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Sante</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Cours</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Fin</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Plateau</th>';
     html += '</tr></thead><tbody>';
@@ -2678,6 +2681,8 @@ function genererPDFBilan() {
       rows += '<td>' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
       rows += '<td style="color:#991b1b">' + (s.hasCascade ? fmt(s.dur.cascade) : '-') + '</td>';
       rows += '<td style="color:#9d174d">' + (s.hasSante ? 'Oui' : '-') + '</td>';
+      var cPdf = (state.coursJour||[]).filter(function(c){ return c.date===date && c.enfantId===s.enf.id; });
+      rows += '<td style="color:#5b21b6;font-size:10px">' + (cPdf.length?cPdf.map(function(c){return c.matiere;}).join(', '):'-') + '</td>';
       rows += '<td style="font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
       rows += '</tr>';
     });
@@ -2739,6 +2744,8 @@ function ouvrirModalCours() {
   var hm = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
   var debut = document.getElementById('cours-debut');
   if (debut && !debut.value) debut.value = hm;
+  var dateel = document.getElementById('cours-date');
+  if (dateel) dateel.value = todayStr();
 }
 function ajouterCours() {
   var enfId = parseInt(document.getElementById('cours-enfant-id').value);
@@ -2749,7 +2756,7 @@ function ajouterCours() {
   if (!state.coursJour) state.coursJour = [];
   state.coursJour.push({ id: nextId++, enfantId: enfId, matiere: matiere, debut: debut,
     fin: document.getElementById('cours-fin').value,
-    prof: document.getElementById('cours-prof').value.trim(), date: todayStr() });
+    prof: document.getElementById('cours-prof').value.trim(), date: (document.getElementById('cours-date')?document.getElementById('cours-date').value:null)||todayStr() });
   ['cours-matiere-custom','cours-debut','cours-fin','cours-prof'].forEach(function(xid) {
     var el2 = document.getElementById(xid); if(el2) el2.value='';
   });
@@ -2762,25 +2769,37 @@ function supprimerCours(id) {
 function renderCoursList() {
   var el = document.getElementById('cours-list');
   if (!el) return;
-  var cours = (state.coursJour||[]).filter(function(c){ return c.date===todayStr(); })
-    .sort(function(a,b){ return a.debut.localeCompare(b.debut); });
-  if (!cours.length) {
+  var allCours = (state.coursJour||[]).slice().sort(function(a,b){
+    return ((a.date||'').localeCompare(b.date||'')) || a.debut.localeCompare(b.debut);
+  });
+  if (!allCours.length) {
     el.innerHTML = '<div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div>';
     return;
   }
   var enfs = activeEnfants();
-  el.innerHTML = cours.map(function(c) {
-    var enf = enfs.find(function(e){ return e.id===c.enfantId; });
-    var col = enf ? enf.couleur : '#666';
-    var bg = enf ? enf.couleur+'22' : '#f3f4f6';
-    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">' +
-      '<div style="width:34px;height:34px;border-radius:50%;background:'+bg+';color:'+col+
-      ';font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">'+(enf?initials(enf.nom):'?')+'</div>' +
-      '<div style="flex:1"><div style="font-size:14px;font-weight:600">'+c.matiere+'</div>' +
-      '<div style="font-size:12px;color:var(--text-muted)">'+(enf?enf.nom:'?')+' '+c.debut+
-      (c.fin?' - '+c.fin:'')+(c.prof?' | '+c.prof:'')+'</div></div>' +
-      '<button onclick="supprimerCours('+c.id+')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)">X</button></div>';
-  }).join('');
+  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+  var byDate = {};
+  allCours.forEach(function(c) { var d=c.date||todayStr(); if(!byDate[d]) byDate[d]=[]; byDate[d].push(c); });
+  var html = '';
+  Object.keys(byDate).sort().forEach(function(date) {
+    var d = new Date(date);
+    html += '<div style="font-size:11px;font-weight:700;color:var(--text-muted);padding:8px 0 4px;border-bottom:2px solid var(--border)">' +
+      jrs[d.getDay()] + ' ' + d.getDate() + ' ' + mts[d.getMonth()] + '</div>';
+    byDate[date].forEach(function(c) {
+      var enf = enfs.find(function(e){ return e.id===c.enfantId; });
+      var col = enf ? enf.couleur : '#666';
+      var bg = enf ? enf.couleur+'22' : '#f3f4f6';
+      html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">' +
+        '<div style="width:34px;height:34px;border-radius:50%;background:'+bg+';color:'+col+
+        ';font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">'+(enf?initials(enf.nom):'?')+'</div>' +
+        '<div style="flex:1"><div style="font-size:13px;font-weight:700">'+(enf?enf.nom:'?')+'</div>' +
+        '<div style="font-size:12px;font-weight:600;color:var(--purple-dark)">'+c.matiere+'</div>' +
+        '<div style="font-size:11px;color:var(--text-muted)">'+c.debut+(c.fin?' - '+c.fin:'')+(c.prof?' · '+c.prof:'')+'</div></div>' +
+        '<button onclick="supprimerCours('+c.id+')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)">X</button></div>';
+    });
+  });
+  el.innerHTML = html;
 }
 function buildCoursMessage() {
   var film = activeFilm();
@@ -3043,6 +3062,7 @@ if ('serviceWorker' in navigator) {
       <select class="form-input" id="edit-enf-genre">
         <option value="m">Garçon</option>
         <option value="f">Fille</option>
+        <option value="x">Mixte (garçons + filles)</option>
       </select>
     </div>
     <div class="form-row"><label class="form-label">Statut</label>
