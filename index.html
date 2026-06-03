@@ -821,6 +821,8 @@
 </div>
 
 
+
+<div id="page-cours" class="page"><div class="page-header"><div class="page-title">Cours sur plateau</div><div class="page-sub" id="cours-film-name">Planning scolaire</div></div><div class="scroll-content"><div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Planning du jour</span><button onclick="openModal('modal-cours')" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter</button></div><div id="cours-list"><div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div></div></div><div class="card"><div class="card-title">Envoyer le planning</div><div class="send-btns"><button class="send-btn btn-wa" onclick="envoyerCoursWA('parents')"><span style="font-size:20px">&#128172;</span>Parents<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-wa" onclick="envoyerCoursWA('prod')" style="background:#1a9e5a"><span style="font-size:20px">&#128172;</span>Production<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-copy" onclick="copierCours()" style="grid-column:span 2"><span style="font-size:20px">&#128203;</span>Copier</button></div></div></div></div>
 <nav class="nav">
   <button class="nav-btn" onclick="showPage('films',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
@@ -841,6 +843,10 @@
   <button class="nav-btn" onclick="showPage('bilan',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
     Bilan
+  </button>
+  <button class="nav-btn" onclick="showPage('cours',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    Cours
   </button>
   <button class="nav-btn" onclick="showPage('info',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16" stroke-width="3"/></svg>
@@ -899,6 +905,9 @@
     <button class="form-btn" style="background:var(--green)" onclick="ajouterEnfant()">Ajouter cet enfant</button>
   </div>
 </div>
+
+<div class="modal-overlay" id="modal-cours"><div class="modal"><button class="modal-close" onclick="closeModal('modal-cours')">X</button><div class="modal-title">Ajouter un cours</div><div class="form-row"><label class="form-label">Enfant</label><select class="form-input" id="cours-enfant-id"></select></div><div class="form-row"><label class="form-label">Matiere</label><select class="form-input" id="cours-matiere"><option>Mathematiques</option><option>Francais</option><option>Histoire-Geo</option><option>Sciences</option><option>Anglais</option><option>Arts</option><option>Sport</option><option>Autre</option></select></div><div class="form-row"><label class="form-label">Matiere perso (optionnel)</label><input class="form-input" id="cours-matiere-custom" placeholder="ex: Espagnol..."></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Debut</label><input class="form-input" type="time" id="cours-debut"></div><div><label class="form-label">Fin</label><input class="form-input" type="time" id="cours-fin"></div></div><div class="form-row"><label class="form-label">Precepteur (optionnel)</label><input class="form-input" id="cours-prof" placeholder="ex: M. Martin"></div><button class="form-btn" style="background:var(--purple)" onclick="ajouterCours()">Ajouter ce cours</button></div></div>
+<div class="modal-overlay" id="modal-edit-log"><div class="modal"><button class="modal-close" onclick="closeModal('modal-edit-log')">X</button><div class="modal-title">Modifier cette action</div><input type="hidden" id="edit-log-id"><div class="form-row"><label class="form-label">Action</label><select class="form-input" id="edit-log-type"><option value="arrivee">Arrivee</option><option value="hmc">HMC</option><option value="tournage">Tournage</option><option value="pause">Pause</option><option value="repas">Repas/Cantine</option><option value="attente">Attente</option><option value="cours">Cours</option><option value="cascade">Cascade</option><option value="sante">Sante</option><option value="son">Equipage son</option><option value="fin">Fin journee</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Heure debut</label><input class="form-input" type="time" id="edit-log-heure"></div><div><label class="form-label">Heure fin</label><input class="form-input" type="time" id="edit-log-fin"></div></div><button class="form-btn" style="background:var(--blue)" onclick="sauvegarderLog()">Enregistrer</button></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 // ─── CONSTANTES ───────────────────────────────────────────────────
@@ -1314,6 +1323,7 @@ function showPage(name, btn) {
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
   if (name === 'bilan') renderBilan();
+  if (name === 'cours') { renderCoursList(); const cfn=document.getElementById('cours-film-name'); if(cfn) cfn.textContent=activeFilm()?activeFilm().nom:'Scolaire'; }
   if (name === 'resume') renderExtraContactsBtns();
   if (name === 'live') { renderChips(); renderStatusBar(); renderLog(); updateFilmDisplay(); renderProgressBars(); }
 }
@@ -1592,6 +1602,7 @@ function renderLog() {
       <div class="log-tag" style="background:${bg};color:${tc}">${TYPE_LABEL[l.type] || l.type}</div>
       <div class="log-who">${enf ? enf.nom.split(' ')[0] : '?'}${l.fin ? ' → ' + l.fin : ''}</div>
       <div class="log-dur">${dur}</div>
+      <button class="log-del" onclick="ouvrirEditLog(${l.id})" style="color:var(--blue)">&#9998;</button>
       <button class="log-del" onclick="delLog(${l.id})">✕</button>
     </div>`;
   }).join('');
@@ -2183,7 +2194,7 @@ function genererPDF() {
     '<th>Date</th><th>Type</th><th>Evenement</th><th>Horaires</th><th>Repas</th>' +
     '<th>Lieu</th><th>Scenes</th><th>Retour</th><th>Enfant</th>' +
     '</tr></thead><tbody>' + rows + '</tbody></table>' +
-    '<div class="footer">— Liv ;-) · ' + new Date().toLocaleDateString('fr-FR') + '</div>' +
+    '<div class="footer">- Liv ;-) - ' + new Date().toLocaleDateString('fr-FR') + '</div>' +
     '</body></html>';
   const blob = new Blob([html], {type: 'text/html'});
   const url = URL.createObjectURL(blob);
@@ -2690,7 +2701,7 @@ function genererPDFBilan() {
     '<th>Date</th><th>Enfant</th><th>Arrivee</th><th>HMC</th><th>Tournage</th>' +
     '<th>Pause</th><th>Repas</th><th>Hors plateau</th><th>Cascade</th><th>Sante</th><th>Plateau</th>' +
     '</tr></thead><tbody>' + rows + '</tbody></table>' +
-    '<div class="footer">— Liv ;-) · ' + new Date().toLocaleDateString('fr-FR') + '</div>' +
+    '<div class="footer">- Liv ;-) - ' + new Date().toLocaleDateString('fr-FR') + '</div>' +
     '</body></html>';
 
   const blob = new Blob([html], {type: 'text/html'});
@@ -2700,6 +2711,120 @@ function genererPDFBilan() {
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────
+
+function ouvrirEditLog(id) {
+  var log = state.logs.find(function(l){ return l.id === id; });
+  if (!log) return;
+  document.getElementById('edit-log-id').value = id;
+  document.getElementById('edit-log-type').value = log.type;
+  document.getElementById('edit-log-heure').value = log.heure;
+  document.getElementById('edit-log-fin').value = log.fin || '';
+  openModal('modal-edit-log');
+}
+function sauvegarderLog() {
+  var id = parseInt(document.getElementById('edit-log-id').value);
+  var log = state.logs.find(function(l){ return l.id === id; });
+  if (!log) return;
+  log.type = document.getElementById('edit-log-type').value;
+  log.heure = document.getElementById('edit-log-heure').value;
+  log.fin = document.getElementById('edit-log-fin').value || null;
+  save(); closeModal('modal-edit-log');
+  renderLog(); renderStatusBar(); renderProgressBars();
+}
+function ouvrirModalCours() {
+  var enfs = activeEnfants();
+  var sel = document.getElementById('cours-enfant-id');
+  if (sel) sel.innerHTML = enfs.map(function(e){ return '<option value="' + e.id + '">' + e.nom + '</option>'; }).join('');
+  var now = new Date();
+  var hm = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  var debut = document.getElementById('cours-debut');
+  if (debut && !debut.value) debut.value = hm;
+}
+function ajouterCours() {
+  var enfId = parseInt(document.getElementById('cours-enfant-id').value);
+  var mc = document.getElementById('cours-matiere-custom').value.trim();
+  var matiere = mc || document.getElementById('cours-matiere').value;
+  var debut = document.getElementById('cours-debut').value;
+  if (!debut) { alert('Heure de debut requise.'); return; }
+  if (!state.coursJour) state.coursJour = [];
+  state.coursJour.push({ id: nextId++, enfantId: enfId, matiere: matiere, debut: debut,
+    fin: document.getElementById('cours-fin').value,
+    prof: document.getElementById('cours-prof').value.trim(), date: todayStr() });
+  ['cours-matiere-custom','cours-debut','cours-fin','cours-prof'].forEach(function(xid) {
+    var el2 = document.getElementById(xid); if(el2) el2.value='';
+  });
+  save(); closeModal('modal-cours'); renderCoursList();
+}
+function supprimerCours(id) {
+  state.coursJour = (state.coursJour||[]).filter(function(c){ return c.id!==id; });
+  save(); renderCoursList();
+}
+function renderCoursList() {
+  var el = document.getElementById('cours-list');
+  if (!el) return;
+  var cours = (state.coursJour||[]).filter(function(c){ return c.date===todayStr(); })
+    .sort(function(a,b){ return a.debut.localeCompare(b.debut); });
+  if (!cours.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div>';
+    return;
+  }
+  var enfs = activeEnfants();
+  el.innerHTML = cours.map(function(c) {
+    var enf = enfs.find(function(e){ return e.id===c.enfantId; });
+    var col = enf ? enf.couleur : '#666';
+    var bg = enf ? enf.couleur+'22' : '#f3f4f6';
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">' +
+      '<div style="width:34px;height:34px;border-radius:50%;background:'+bg+';color:'+col+
+      ';font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">'+(enf?initials(enf.nom):'?')+'</div>' +
+      '<div style="flex:1"><div style="font-size:14px;font-weight:600">'+c.matiere+'</div>' +
+      '<div style="font-size:12px;color:var(--text-muted)">'+(enf?enf.nom:'?')+' '+c.debut+
+      (c.fin?' - '+c.fin:'')+(c.prof?' | '+c.prof:'')+'</div></div>' +
+      '<button onclick="supprimerCours('+c.id+')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)">X</button></div>';
+  }).join('');
+}
+function buildCoursMessage() {
+  var film = activeFilm();
+  var cours = (state.coursJour||[]).filter(function(c){ return c.date===todayStr(); })
+    .sort(function(a,b){ return a.debut.localeCompare(b.debut); });
+  if (!cours.length) return null;
+  var enfs = activeEnfants();
+  var today = new Date();
+  var days = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var mths = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+  var txt = 'Cours ' + days[today.getDay()] + ' ' + today.getDate() + ' ' + mths[today.getMonth()] + '\n';
+  if (film) txt += film.nom + '\n';
+  txt += '\n';
+  cours.forEach(function(c) {
+    var enf = enfs.find(function(e){ return e.id===c.enfantId; });
+    txt += (enf?enf.nom:'?') + ' - ' + c.matiere + ' ' + c.debut + (c.fin?' - '+c.fin:'') + '\n';
+  });
+  txt += '- Liv ;-)';
+  return txt;
+}
+function envoyerCoursWA(dest) {
+  var txt = buildCoursMessage();
+  if (!txt) { alert('Aucun cours planifie.'); return; }
+  if (dest === 'prod') {
+    var n = (state.contacts||{}).prod || '';
+    if (!n) { alert('Numero prod manquant dans Films.'); return; }
+    window.open('https://wa.me/' + n.replace(/ /g,'').replace(/^00/,'+') + '?text=' + encodeURIComponent(txt));
+  } else {
+    var enfs2 = activeEnfants().filter(function(e){ return e.tel; });
+    if (!enfs2.length) { alert('Aucun numero parent.'); return; }
+    enfs2.forEach(function(enf, idx) {
+      setTimeout(function() {
+        var clean = enf.tel.replace(/ /g,'').replace(/^00/,'+');
+        window.open('https://wa.me/'+clean+'?text='+encodeURIComponent(txt));
+      }, idx*800);
+    });
+  }
+}
+function copierCours() {
+  var txt = buildCoursMessage();
+  if (!txt) { alert('Aucun cours.'); return; }
+  navigator.clipboard.writeText(txt).then(function(){ alert('Copie!'); }).catch(function(){ alert(txt); });
+}
+
 async function initApp() {
   await load();
   // Mode vacances : auto par défaut
