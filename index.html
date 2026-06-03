@@ -2743,7 +2743,7 @@ function genererPDFBilan() {
     '<div class="sub">Bilan complet — Liv · RESPONSABLE ENFANTS (ARECA)</div>' +
     '<table><thead><tr>' +
     '<th>Date</th><th>Enfant</th><th>Arrivee</th><th>HMC</th><th>Tournage</th>' +
-    '<th>Pause</th><th>Repas</th><th>Hors plateau</th><th>Cascade</th><th>Sante</th><th>Plateau</th>' +
+    '<th>Pause</th><th>Repas</th><th>Hors plateau</th><th>Cascade</th><th>Sante</th><th>Cours</th><th>Plateau</th>' +
     '</tr></thead><tbody>' + rows + '</tbody></table>' +
     '<div class="footer">- Liv ;-) - ' + new Date().toLocaleDateString('fr-FR') + '</div>' +
     '</body></html>';
@@ -2863,8 +2863,11 @@ function envoyerCoursWA(dest) {
   var txt = buildCoursMessage();
   if (!txt) { alert('Aucun cours planifie.'); return; }
   if (dest === 'prod') {
+    // Chercher le numéro prod dans plusieurs sources
     var n = (state.contacts||{}).prod || '';
-    if (!n) { alert('Numero prod manquant dans Films.'); return; }
+    if (!n) { var wp = document.getElementById('wa-prod'); if (wp) n = wp.value; }
+    if (!n) { var cp = document.getElementById('contact-prod'); if (cp) n = cp.value; }
+    if (!n) { alert('Numero prod manquant. Ajoutez-le dans Films > Contacts.'); return; }
     window.open('https://wa.me/' + n.replace(/ /g,'').replace(/^00/,'+') + '?text=' + encodeURIComponent(txt));
   } else {
     var enfs2 = activeEnfants().filter(function(e){ return e.tel; });
@@ -2976,66 +2979,6 @@ if ('serviceWorker' in navigator) {
 
 
 // ─── INIT ─────────────────────────────────────────────────────────
-async function initApp() {
-  await load();
-  // Mode vacances : auto par défaut
-  const savedMode = localStorage.getItem('modeVacancesForce');
-  if (savedMode === 'scolaire') modeVacancesForce = 'scolaire';
-  else if (savedMode === 'vacances') modeVacancesForce = 'vacances';
-  else if (savedMode === 'ferie') modeVacancesForce = 'ferie';
-  else if (savedMode === '1') modeVacancesForce = 'vacances';
-  else if (savedMode === '0') modeVacancesForce = 'scolaire';
-  else modeVacancesForce = null;
-  modeVacances = estEnVacances();
-  try {
-    renderChips();
-    renderLog();
-    renderStatusBar();
-    renderProgressBars();
-    updateFilmDisplay();
-    renderContactsExtra();
-    renderExtraContactsBtns();
-    updatePeriodeLabel();
-  } catch(e) { console.error('Init error:', e); }
-}
-
-// Vérifier si token existant
-(async () => {
-  const token = localStorage.getItem('sb_token');
-  if (token) {
-    accessToken = token;
-    const refreshed = await sbRefreshToken();
-    if (refreshed) {
-      hideLoginScreen();
-      await initApp();
-      return;
-    }
-  }
-  showLoginScreen();
-})();
-
-// Splash screen - se ferme toujours même en cas d'erreur
-function closeSplash() {
-  const splash = document.getElementById('splash');
-  if (splash) { splash.style.opacity = '0'; setTimeout(() => { try { splash.remove(); } catch(e) {} }, 600); }
-}
-setTimeout(() => { const bar = document.getElementById('splash-bar'); if (bar) bar.style.width = '100%'; }, 100);
-setTimeout(closeSplash, 1800);
-// Sécurité : ferme dans tous les cas après 3s
-setTimeout(closeSplash, 3000);
-
-// refresh planning + status every minute
-setInterval(() => {
-  const activePage = document.querySelector('.page.active');
-  if (activePage && activePage.id === 'page-planning') 
-  renderStatusBar();
-}, 60000);
-
-// Désactiver et supprimer tous les service workers
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
-}
-
 
 </script>
 
