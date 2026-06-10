@@ -3018,6 +3018,40 @@ if ('serviceWorker' in navigator) {
 
 // ─── INIT ─────────────────────────────────────────────────────────
 
+async function initApp() {
+  await load();
+  const savedMode = localStorage.getItem('modeVacancesForce');
+  if (savedMode === 'scolaire') modeVacancesForce = 'scolaire';
+  else if (savedMode === 'vacances') modeVacancesForce = 'vacances';
+  else if (savedMode === 'ferie') modeVacancesForce = 'ferie';
+  else modeVacancesForce = null;
+  modeVacances = estEnVacances();
+  try {
+    renderChips();
+    renderLog();
+    renderStatusBar();
+    renderProgressBars();
+    updateFilmDisplay();
+    renderContactsExtra();
+    renderExtraContactsBtns();
+    updatePeriodeLabel();
+  } catch(e) { console.error('Init error:', e); }
+}
+
+(async () => {
+  const token = localStorage.getItem('sb_token');
+  if (token) {
+    accessToken = token;
+    const refreshed = await sbRefreshToken();
+    if (refreshed) {
+      hideLoginScreen();
+      await initApp();
+      return;
+    }
+  }
+  showLoginScreen();
+})();
+
 </script>
 
 <div class="modal-overlay" id="modal-cal">
