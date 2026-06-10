@@ -650,7 +650,6 @@
           <div style="font-weight:700;color:#991b1b;margin-bottom:6px">NE COMPTE PAS</div>
           <div style="color:#991b1b;padding:2px 0">Repas</div>
           <div style="color:#991b1b;padding:2px 0">☁️ Hors plateau</div>
-          <div style="color:#991b1b;padding:2px 0">Cours</div>
           <div style="color:#991b1b;padding:2px 0">Transport</div>
         </div>
       </div>
@@ -665,7 +664,7 @@
       <div style="font-size:13px;line-height:1.8;color:var(--text)">
         <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong>À partir de 4 jours d'absence</strong> sur une période de tournage, un instituteur de plateau est obligatoire</div>
         <div style="padding:6px 0;border-bottom:1px solid var(--border)">⏰ <strong>Minimum 2h de cours par jour</strong> pour les enfants en âge scolaire (6-16 ans)</div>
-        <div style="padding:6px 0;border-bottom:1px solid var(--border)">📚 <strong>Le temps de cours ne compte pas</strong> dans le quota de travail journalier</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)">📚 <strong>Le temps de cours compte</strong> dans la durée de présence journalière</div>
         <div style="padding:6px 0;border-bottom:1px solid var(--border)">🏠 <strong>Espace dédié obligatoire</strong> — calme, éclairé, séparé du plateau</div>
         <div style="padding:6px 0"><strong>Liaison avec l'école</strong> — programme fourni par l'établissement scolaire</div>
       </div>
@@ -914,36 +913,72 @@
 <div class="modal-overlay" id="modal-hmc">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('modal-hmc')">✕</button>
-    <div class="modal-title">HMC — Checklist</div>
-    <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Cochez ce qui est fait pour l'enfant</div>
-    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
-      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--blue-light);border-radius:8px;cursor:pointer">
-        <input type="checkbox" id="hmc-habillage" style="width:20px;height:20px;cursor:pointer">
-        <span style="font-size:15px">👗</span>
-        <span style="font-size:14px;font-weight:600;color:var(--blue-dark)">Habillage</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:#fce7f3;border-radius:8px;cursor:pointer">
-        <input type="checkbox" id="hmc-maquillage" style="width:20px;height:20px;cursor:pointer">
-        <span style="font-size:15px">💄</span>
-        <span style="font-size:14px;font-weight:600;color:#9d174d">Maquillage</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--amber-light);border-radius:8px;cursor:pointer">
-        <input type="checkbox" id="hmc-coiffure" style="width:20px;height:20px;cursor:pointer">
-        <span style="font-size:15px">✂️</span>
-        <span style="font-size:14px;font-weight:600;color:var(--amber-dark)">Coiffure</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--gray-light);border-radius:8px;cursor:pointer">
-        <input type="checkbox" id="hmc-son" style="width:20px;height:20px;cursor:pointer">
-        <span style="font-size:15px">🎙️</span>
-        <span style="font-size:14px;font-weight:600;color:var(--gray-dark)">Son (micro)</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--purple-light);border-radius:8px;cursor:pointer">
-        <input type="checkbox" id="hmc-coaching" style="width:20px;height:20px;cursor:pointer">
-        <span style="font-size:15px">🎭</span>
-        <span style="font-size:14px;font-weight:600;color:var(--purple-dark)">Coaching</span>
-      </label>
+    <div class="modal-title">HMC — Chrono par poste</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Cochez et notez les heures de chaque étape</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+
+      <div style="background:var(--blue-light);border-radius:8px;padding:10px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <input type="checkbox" id="hmc-habillage" onchange="hmcCocher('habillage')" style="width:20px;height:20px;cursor:pointer">
+          <span style="font-size:15px">👗</span>
+          <span style="font-size:14px;font-weight:600;color:var(--blue-dark)">Habillage</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><label style="font-size:10px;color:var(--blue-dark);font-weight:600">Début</label><input type="time" id="hmc-habillage-debut" class="form-input" style="padding:6px 8px;font-size:12px"></div>
+          <div><label style="font-size:10px;color:var(--blue-dark);font-weight:600">Fin</label><input type="time" id="hmc-habillage-fin" class="form-input" style="padding:6px 8px;font-size:12px"></div>
+        </div>
+      </div>
+
+      <div style="background:#fce7f3;border-radius:8px;padding:10px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <input type="checkbox" id="hmc-maquillage" onchange="hmcCocher('maquillage')" style="width:20px;height:20px;cursor:pointer">
+          <span style="font-size:15px">💄</span>
+          <span style="font-size:14px;font-weight:600;color:#9d174d">Maquillage</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><label style="font-size:10px;color:#9d174d;font-weight:600">Début</label><input type="time" id="hmc-maquillage-debut" class="form-input" style="padding:6px 8px;font-size:12px"></div>
+          <div><label style="font-size:10px;color:#9d174d;font-weight:600">Fin</label><input type="time" id="hmc-maquillage-fin" class="form-input" style="padding:6px 8px;font-size:12px"></div>
+        </div>
+      </div>
+
+      <div style="background:var(--amber-light);border-radius:8px;padding:10px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <input type="checkbox" id="hmc-coiffure" onchange="hmcCocher('coiffure')" style="width:20px;height:20px;cursor:pointer">
+          <span style="font-size:15px">✂️</span>
+          <span style="font-size:14px;font-weight:600;color:var(--amber-dark)">Coiffure</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><label style="font-size:10px;color:var(--amber-dark);font-weight:600">Début</label><input type="time" id="hmc-coiffure-debut" class="form-input" style="padding:6px 8px;font-size:12px"></div>
+          <div><label style="font-size:10px;color:var(--amber-dark);font-weight:600">Fin</label><input type="time" id="hmc-coiffure-fin" class="form-input" style="padding:6px 8px;font-size:12px"></div>
+        </div>
+      </div>
+
+      <div style="background:var(--gray-light);border-radius:8px;padding:10px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <input type="checkbox" id="hmc-son" onchange="hmcCocher('son')" style="width:20px;height:20px;cursor:pointer">
+          <span style="font-size:15px">🎙️</span>
+          <span style="font-size:14px;font-weight:600;color:var(--gray-dark)">Son (micro)</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><label style="font-size:10px;color:var(--gray-dark);font-weight:600">Début</label><input type="time" id="hmc-son-debut" class="form-input" style="padding:6px 8px;font-size:12px"></div>
+          <div><label style="font-size:10px;color:var(--gray-dark);font-weight:600">Fin</label><input type="time" id="hmc-son-fin" class="form-input" style="padding:6px 8px;font-size:12px"></div>
+        </div>
+      </div>
+
+      <div style="background:var(--purple-light);border-radius:8px;padding:10px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <input type="checkbox" id="hmc-coaching" onchange="hmcCocher('coaching')" style="width:20px;height:20px;cursor:pointer">
+          <span style="font-size:15px">🎭</span>
+          <span style="font-size:14px;font-weight:600;color:var(--purple-dark)">Coaching</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><label style="font-size:10px;color:var(--purple-dark);font-weight:600">Début</label><input type="time" id="hmc-coaching-debut" class="form-input" style="padding:6px 8px;font-size:12px"></div>
+          <div><label style="font-size:10px;color:var(--purple-dark);font-weight:600">Fin</label><input type="time" id="hmc-coaching-fin" class="form-input" style="padding:6px 8px;font-size:12px"></div>
+        </div>
+      </div>
+
     </div>
-    <button class="form-btn" onclick="validerHMC()">Valider et démarrer le chrono</button>
+    <button class="form-btn" onclick="validerHMC()">Valider HMC</button>
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -1824,7 +1859,7 @@ function calcFinMax() {
       if (l.fin) dur[l.type] = (dur[l.type]||0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
     });
     // Presence = HMC + tournage + cascade + cours + pause (sans repas ni attente)
-    const presence = WORK_TYPES.reduce((sum, t) => sum + (dur[t]||0), 0);
+    const presence = (dur.hmc||0) + (dur.tournage||0) + (dur.cascade||0) + (dur.cours||0) + (dur.pause||0);
     const lim = LIMITES[enf.age];
     const reste = Math.max(0, lim - presence);
     
@@ -2674,7 +2709,15 @@ function renderBilan() {
       html += '<tr style="border-bottom:1px solid var(--border);' + (col ? 'background:' + col : '') + '">';
       html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '<br><span style="font-size:10px;font-weight:400;color:var(--text-muted)">' + statutLabel(s.enf.statut || 'role', s.enf.genre) + '</span></td>';
       html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
+      // Détail HMC
+      var hmcDetails = (state.hmcDetails||[]).filter(function(h){ return h.date===date && h.filmId===state.activeFilmId && h.enfantIds && h.enfantIds.indexOf(s.enf.id)!==-1; });
+      var hmcStr = s.dur.hmc ? fmt(s.dur.hmc) : '-';
+      if (hmcDetails.length) {
+        var allDetails = [];
+        hmcDetails.forEach(function(h){ h.details.forEach(function(d){ allDetails.push(d.poste+(d.fin&&d.debut?' '+fmt(toMin(d.fin)-toMin(d.debut)):'')+(d.debut?' ('+d.debut+(d.fin?'-'+d.fin:'')+')':'')); }); });
+        hmcStr += '<br><span style=\'font-size:9px;color:#1d4ed8\'>' + allDetails.join(', ') + '</span>';
+      }
+      html += '<td style="padding:6px 8px">' + hmcStr + '</td>';
       html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.pause ? fmt(s.dur.pause) : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin ? '-' + s.hRepas.fin : '') : '-') + '</td>';
@@ -2904,74 +2947,53 @@ function copierCours() {
 
 
 function ouvrirChecklistHMC() {
-  // Enregistrer l'heure dès le clic
-  if (!window._hmcHeureDebut) window._hmcHeureDebut = nowHM();
-  // Reset les cases
-  ['hmc-habillage','hmc-maquillage','hmc-coiffure','hmc-son','hmc-coaching'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) el.checked = false;
+  var postes = ['habillage','maquillage','coiffure','son','coaching'];
+  postes.forEach(function(p) {
+    var cb = document.getElementById('hmc-'+p);
+    if (cb) cb.checked = false;
+    var hd = document.getElementById('hmc-'+p+'-debut');
+    var hf = document.getElementById('hmc-'+p+'-fin');
+    if (hd) hd.value = '';
+    if (hf) hf.value = '';
   });
   openModal('modal-hmc');
 }
 
+function hmcCocher(poste) {
+  var cb = document.getElementById('hmc-'+poste);
+  var hd = document.getElementById('hmc-'+poste+'-debut');
+  if (!cb || !hd) return;
+  if (cb.checked && !hd.value) hd.value = nowHM();
+}
+
 function validerHMC() {
-  var checked = [];
-  var labels = { 'hmc-habillage': 'Habillage', 'hmc-maquillage': 'Maquillage', 'hmc-coiffure': 'Coiffure', 'hmc-son': 'Son', 'hmc-coaching': 'Coaching' };
-  Object.keys(labels).forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el && el.checked) checked.push(labels[id]);
+  var postes = ['habillage','maquillage','coiffure','son','coaching'];
+  var labels = { 'habillage': 'Habillage', 'maquillage': 'Maquillage', 'coiffure': 'Coiffure', 'son': 'Son', 'coaching': 'Coaching' };
+  var details = [];
+  postes.forEach(function(p) {
+    var cb = document.getElementById('hmc-'+p);
+    var hd = document.getElementById('hmc-'+p+'-debut');
+    var hf = document.getElementById('hmc-'+p+'-fin');
+    if (cb && cb.checked && hd && hd.value) {
+      details.push({ poste: labels[p], debut: hd.value, fin: hf ? hf.value : '' });
+    }
   });
-  // Enregistrer l'action HMC avec le détail
+  if (!details.length) { alert('Cochez au moins une étape HMC.'); return; }
   logAction('hmc');
-  // Mettre à jour la note dans le dernier log HMC
   var logs = todayLogs().filter(function(l){ return l.type === 'hmc'; });
-  if (logs.length && checked.length) {
-    logs[logs.length-1].detail = checked.join(', ');
+  if (logs.length) {
+    logs[logs.length-1].hmcDetails = details;
+    logs[logs.length-1].detail = details.map(function(d){ return d.poste+(d.fin&&d.debut?' ('+d.debut+'-'+d.fin+')':d.debut?' ('+d.debut+')':''); }).join(', ');
   }
-  window._hmcHeureDebut = null;
+  if (!state.hmcDetails) state.hmcDetails = [];
+  state.hmcDetails.push({
+    date: todayStr(), filmId: state.activeFilmId,
+    enfantIds: selectedEnfants.length > 0 ? selectedEnfants.slice() : activeEnfants().map(function(e){ return e.id; }),
+    details: details
+  });
   closeModal('modal-hmc');
   save();
 }
-
-async function initApp() {
-  await load();
-  // Mode vacances : auto par défaut
-  const savedMode = localStorage.getItem('modeVacancesForce');
-  if (savedMode === 'scolaire') modeVacancesForce = 'scolaire';
-  else if (savedMode === 'vacances') modeVacancesForce = 'vacances';
-  else if (savedMode === 'ferie') modeVacancesForce = 'ferie';
-  else if (savedMode === '1') modeVacancesForce = 'vacances';
-  else if (savedMode === '0') modeVacancesForce = 'scolaire';
-  else modeVacancesForce = null;
-  modeVacances = estEnVacances();
-  try {
-    renderChips();
-    renderLog();
-    renderStatusBar();
-    renderProgressBars();
-    updateFilmDisplay();
-    renderContactsExtra();
-    renderExtraContactsBtns();
-    updatePeriodeLabel();
-  } catch(e) { console.error('Init error:', e); }
-}
-
-// Vérifier si token existant
-(async () => {
-  const token = localStorage.getItem('sb_token');
-  if (token) {
-    accessToken = token;
-    const refreshed = await sbRefreshToken();
-    if (refreshed) {
-      hideLoginScreen();
-      await initApp();
-      return;
-    }
-  }
-  showLoginScreen();
-})();
-
-// Splash screen - se ferme toujours même en cas d'erreur
 function closeSplash() {
   const splash = document.getElementById('splash');
   if (splash) { splash.style.opacity = '0'; setTimeout(() => { try { splash.remove(); } catch(e) {} }, 600); }
