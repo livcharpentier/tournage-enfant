@@ -500,9 +500,14 @@
     <div class="page-sub" id="bilan-film-name">Toutes les journees</div>
   </div>
   <div class="scroll-content">
-    <div style="display:flex;gap:8px;padding:10px 12px;flex-wrap:wrap;align-items:center">
+    <div style="padding:10px 12px 0">
+      <label style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;display:block">Film à consulter</label>
+      <select id="bilan-film-select" onchange="changerFilmBilan(this.value)" style="width:100%;padding:10px 12px;border:1.5px solid var(--blue);border-radius:8px;font-size:14px;font-weight:600;background:var(--blue-light);color:var(--blue-dark);margin-bottom:8px"></select>
+    </div>
+    <div style="display:flex;gap:8px;padding:4px 12px 8px;flex-wrap:wrap;align-items:center">
       <button onclick="renderBilan()" style="padding:7px 14px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer">Actualiser</button>
       <button onclick="genererPDFBilan()" style="padding:7px 14px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-size:12px;font-weight:600;cursor:pointer">📄 PDF Bilan</button>
+      <button onclick="revenirFilmActif()" id="btn-revenir-actif" style="display:none;padding:7px 14px;border-radius:8px;border:none;background:#10b981;color:#fff;font-size:12px;font-weight:600;cursor:pointer">↩ Revenir au tournage</button>
     </div>
     <div id="bilan-content" style="padding:0 12px 10px"></div>
   </div>
@@ -1070,6 +1075,7 @@ let state = {
 let selectedEnfants = [];  // [] = tous
 let filtreStatut = 'tous'; // 'tous', 'role', 'figurant'
 let filtreFilms = 'tous'; // filtre dans la page Films
+let bilanFilmId = null; // film consulté dans le bilan (null = film actif)
 
 function setFiltreFilms(f) {
   filtreFilms = f;
@@ -1396,7 +1402,7 @@ function showPage(name, btn) {
   if (name === 'resume') renderResume();
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
-  if (name === 'bilan') renderBilan();
+  if (name === 'bilan') { bilanFilmId = bilanFilmId || state.activeFilmId; remplirSelectBilan(); renderBilan(); }
   if (name === 'cours') { renderCoursList(); const cfn=document.getElementById('cours-film-name'); if(cfn) cfn.textContent=activeFilm()?activeFilm().nom:'Scolaire'; }
   if (name === 'resume') renderExtraContactsBtns();
   if (name === 'live') { renderChips(); renderStatusBar(); renderLog(); updateFilmDisplay(); renderProgressBars(); }
@@ -2636,8 +2642,9 @@ function saveNoteJour(date, note) {
 }
 
 function getStatsByDate(date) {
-  const dayLogs = state.logs.filter(l => l.filmId === state.activeFilmId && l.date === date);
-  const enfs = activeEnfants();
+  const fid = bilanFilmId || state.activeFilmId;
+  const dayLogs = state.logs.filter(l => l.filmId === fid && l.date === date);
+  const enfs = state.enfants.filter(e => e.filmId === fid);
   return enfs.map(enf => {
     const evs = dayLogs.filter(l => l.enfantId === enf.id).sort((a,b) => a.heure.localeCompare(b.heure));
     if (!evs.length) return null;
@@ -2657,8 +2664,9 @@ function getStatsByDate(date) {
 }
 
 function getAllDates() {
+  const fid = bilanFilmId || state.activeFilmId;
   const dates = [...new Set(
-    state.logs.filter(l => l.filmId === state.activeFilmId).map(l => l.date)
+    state.logs.filter(l => l.filmId === fid).map(l => l.date)
   )].sort();
   return dates;
 }
@@ -3017,6 +3025,36 @@ if ('serviceWorker' in navigator) {
 
 
 // ─── INIT ─────────────────────────────────────────────────────────
+
+
+function remplirSelectBilan() {
+  var sel = document.getElementById('bilan-film-select');
+  if (!sel) return;
+  sel.innerHTML = state.films.map(function(f) {
+    var actif = f.id === state.activeFilmId ? ' (en cours)' : '';
+    return '<option value="' + f.id + '"' + (f.id === (bilanFilmId||state.activeFilmId) ? ' selected' : '') + '>' + f.nom + actif + '</option>';
+  }).join('');
+  var btnRevenir = document.getElementById('btn-revenir-actif');
+  if (btnRevenir) btnRevenir.style.display = (bilanFilmId && bilanFilmId !== state.activeFilmId) ? 'block' : 'none';
+}
+
+function changerFilmBilan(filmId) {
+  bilanFilmId = parseInt(filmId);
+  var film = state.films.find(function(f){ return f.id === bilanFilmId; });
+  var el = document.getElementById('bilan-film-name');
+  if (el && film) el.textContent = film.nom;
+  var btnRevenir = document.getElementById('btn-revenir-actif');
+  if (btnRevenir) btnRevenir.style.display = bilanFilmId !== state.activeFilmId ? 'block' : 'none';
+  renderBilan();
+}
+
+function revenirFilmActif() {
+  bilanFilmId = state.activeFilmId;
+  remplirSelectBilan();
+  renderBilan();
+  var btnRevenir = document.getElementById('btn-revenir-actif');
+  if (btnRevenir) btnRevenir.style.display = 'none';
+}
 
 async function initApp() {
   await load();
