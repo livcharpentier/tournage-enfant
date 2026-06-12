@@ -370,7 +370,11 @@
   </div>
   <div class="scroll-content">
     <div class="card">
-      <div class="card-title">Suivi temps — journée en cours</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <div style="font-size:11px;font-weight:600;color:var(--text-muted);white-space:nowrap">Journée</div>
+        <select id="resume-date-select" onchange="changerDateResume(this.value)" style="flex:1;padding:7px 10px;border:1.5px solid var(--blue);border-radius:8px;font-size:13px;font-weight:600;background:var(--blue-light);color:var(--blue-dark)"></select>
+      </div>
+      <div class="card-title">Suivi temps</div>
       <div id="resume-bilan-haut"></div>
     </div>
     <div class="card">
@@ -1075,7 +1079,8 @@ let state = {
 let selectedEnfants = [];  // [] = tous
 let filtreStatut = 'tous'; // 'tous', 'role', 'figurant'
 let filtreFilms = 'tous'; // filtre dans la page Films
-let bilanFilmId = null; // film consulté dans le bilan (null = film actif)
+let bilanFilmId = null;
+let resumeDate = null; // film consulté dans le bilan (null = film actif)
 
 function setFiltreFilms(f) {
   filtreFilms = f;
@@ -1371,7 +1376,10 @@ function todayStr() { return new Date().toISOString().slice(0, 10); }
 function initials(nom) { return nom.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2); }
 function activeFilm() { return state.films.find(f => f.id === state.activeFilmId); }
 function activeEnfants() { return state.enfants.filter(e => e.filmId === state.activeFilmId); }
-function todayLogs() { return state.logs.filter(l => l.filmId === state.activeFilmId && l.date === todayStr()); }
+function todayLogs(dateStr) {
+  var d = dateStr || resumeDate || todayStr();
+  return state.logs.filter(l => l.filmId === state.activeFilmId && l.date === d);
+}
 
 // ─── CLOCK ────────────────────────────────────────────────────────
 function tickClock() {
@@ -1889,6 +1897,20 @@ function calcFinMax() {
 }
 
 function renderResume() {
+  var dateSel = document.getElementById('resume-date-select');
+  if (dateSel) {
+    var today = todayStr();
+    var dates = [...new Set(state.logs.filter(l => l.filmId === state.activeFilmId).map(l => l.date))].sort().reverse();
+    if (!dates.includes(today)) dates.unshift(today);
+    var cur = resumeDate || today;
+    dateSel.innerHTML = dates.map(function(d) {
+      var dt = new Date(d);
+      var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+      var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+      var label = jrs[dt.getDay()] + ' ' + d.slice(8) + ' ' + mts[dt.getMonth()] + (d===today?' (auj.)':'');
+      return '<option value="' + d + '"' + (d===cur?' selected':'') + '>' + label + '</option>';
+    }).join('');
+  }
   const sp = document.getElementById('summary-txt');
   if (sp) sp.textContent = buildSummary();
   
@@ -3054,6 +3076,12 @@ function revenirFilmActif() {
   renderBilan();
   var btnRevenir = document.getElementById('btn-revenir-actif');
   if (btnRevenir) btnRevenir.style.display = 'none';
+}
+
+
+function changerDateResume(date) {
+  resumeDate = date;
+  renderResume();
 }
 
 async function initApp() {
