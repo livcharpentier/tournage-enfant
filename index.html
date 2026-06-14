@@ -831,7 +831,7 @@
 
 
 
-<div id="page-cours" class="page"><div class="page-header"><div class="page-title">Cours sur plateau</div><div class="page-sub" id="cours-film-name">Planning scolaire</div></div><div class="scroll-content"><div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Planning du jour</span><button onclick="openModal('modal-cours')" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter</button></div><div id="cours-list"><div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div></div></div><div class="card"><div class="card-title">Envoyer le planning</div><div class="send-btns"><button class="send-btn btn-wa" onclick="envoyerCoursWA('parents')"><span style="font-size:20px">&#128172;</span>Parents<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-wa" onclick="envoyerCoursWA('prod')" style="background:#1a9e5a"><span style="font-size:20px">&#128172;</span>Production<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-copy" onclick="copierCours()" style="grid-column:span 2"><span style="font-size:20px">&#128203;</span>Copier</button></div></div></div></div>
+<div id="page-cours" class="page"><div class="page-header"><div class="page-title">Cours sur plateau</div><div class="page-sub" id="cours-film-name">Planning scolaire</div></div><div class="scroll-content"><div class="card"><div class="card-title" style="margin-bottom:6px">Filtrer par date</div><select id="cours-date-select" onchange="changerDateCours(this.value)" class="form-input" style="margin-bottom:10px;font-weight:600;color:var(--purple-dark);background:var(--purple-light);border-color:var(--purple)"><option value="">Toutes les dates</option></select><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Planning</span><button onclick="openModal('modal-cours')" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter</button></div><div id="cours-list"><div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div></div></div><div class="card"><div class="card-title">Envoyer le planning</div><div class="send-btns"><button class="send-btn btn-wa" onclick="envoyerCoursWA('parents')"><span style="font-size:20px">&#128172;</span>Parents<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-wa" onclick="envoyerCoursWA('prod')" style="background:#1a9e5a"><span style="font-size:20px">&#128172;</span>Production<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-copy" onclick="copierCours()" style="grid-column:span 2"><span style="font-size:20px">&#128203;</span>Copier</button></div></div></div></div>
 <nav class="nav">
   <button class="nav-btn" onclick="showPage('films',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
@@ -1411,7 +1411,7 @@ function showPage(name, btn) {
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
   if (name === 'bilan') { bilanFilmId = bilanFilmId || state.activeFilmId; remplirSelectBilan(); renderBilan(); }
-  if (name === 'cours') { renderCoursList(); const cfn=document.getElementById('cours-film-name'); if(cfn) cfn.textContent=activeFilm()?activeFilm().nom:'Scolaire'; }
+  if (name === 'cours') { remplirSelectCours(); renderCoursList(); const cfn=document.getElementById('cours-film-name'); if(cfn) cfn.textContent=activeFilm()?activeFilm().nom:'Scolaire'; }
   if (name === 'resume') renderExtraContactsBtns();
   if (name === 'live') { renderChips(); renderStatusBar(); renderLog(); updateFilmDisplay(); renderProgressBars(); }
 }
@@ -2922,8 +2922,10 @@ function renderCoursList() {
 }
 function buildCoursMessage() {
   var film = activeFilm();
-  // Prendre TOUS les cours, groupés par date
-  var allCours = (state.coursJour||[]).slice().sort(function(a,b){
+  var allCours = (state.coursJour||[]).filter(function(c){
+    if (!coursDateFiltre) return true;
+    return c.date === coursDateFiltre;
+  }).slice().sort(function(a,b){
     return ((a.date||'').localeCompare(b.date||'')) || a.debut.localeCompare(b.debut);
   });
   if (!allCours.length) return null;
@@ -3082,6 +3084,26 @@ function revenirFilmActif() {
 function changerDateResume(date) {
   resumeDate = date;
   renderResume();
+}
+
+
+function remplirSelectCours() {
+  var sel = document.getElementById('cours-date-select');
+  if (!sel) return;
+  var dates = [...new Set((state.coursJour||[]).map(function(c){ return c.date||todayStr(); }))].sort().reverse();
+  if (!dates.length) dates = [todayStr()];
+  sel.innerHTML = '<option value="">Toutes les dates</option>' + dates.map(function(d) {
+    var dt = new Date(d + 'T12:00:00');
+    var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+    var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+    var label = jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
+    return '<option value="' + d + '"' + (d===coursDateFiltre?' selected':'') + '>' + label + '</option>';
+  }).join('');
+}
+
+function changerDateCours(date) {
+  coursDateFiltre = date || null;
+  renderCoursList();
 }
 
 async function initApp() {
