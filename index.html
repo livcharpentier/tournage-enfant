@@ -1407,11 +1407,11 @@ function showPage(name, btn) {
   document.getElementById('page-' + name).classList.add('active');
   if (btn) btn.classList.add('active');
   if (name === 'planning') 
-  if (name === 'resume') { resumeDate = resumeDate || todayStr(); renderResume(); }
+  if (name === 'resume') { resumeDate = resumeDate || todayStr(); remplirSelectResume(); renderResume(); }
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
   if (name === 'bilan') { bilanFilmId = bilanFilmId || state.activeFilmId; remplirSelectBilan(); renderBilan(); }
-  if (name === 'cours') { remplirSelectCours(); renderCoursList(); const cfn=document.getElementById('cours-film-name'); if(cfn) cfn.textContent=activeFilm()?activeFilm().nom:'Scolaire'; }
+  if (name === 'cours') { remplirSelectCours(); remplirSelectBilan(); renderCoursList(); const cfn=document.getElementById('cours-film-name'); if(cfn) cfn.textContent=activeFilm()?activeFilm().nom:'Scolaire'; }
   if (name === 'resume') renderExtraContactsBtns();
   if (name === 'live') { renderChips(); renderStatusBar(); renderLog(); updateFilmDisplay(); renderProgressBars(); }
 }
@@ -3090,13 +3090,21 @@ function changerDateResume(date) {
 function remplirSelectCours() {
   var sel = document.getElementById('cours-date-select');
   if (!sel) return;
-  var dates = [...new Set((state.coursJour||[]).map(function(c){ return c.date||todayStr(); }))].sort().reverse();
-  if (!dates.length) dates = [todayStr()];
-  sel.innerHTML = '<option value="">Toutes les dates</option>' + dates.map(function(d) {
+  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+  // Dates des cours enregistrés
+  var datesCours = [...new Set((state.coursJour||[]).map(function(c){ return c.date||todayStr(); }))];
+  // Dates des logs de tournage (journées de travail)
+  var datesLogs = [...new Set((state.logs||[]).filter(function(l){ return l.filmId===state.activeFilmId; }).map(function(l){ return l.date; }))];
+  // Union des deux + aujourd'hui
+  var today = todayStr();
+  var allDates = [...new Set([...datesCours, ...datesLogs, today])].sort().reverse();
+  sel.innerHTML = '<option value="">Toutes les dates</option>' + allDates.map(function(d) {
     var dt = new Date(d + 'T12:00:00');
-    var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-    var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
     var label = jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
+    var hasCours = datesCours.includes(d);
+    if (d === today) label += ' (auj.)';
+    if (hasCours) label += ' ✓';
     return '<option value="' + d + '"' + (d===coursDateFiltre?' selected':'') + '>' + label + '</option>';
   }).join('');
 }
@@ -3123,6 +3131,11 @@ async function initApp() {
     renderContactsExtra();
     renderExtraContactsBtns();
     updatePeriodeLabel();
+    // Pré-remplir les selects
+    resumeDate = todayStr();
+    remplirSelectResume();
+    remplirSelectCours();
+    remplirSelectBilan();
   } catch(e) { console.error('Init error:', e); }
 }
 
