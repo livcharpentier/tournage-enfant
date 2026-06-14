@@ -1907,19 +1907,23 @@ function remplirSelectResume() {
   var dateSel = document.getElementById('resume-date-select');
   if (!dateSel) return;
   var today = todayStr();
-  var dates = [...new Set(state.logs.filter(function(l){ return l.filmId === state.activeFilmId; }).map(function(l){ return l.date; }))].sort().reverse();
+  // Toutes les dates de logs + aujourd'hui
+  var logDates = state.logs
+    .filter(function(l){ return l.filmId === state.activeFilmId; })
+    .map(function(l){ return l.date; });
+  var dates = [...new Set(logDates)].sort().reverse();
   if (!dates.includes(today)) dates.unshift(today);
-  if (!dates.length) dates = [today];
-  if (!resumeDate) resumeDate = today;
+  if (!resumeDate || !dates.includes(resumeDate)) resumeDate = today;
   var cur = resumeDate;
   var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
   var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
-  dateSel.innerHTML = dates.map(function(d) {
+  var opts = dates.map(function(d) {
     var dt = new Date(d + 'T12:00:00');
     var label = jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
     if (d === today) label += ' (auj.)';
     return '<option value="' + d + '"' + (d===cur?' selected':'') + '>' + label + '</option>';
   }).join('');
+  dateSel.innerHTML = opts;
 }
 
 function renderResume() {
