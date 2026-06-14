@@ -1407,11 +1407,17 @@ function showPage(name, btn) {
   document.getElementById('page-' + name).classList.add('active');
   if (btn) btn.classList.add('active');
   if (name === 'planning') 
-  if (name === 'resume') { resumeDate = resumeDate || todayStr(); remplirSelectResume(); renderResume(); }
+  if (name === 'resume') {
+    resumeDate = resumeDate || todayStr();
+    renderResume();
+    setTimeout(function(){ remplirSelectResume(); }, 100);
+  }
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
   if (name === 'bilan') { bilanFilmId = bilanFilmId || state.activeFilmId; remplirSelectBilan(); renderBilan(); }
-  if (name === 'cours') { remplirSelectCours(); remplirSelectBilan(); renderCoursList(); const cfn=document.getElementById('cours-film-name'); if(cfn) cfn.textContent=activeFilm()?activeFilm().nom:'Scolaire'; }
+  if (name === 'cours') {
+    renderCoursList();
+    setTimeout(function(){ remplirSelectCours(); }, 100); const cfn=document.getElementById('cours-film-name'); if(cfn) cfn.textContent=activeFilm()?activeFilm().nom:'Scolaire'; }
   if (name === 'resume') renderExtraContactsBtns();
   if (name === 'live') { renderChips(); renderStatusBar(); renderLog(); updateFilmDisplay(); renderProgressBars(); }
 }
@@ -1894,6 +1900,26 @@ function calcFinMax() {
     
     return { enf, dur, presence, lim, reste, finMax, alerteH, enAlerte };
   });
+}
+
+
+function remplirSelectResume() {
+  var dateSel = document.getElementById('resume-date-select');
+  if (!dateSel) return;
+  var today = todayStr();
+  var dates = [...new Set(state.logs.filter(function(l){ return l.filmId === state.activeFilmId; }).map(function(l){ return l.date; }))].sort().reverse();
+  if (!dates.includes(today)) dates.unshift(today);
+  if (!dates.length) dates = [today];
+  if (!resumeDate) resumeDate = today;
+  var cur = resumeDate;
+  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+  dateSel.innerHTML = dates.map(function(d) {
+    var dt = new Date(d + 'T12:00:00');
+    var label = jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
+    if (d === today) label += ' (auj.)';
+    return '<option value="' + d + '"' + (d===cur?' selected':'') + '>' + label + '</option>';
+  }).join('');
 }
 
 function renderResume() {
@@ -3131,13 +3157,7 @@ async function initApp() {
     renderContactsExtra();
     renderExtraContactsBtns();
     updatePeriodeLabel();
-    // Pré-remplir les selects après un délai pour s'assurer que le DOM est prêt
     resumeDate = todayStr();
-    setTimeout(function() {
-      remplirSelectResume();
-      remplirSelectCours();
-      remplirSelectBilan();
-    }, 500);
   } catch(e) { console.error('Init error:', e); }
 }
 
