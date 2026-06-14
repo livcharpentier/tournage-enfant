@@ -3131,11 +3131,13 @@ async function initApp() {
     renderContactsExtra();
     renderExtraContactsBtns();
     updatePeriodeLabel();
-    // Pré-remplir les selects
+    // Pré-remplir les selects après un délai pour s'assurer que le DOM est prêt
     resumeDate = todayStr();
-    remplirSelectResume();
-    remplirSelectCours();
-    remplirSelectBilan();
+    setTimeout(function() {
+      remplirSelectResume();
+      remplirSelectCours();
+      remplirSelectBilan();
+    }, 500);
   } catch(e) { console.error('Init error:', e); }
 }
 
