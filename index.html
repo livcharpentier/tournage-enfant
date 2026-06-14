@@ -370,9 +370,9 @@
   </div>
   <div class="scroll-content">
     <div class="card">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-        <div style="font-size:11px;font-weight:600;color:var(--text-muted);white-space:nowrap">Journée</div>
-        <select id="resume-date-select" onchange="changerDateResume(this.value)" style="flex:1;padding:7px 10px;border:1.5px solid var(--blue);border-radius:8px;font-size:13px;font-weight:600;background:var(--blue-light);color:var(--blue-dark)"></select>
+      <div style="margin-bottom:10px">
+        <div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:6px">Journée à afficher</div>
+        <div id="resume-dates-container" style="display:flex;flex-wrap:wrap;gap:6px"></div>
       </div>
       <div class="card-title">Suivi temps</div>
       <div id="resume-bilan-haut"></div>
@@ -1410,7 +1410,7 @@ function showPage(name, btn) {
   if (name === 'resume') {
     resumeDate = resumeDate || todayStr();
     renderResume();
-    setTimeout(function(){ remplirSelectResume(); }, 100);
+    remplirSelectResume();
   }
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
@@ -1904,26 +1904,23 @@ function calcFinMax() {
 
 
 function remplirSelectResume() {
-  var dateSel = document.getElementById('resume-date-select');
-  if (!dateSel) return;
+  var container = document.getElementById('resume-dates-container');
+  if (!container) return;
   var today = todayStr();
-  // Toutes les dates de logs + aujourd'hui
-  var logDates = state.logs
-    .filter(function(l){ return l.filmId === state.activeFilmId; })
-    .map(function(l){ return l.date; });
-  var dates = [...new Set(logDates)].sort().reverse();
-  if (!dates.includes(today)) dates.unshift(today);
-  if (!resumeDate || !dates.includes(resumeDate)) resumeDate = today;
-  var cur = resumeDate;
+  var logDates = [...new Set(state.logs.filter(function(l){
+    return l.filmId === state.activeFilmId;
+  }).map(function(l){ return l.date; }))].sort().reverse();
+  if (!logDates.includes(today)) logDates.unshift(today);
+  if (!resumeDate) resumeDate = today;
   var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
   var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
-  var opts = dates.map(function(d) {
+  container.innerHTML = logDates.map(function(d) {
     var dt = new Date(d + 'T12:00:00');
     var label = jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
-    if (d === today) label += ' (auj.)';
-    return '<option value="' + d + '"' + (d===cur?' selected':'') + '>' + label + '</option>';
+    var isActive = d === resumeDate;
+    var isToday = d === today;
+    return '<button onclick="changerDateResume(\''+d+'\')" style="padding:6px 10px;border-radius:8px;border:1.5px solid '+(isActive?'var(--blue)':'var(--border)')+';background:'+(isActive?'var(--blue)':'var(--surface)')+';color:'+(isActive?'#fff':'var(--text-muted)')+';font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap">'+(isToday?'Auj. ':'')+label+'</button>';
   }).join('');
-  dateSel.innerHTML = opts;
 }
 
 function renderResume() {
@@ -3113,6 +3110,7 @@ function revenirFilmActif() {
 
 function changerDateResume(date) {
   resumeDate = date;
+  remplirSelectResume();
   renderResume();
 }
 
