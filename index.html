@@ -1416,8 +1416,11 @@ function showPage(name, btn) {
   if (name === 'calendrier') renderCal();
   if (name === 'bilan') { bilanFilmId = bilanFilmId || state.activeFilmId; remplirSelectBilan(); renderBilan(); }
   if (name === 'cours') {
+    remplirSelectCours();
     renderCoursList();
-    setTimeout(function(){ remplirSelectCours(); }, 100); const cfn=document.getElementById('cours-film-name'); if(cfn) cfn.textContent=activeFilm()?activeFilm().nom:'Scolaire'; }
+    var cfn = document.getElementById('cours-film-name');
+    if (cfn) cfn.textContent = activeFilm() ? activeFilm().nom : 'Scolaire';
+  }
   if (name === 'resume') renderExtraContactsBtns();
   if (name === 'live') { renderChips(); renderStatusBar(); renderLog(); updateFilmDisplay(); renderProgressBars(); }
 }
@@ -2122,6 +2125,7 @@ function supprimerCours(id) {
 }
 
 function renderCoursList() {
+  remplirSelectCours();
   var el = document.getElementById('cours-list');
   if (!el) return;
   var allCours = (state.coursJour||[]).slice().sort(function(a,b){
