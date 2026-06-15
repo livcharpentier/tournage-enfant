@@ -1413,6 +1413,14 @@ function showPage(name, btn) {
   if (name === 'planning') 
   if (name === 'resume') {
     resumeDate = resumeDate || todayStr();
+    // Écrire directement dans le textarea
+    var spDirect = document.getElementById('summary-txt');
+    if (spDirect) {
+      var txtDirect = buildSummary();
+      spDirect.value = txtDirect || '(vide)';
+      spDirect.style.height = 'auto';
+      spDirect.style.height = (spDirect.scrollHeight) + 'px';
+    }
     renderResume();
   }
   if (name === 'films') renderFilmsPage();
