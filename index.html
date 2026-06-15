@@ -1977,7 +1977,20 @@ async function initApp() {
     }
   }
   showLoginScreen();
-})();
+})();function ouvrirEditLog(id) {
+  var log = state.logs.find(function(l){ return l.id === id; });
+  if (!log) return;
+  document.getElementById('edit-log-id').value = id;
+  document.getElementById('edit-log-type').value = log.type;
+  document.getElementById('edit-log-heure').value = log.heure;
+  document.getElementById('edit-log-fin').value = log.fin || '';
+  var typesSansFin = ['arrivee', 'fin', 'sante'];
+  var finRow = document.getElementById('edit-log-fin-row');
+  if (finRow) finRow.style.display = typesSansFin.indexOf(log.type) !== -1 ? 'none' : 'block';
+  var label = document.getElementById('edit-log-heure-label');
+  if (label) label.textContent = log.type === 'fin' ? 'Heure de fin' : 'Heure debut';
+  openModal('modal-edit-log');
+}
 
 </script>
 
