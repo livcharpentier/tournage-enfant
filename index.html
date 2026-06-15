@@ -1414,6 +1414,13 @@ function showPage(name, btn) {
   if (name === 'resume') {
     resumeDate = resumeDate || todayStr();
     renderResume();
+    // Recharger après 1s si le résumé est vide (données pas encore chargées)
+    setTimeout(function() {
+      var sp = document.getElementById('summary-txt');
+      if (sp && (!sp.textContent || sp.textContent === 'Chargement...' || sp.textContent === '(Aucune donnée)')) {
+        renderResume();
+      }
+    }, 1000);
   }
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
