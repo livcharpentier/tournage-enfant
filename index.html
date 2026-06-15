@@ -1413,7 +1413,7 @@ function showPage(name, btn) {
   if (name === 'planning') 
   if (name === 'resume') {
     resumeDate = resumeDate || todayStr();
-    setTimeout(function() { renderResume(); }, 100);
+    renderResume();
   }
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
@@ -2832,11 +2832,9 @@ async function initApp() {
     renderExtraContactsBtns();
     updatePeriodeLabel();
     resumeDate = todayStr();
-    // Si on arrive sur la page résumé après connexion, rafraîchir
-    setTimeout(function() {
-      var pageResume = document.getElementById('page-resume');
-      if (pageResume && pageResume.classList.contains('active')) renderResume();
-    }, 200);
+    // Rafraîchir la page résumé si active
+    var pageResume = document.getElementById('page-resume');
+    if (pageResume && pageResume.classList.contains('active')) renderResume();
   } catch(e) { console.error('Init error:', e); }
 }
 
