@@ -1413,7 +1413,7 @@ function showPage(name, btn) {
   if (name === 'planning') 
   if (name === 'resume') {
     resumeDate = resumeDate || todayStr();
-    setTimeout(function() { renderResume(); }, 50);
+    setTimeout(function() { renderResume(); }, 300);
   }
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
@@ -2290,7 +2290,9 @@ function renderResume() {
   var sp = document.getElementById('summary-txt');
   if (sp) {
     var txt = buildSummary();
-    sp.textContent = txt || '(Aucune donnée pour cette journée)';
+    if (!txt || txt.trim() === '') txt = '(Aucune donnée pour cette journée)';
+    // Utiliser innerHTML avec pre pour garantir l'affichage
+    sp.innerHTML = '<pre style="white-space:pre-wrap;word-wrap:break-word;font-family:monospace;font-size:13px;color:#e2e8f0;margin:0;line-height:1.8">' + txt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</pre>';
   }
   var bilanDiv = document.getElementById('resume-bilan-haut');
   if (bilanDiv) {
