@@ -150,7 +150,7 @@
     .alert-danger { background: var(--red-light); color: var(--red-dark); }
     
     /* SUMMARY */
-    .summary-box { background: #1a1a2e; border-radius: var(--radius-sm); padding: 14px; font-size: 13px; font-family: monospace; white-space: pre-wrap; line-height: 1.8; color: #e2e8f0; max-height: 400px; overflow-y: auto; margin-bottom: 10px; border: 2px solid #3b82f6; }
+    .summary-box { background: var(--bg); border-radius: var(--radius-sm); padding: 14px; font-size: 13px; font-family: monospace; white-space: pre-wrap; line-height: 1.8; color: var(--text); max-height: 400px; overflow-y: auto; margin-bottom: 10px; border: 1.5px solid var(--border); }
     .send-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .send-btn { padding: 13px 8px; border-radius: var(--radius); border: none; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .btn-wa { background: #25D366; color: #fff; }
@@ -378,7 +378,7 @@
         <span>📋 Résumé</span>
         <span id="resume-date-label" style="font-size:12px;font-weight:600;color:var(--blue-dark);background:var(--blue-light);padding:3px 8px;border-radius:6px"></span>
       </div>
-      <div class="summary-box" id="summary-txt" style="background:#1a1a2e;color:#e2e8f0;font-size:13px;max-height:350px;border:2px solid #3b82f6;margin-top:10px"></div>
+      <div class="summary-box" id="summary-txt" style="margin-top:8px">Chargement...</div>
       <div id="resume-bilan-haut"></div>
     </div>
     <div class="card">
@@ -1413,7 +1413,7 @@ function showPage(name, btn) {
   if (name === 'planning') 
   if (name === 'resume') {
     resumeDate = resumeDate || todayStr();
-    setTimeout(function() { renderResume(); }, 300);
+    setTimeout(function() { renderResume(); }, 100);
   }
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
@@ -2289,10 +2289,7 @@ function renderResume() {
   remplirSelectResume();
   var sp = document.getElementById('summary-txt');
   if (sp) {
-    var txt = buildSummary();
-    if (!txt || txt.trim() === '') txt = '(Aucune donnée pour cette journée)';
-    // Utiliser innerHTML avec pre pour garantir l'affichage
-    sp.innerHTML = '<pre style="white-space:pre-wrap;word-wrap:break-word;font-family:monospace;font-size:13px;color:#e2e8f0;margin:0;line-height:1.8">' + txt.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</pre>';
+    sp.textContent = buildSummary() || '(Aucune donnée)';
   }
   var bilanDiv = document.getElementById('resume-bilan-haut');
   if (bilanDiv) {
