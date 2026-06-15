@@ -2286,9 +2286,13 @@ function validerHMC() {
 }
 
 function renderResume() {
+  if (!resumeDate) resumeDate = todayStr();
   remplirSelectResume();
   var sp = document.getElementById('summary-txt');
-  if (sp) sp.textContent = buildSummary();
+  if (sp) {
+    var txt = buildSummary();
+    sp.textContent = txt || '(Aucune donnée pour cette journée)';
+  }
   var bilanDiv = document.getElementById('resume-bilan-haut');
   if (bilanDiv) {
     var stats = calcFinMax();
