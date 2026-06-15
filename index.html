@@ -831,7 +831,7 @@
 
 
 
-<div id="page-cours" class="page"><div class="page-header"><div class="page-title">Cours sur plateau</div><div class="page-sub" id="cours-film-name">Planning scolaire</div></div><div class="scroll-content"><div class="card"><div class="card-title" style="margin-bottom:6px">Filtrer par date</div><select id="cours-date-select" onchange="changerDateCours(this.value)" class="form-input" style="margin-bottom:10px;font-weight:600;color:var(--purple-dark);background:var(--purple-light);border-color:var(--purple)"><option value="">Toutes les dates</option></select><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Planning</span><button onclick="openModal('modal-cours')" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter</button></div><div id="cours-list"><div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div></div></div><div class="card"><div class="card-title">Envoyer le planning</div><div class="send-btns"><button class="send-btn btn-wa" onclick="envoyerCoursWA('parents')"><span style="font-size:20px">&#128172;</span>Parents<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-wa" onclick="envoyerCoursWA('prod')" style="background:#1a9e5a"><span style="font-size:20px">&#128172;</span>Production<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-copy" onclick="copierCours()" style="grid-column:span 2"><span style="font-size:20px">&#128203;</span>Copier</button></div></div></div></div>
+<div id="page-cours" class="page"><div class="page-header"><div class="page-title">Cours sur plateau</div><div class="page-sub" id="cours-film-name">Planning scolaire</div></div><div class="scroll-content"><div class="card"><div class="card-title" style="margin-bottom:6px">Filtrer par date</div><div id="cours-dates-container" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Planning</span><button onclick="openModal('modal-cours')" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter</button></div><div id="cours-list"><div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div></div></div><div class="card"><div class="card-title">Envoyer le planning</div><div class="send-btns"><button class="send-btn btn-wa" onclick="envoyerCoursWA('parents')"><span style="font-size:20px">&#128172;</span>Parents<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-wa" onclick="envoyerCoursWA('prod')" style="background:#1a9e5a"><span style="font-size:20px">&#128172;</span>Production<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-copy" onclick="copierCours()" style="grid-column:span 2"><span style="font-size:20px">&#128203;</span>Copier</button></div></div></div></div>
 <nav class="nav">
   <button class="nav-btn" onclick="showPage('films',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
@@ -1924,20 +1924,7 @@ function remplirSelectResume() {
 }
 
 function renderResume() {
-  var dateSel = document.getElementById('resume-date-select');
-  if (dateSel) {
-    var today = todayStr();
-    var dates = [...new Set(state.logs.filter(l => l.filmId === state.activeFilmId).map(l => l.date))].sort().reverse();
-    if (!dates.includes(today)) dates.unshift(today);
-    var cur = resumeDate || today;
-    dateSel.innerHTML = dates.map(function(d) {
-      var dt = new Date(d);
-      var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-      var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
-      var label = jrs[dt.getDay()] + ' ' + d.slice(8) + ' ' + mts[dt.getMonth()] + (d===today?' (auj.)':'');
-      return '<option value="' + d + '"' + (d===cur?' selected':'') + '>' + label + '</option>';
-    }).join('');
-  }
+  remplirSelectResume();
   const sp = document.getElementById('summary-txt');
   if (sp) sp.textContent = buildSummary();
   
@@ -3116,29 +3103,30 @@ function changerDateResume(date) {
 
 
 function remplirSelectCours() {
-  var sel = document.getElementById('cours-date-select');
-  if (!sel) return;
-  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
-  // Dates des cours enregistrés
+  var container = document.getElementById('cours-dates-container');
+  if (!container) return;
   var datesCours = [...new Set((state.coursJour||[]).map(function(c){ return c.date||todayStr(); }))];
-  // Dates des logs de tournage (journées de travail)
   var datesLogs = [...new Set((state.logs||[]).filter(function(l){ return l.filmId===state.activeFilmId; }).map(function(l){ return l.date; }))];
-  // Union des deux + aujourd'hui
   var today = todayStr();
   var allDates = [...new Set([...datesCours, ...datesLogs, today])].sort().reverse();
-  sel.innerHTML = '<option value="">Toutes les dates</option>' + allDates.map(function(d) {
+  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+  var html = '<button onclick="changerDateCours(null)" style="padding:6px 10px;border-radius:8px;border:1.5px solid '+(coursDateFiltre===null?'var(--blue)':'var(--border)')+';background:'+(coursDateFiltre===null?'var(--blue)':'var(--surface)')+';color:'+(coursDateFiltre===null?'#fff':'var(--text-muted)')+';font-size:11px;font-weight:600;cursor:pointer">Tous</button>';
+  html += allDates.map(function(d) {
     var dt = new Date(d + 'T12:00:00');
     var label = jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
+    var isActive = d === coursDateFiltre;
     var hasCours = datesCours.includes(d);
     if (d === today) label += ' (auj.)';
     if (hasCours) label += ' ✓';
-    return '<option value="' + d + '"' + (d===coursDateFiltre?' selected':'') + '>' + label + '</option>';
+    return '<button onclick="changerDateCours(\''+d+'\')" style="padding:6px 10px;border-radius:8px;border:1.5px solid '+(isActive?'var(--blue)':'var(--border)')+';background:'+(isActive?'var(--blue)':'var(--surface)')+';color:'+(isActive?'#fff':'var(--text-muted)')+';font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap">'+label+'</button>';
   }).join('');
+  container.innerHTML = html;
 }
 
 function changerDateCours(date) {
-  coursDateFiltre = date || null;
+  coursDateFiltre = (date === null || date === '') ? null : date;
+  remplirSelectCours();
   renderCoursList();
 }
 
