@@ -378,7 +378,7 @@
         <span>📋 Résumé</span>
         <span id="resume-date-label" style="font-size:12px;font-weight:600;color:var(--blue-dark);background:var(--blue-light);padding:3px 8px;border-radius:6px"></span>
       </div>
-      <div class="summary-box" id="summary-txt" style="margin-top:8px">Chargement...</div>
+      <textarea id="summary-txt" readonly style="width:100%;margin-top:8px;padding:12px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-family:monospace;font-size:13px;line-height:1.8;resize:none;min-height:200px;box-sizing:border-box"></textarea>
       <div id="resume-bilan-haut"></div>
     </div>
     <div class="card">
@@ -1414,13 +1414,6 @@ function showPage(name, btn) {
   if (name === 'resume') {
     resumeDate = resumeDate || todayStr();
     renderResume();
-    // Recharger après 1s si le résumé est vide (données pas encore chargées)
-    setTimeout(function() {
-      var sp = document.getElementById('summary-txt');
-      if (sp && (!sp.textContent || sp.textContent === 'Chargement...' || sp.textContent === '(Aucune donnée)')) {
-        renderResume();
-      }
-    }, 1000);
   }
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
@@ -2296,7 +2289,10 @@ function renderResume() {
   remplirSelectResume();
   var sp = document.getElementById('summary-txt');
   if (sp) {
-    sp.textContent = buildSummary() || '(Aucune donnée)';
+    sp.value = buildSummary() || '(Aucune donnée)';
+    // Auto-ajuster la hauteur
+    sp.style.height = 'auto';
+    sp.style.height = sp.scrollHeight + 'px';
   }
   var bilanDiv = document.getElementById('resume-bilan-haut');
   if (bilanDiv) {
@@ -2823,6 +2819,8 @@ function envoyerAgendaParent(enfantId) {
 
 async function initApp() {
   await load();
+  // Rafraîchir le résumé maintenant que les données sont chargées
+  resumeDate = todayStr();
   const savedMode = localStorage.getItem('modeVacancesForce');
   if (savedMode === 'scolaire') modeVacancesForce = 'scolaire';
   else if (savedMode === 'vacances') modeVacancesForce = 'vacances';
