@@ -356,7 +356,12 @@
   </div>
   <div class="scroll-content">
     <div class="card">
-      <div class="card-title">Suivi temps — journée en cours</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div class="card-title" style="margin-bottom:0">Journée à afficher</div>
+        <span id="resume-date-label" style="font-size:12px;font-weight:600;color:var(--blue-dark);background:var(--blue-light);padding:3px 8px;border-radius:6px"></span>
+      </div>
+      <div id="resume-dates-container" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px"></div>
+      <div class="card-title">Suivi temps</div>
       <div id="resume-bilan-haut"></div>
     </div>
     <div class="card">
@@ -365,7 +370,7 @@
     </div>
     <div class="card">
       <div class="card-title">Message WhatsApp / SMS</div>
-      <div class="summary-box" id="summary-txt"></div>
+      <div class="summary-box" id="summary-txt" style="min-height:80px"></div>
       <div style="margin-bottom:10px">
         <div class="form-row">
           <label class="form-label">Note / commentaire du jour (santé, incident, remarque…)</label>
@@ -1255,7 +1260,10 @@ function todayStr() { return new Date().toISOString().slice(0, 10); }
 function initials(nom) { return nom.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2); }
 function activeFilm() { return state.films.find(f => f.id === state.activeFilmId); }
 function activeEnfants() { return state.enfants.filter(e => e.filmId === state.activeFilmId); }
-function todayLogs() { return state.logs.filter(l => l.filmId === state.activeFilmId && l.date === todayStr()); }
+function todayLogs(dateStr) {
+  var d = dateStr || resumeDate || todayStr();
+  return state.logs.filter(function(l){ return l.filmId === state.activeFilmId && l.date === d; });
+}
 // ─── CLOCK ────────────────────────────────────────────────────────
 function tickClock() {
   const n = new Date();
@@ -1730,6 +1738,8 @@ function calcFinMax() {
   });
 }
 function renderResume() {
+  if (!resumeDate) resumeDate = todayStr();
+  remplirSelectResume();
   const sp = document.getElementById('summary-txt');
   if (sp) sp.textContent = buildSummary();
   
