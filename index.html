@@ -371,17 +371,14 @@
   <div class="scroll-content">
     <div class="card">
       <div style="margin-bottom:10px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-          <div style="font-size:11px;font-weight:600;color:var(--text-muted)">Journée à afficher</div>
-          <button onclick="renderResume()" style="padding:6px 14px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:700;cursor:pointer">⟳ Actualiser</button>
-        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:6px">Journée à afficher</div>
         <div id="resume-dates-container" style="display:flex;flex-wrap:wrap;gap:6px"></div>
       </div>
       <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
         <span>📋 Résumé</span>
         <span id="resume-date-label" style="font-size:12px;font-weight:600;color:var(--blue-dark);background:var(--blue-light);padding:3px 8px;border-radius:6px"></span>
       </div>
-      <textarea id="summary-txt" readonly style="width:100%;margin-top:8px;padding:12px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-family:monospace;font-size:13px;line-height:1.8;resize:none;min-height:200px;box-sizing:border-box"></textarea>
+      <div class="summary-box" id="summary-txt" style="margin-top:8px">Chargement...</div>
       <div id="resume-bilan-haut"></div>
     </div>
     <div class="card">
@@ -988,7 +985,17 @@
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
           <div><label style="font-size:10px;color:var(--purple-dark);font-weight:600">Début</label><input type="time" id="hmc-coaching-debut" class="form-input" style="padding:6px 8px;font-size:12px"></div>
-          <div><label style="font-size:10px;color:var(--purple-dark);font-weight:600">Fin</label><input type="time" id="hmc-coaching// ─── CONSTANTES ───────────────────────────────────────────────────
+          <div><label style="font-size:10px;color:var(--purple-dark);font-weight:600">Fin</label><input type="time" id="hmc-coaching-fin" class="form-input" style="padding:6px 8px;font-size:12px"></div>
+        </div>
+      </div>
+
+    </div>
+    <button class="form-btn" onclick="validerHMC()">Valider HMC</button>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ─── CONSTANTES ───────────────────────────────────────────────────
 // Limites selon période (scolaire ou vacances)
 const LIMITES_SCOLAIRE = { '<3': 60, '3-5': 120, '6-11': 180, '12-15': 240, '16-17': 480 };
 const LIMITES_VACANCES = { '<3': 60, '3-5': 120, '6-11': 240, '12-15': 360, '16-17': 480 };
@@ -1406,14 +1413,6 @@ function showPage(name, btn) {
   if (name === 'planning') 
   if (name === 'resume') {
     resumeDate = resumeDate || todayStr();
-    // Écrire directement dans le textarea
-    var spDirect = document.getElementById('summary-txt');
-    if (spDirect) {
-      var txtDirect = buildSummary();
-      spDirect.value = txtDirect || '(vide)';
-      spDirect.style.height = 'auto';
-      spDirect.style.height = (spDirect.scrollHeight) + 'px';
-    }
     renderResume();
   }
   if (name === 'films') renderFilmsPage();
@@ -2290,17 +2289,7 @@ function renderResume() {
   remplirSelectResume();
   var sp = document.getElementById('summary-txt');
   if (sp) {
-    var txt = buildSummary();
-    if (!txt || txt.trim() === '' || txt === '— Liv ;-)') {
-      // Pas de données - afficher l'état
-      var film = activeFilm();
-      var logs = state.logs ? state.logs.filter(function(l){ return l.filmId === state.activeFilmId && l.date === (resumeDate||todayStr()); }) : [];
-      sp.value = 'Film : ' + (film ? film.nom : 'aucun (id=' + state.activeFilmId + ')') + '\nLogs aujourd hui : ' + logs.length + '\nResume date : ' + (resumeDate||'null') + '\n\nAppuyez sur Actualiser si les données sont chargées.';
-    } else {
-      sp.value = txt;
-    }
-    sp.style.height = 'auto';
-    sp.style.height = sp.scrollHeight + 'px';
+    sp.textContent = buildSummary() || '(Aucune donnée)';
   }
   var bilanDiv = document.getElementById('resume-bilan-haut');
   if (bilanDiv) {
@@ -2827,8 +2816,6 @@ function envoyerAgendaParent(enfantId) {
 
 async function initApp() {
   await load();
-  // Rafraîchir le résumé maintenant que les données sont chargées
-  resumeDate = todayStr();
   const savedMode = localStorage.getItem('modeVacancesForce');
   if (savedMode === 'scolaire') modeVacancesForce = 'scolaire';
   else if (savedMode === 'vacances') modeVacancesForce = 'vacances';
@@ -2880,12 +2867,6 @@ async function initApp() {
 
 function closeSplash() {
   var splash = document.getElementById('splash');
-  if (splash) { splash.style.opacity = '0'; setTimeout(function(){ try { splash.remove(); } catch(e) {} }, 600); }
-}
-setTimeout(function(){ var bar = document.getElementById('splash-bar'); if (bar) bar.style.width = '100%'; }, 100);
-setTimeout(closeSplash, 1800);
-setTimeout(closeSplash, 3000);
-sh');
   if (splash) { splash.style.opacity = '0'; setTimeout(function(){ try { splash.remove(); } catch(e) {} }, 600); }
 }
 setTimeout(function(){ var bar = document.getElementById('splash-bar'); if (bar) bar.style.width = '100%'; }, 100);
