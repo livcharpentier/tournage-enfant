@@ -299,7 +299,7 @@
       <button class="action-btn btn-arrivee" onclick="logAction('arrivee')">
         <span class="icon">🎬</span><span class="lbl">Arrivée</span><span class="last-t" id="lt-arrivee"></span>
       </button>
-      <button class="action-btn btn-hmc" onclick="ouvrirChecklistHMC()">
+      <button class="action-btn btn-hmc" onclick="logAction('hmc')">
         <span class="icon">✂️👗🎨</span><span class="lbl">HMC / Prép.</span><span class="last-t" id="lt-hmc"></span>
       </button>
       <button class="action-btn btn-tournage" onclick="logAction('tournage')">
@@ -356,46 +356,41 @@
   </div>
   <div class="scroll-content">
     <div class="card">
-      <div class="card-title">Suivi temps — journée en cours</div>
-      <div id="resume-bilan-haut"></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <div style="font-size:12px;font-weight:600;color:var(--text-muted)">Journée :</div>
+        <select id="resume-date-select" onchange="changerDateResume(this.value)" style="flex:1;padding:8px 10px;border-radius:8px;border:1.5px solid var(--blue);background:var(--blue-light);color:var(--blue-dark);font-size:13px;font-weight:600"></select>
+      </div>
+      <div id="summary-txt" style="font-family:monospace;font-size:13px;white-space:pre-wrap;line-height:1.8;color:var(--text);min-height:60px"></div>
     </div>
     <div class="card">
+      <div style="margin-bottom:10px">
+        <div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:6px">Journée</div>
+        <div id="resume-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+      </div>
+      <div id="resume-bilan-haut"></div>
       <div id="resume-alerts"></div>
       <div class="metrics-grid" id="resume-metrics"></div>
     </div>
     <div class="card">
-      <div class="card-title">Message WhatsApp / SMS</div>
-      <div class="summary-box" id="summary-txt"></div>
-      <div style="margin-bottom:10px">
-        <div class="form-row">
-          <label class="form-label">Note / commentaire du jour (santé, incident, remarque…)</label>
-          <textarea class="form-input" id="commentaire-jour" rows="3" placeholder="Ex : Léa s'est plainte d'un mal de tête à 14h, repos 20 min. Tom fatigué en fin de journée." style="resize:vertical;line-height:1.5" oninput="saveCommentaire()"></textarea>
-        </div>
-        <div class="form-row">
-          <label class="form-label">Numéro WhatsApp scripte (avec indicatif, ex: +33612...)</label>
-          <input class="form-input" type="tel" id="wa-scripte" placeholder="+336...">
-        </div>
-        <div class="form-row">
-          <label class="form-label">Numéro WhatsApp production</label>
-          <input class="form-input" type="tel" id="wa-prod" placeholder="+336...">
-        </div>
+      <div class="card-title">Envoyer</div>
+      <div class="form-row">
+        <label class="form-label">Note / commentaire du jour</label>
+        <textarea class="form-input" id="commentaire-jour" rows="2" placeholder="Ex : Léa fatiguée en fin de journée..." style="resize:vertical;line-height:1.5" oninput="saveCommentaire()"></textarea>
+      </div>
+      <div class="form-row">
+        <label class="form-label">WhatsApp scripte</label>
+        <input class="form-input" type="tel" id="wa-scripte" placeholder="+336...">
+      </div>
+      <div class="form-row">
+        <label class="form-label">WhatsApp production</label>
+        <input class="form-input" type="tel" id="wa-prod" placeholder="+336...">
       </div>
       <div class="send-btns">
-        <button class="send-btn btn-wa" onclick="sendWhatsApp('scripte')">
-          <span style="font-size:20px">💬</span>Scripte<span style="font-size:10px;opacity:.8">WhatsApp</span>
-        </button>
-        <button class="send-btn btn-wa" onclick="sendWhatsApp('prod')">
-          <span style="font-size:20px">💬</span>Prod<span style="font-size:10px;opacity:.8">WhatsApp</span>
-        </button>
-        <button class="send-btn btn-sms" onclick="sendSMS('scripte')">
-          <span style="font-size:20px">📱</span>Scripte<span style="font-size:10px;opacity:.8">SMS</span>
-        </button>
-        <button class="send-btn btn-sms" onclick="sendSMS('prod')">
-          <span style="font-size:20px">📱</span>Prod<span style="font-size:10px;opacity:.8">SMS</span>
-        </button>
-        <button class="send-btn btn-copy" onclick="copyResume()" style="grid-column:span 2">
-          <span style="font-size:20px">📋</span>Copier le résumé
-        </button>
+        <button class="send-btn btn-wa" onclick="sendWhatsApp('scripte')"><span style="font-size:20px">💬</span>Scripte<span style="font-size:10px;opacity:.8">WhatsApp</span></button>
+        <button class="send-btn btn-wa" onclick="sendWhatsApp('prod')"><span style="font-size:20px">💬</span>Prod<span style="font-size:10px;opacity:.8">WhatsApp</span></button>
+        <button class="send-btn btn-sms" onclick="sendSMS('scripte')"><span style="font-size:20px">📱</span>Scripte<span style="font-size:10px;opacity:.8">SMS</span></button>
+        <button class="send-btn btn-sms" onclick="sendSMS('prod')"><span style="font-size:20px">📱</span>Prod<span style="font-size:10px;opacity:.8">SMS</span></button>
+        <button class="send-btn btn-copy" onclick="copyResume()" style="grid-column:span 2"><span style="font-size:20px">📋</span>Copier le résumé</button>
       </div>
       <div id="extra-contacts-btns" style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
     </div>
@@ -863,40 +858,6 @@
 </div>
 <div class="modal-overlay" id="modal-cours"><div class="modal"><button class="modal-close" onclick="closeModal('modal-cours')">X</button><div class="modal-title">Ajouter un cours</div><div class="form-row"><label class="form-label">Enfant</label><select class="form-input" id="cours-enfant-id"></select></div><div class="form-row"><label class="form-label">Matiere</label><select class="form-input" id="cours-matiere"><option>Mathematiques</option><option>Francais</option><option>Histoire-Geo</option><option>Sciences</option><option>Anglais</option><option>Arts</option><option>Sport</option><option>Autre</option></select></div><div class="form-row"><label class="form-label">Matiere perso (optionnel)</label><input class="form-input" id="cours-matiere-custom" placeholder="ex: Espagnol..."></div><div class="form-row"><label class="form-label">Date</label><input class="form-input" type="date" id="cours-date"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Debut</label><input class="form-input" type="time" id="cours-debut"></div><div><label class="form-label">Fin</label><input class="form-input" type="time" id="cours-fin"></div></div><div class="form-row"><label class="form-label">Precepteur (optionnel)</label><input class="form-input" id="cours-prof" placeholder="ex: M. Martin"></div><button class="form-btn" style="background:var(--purple)" onclick="ajouterCours()">Ajouter ce cours</button></div></div>
 <div class="modal-overlay" id="modal-edit-log"><div class="modal"><button class="modal-close" onclick="closeModal('modal-edit-log')">X</button><div class="modal-title">Modifier cette action</div><input type="hidden" id="edit-log-id"><div class="form-row"><label class="form-label">Action</label><select class="form-input" id="edit-log-type"><option value="arrivee">Arrivee</option><option value="hmc">HMC</option><option value="tournage">Tournage</option><option value="pause">Pause</option><option value="repas">Repas/Cantine</option><option value="attente">Attente</option><option value="cours">Cours</option><option value="cascade">Cascade</option><option value="sante">Sante</option><option value="son">Equipage son</option><option value="fin">Fin journee</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Heure debut</label><input class="form-input" type="time" id="edit-log-heure"></div><div><label class="form-label">Heure fin</label><input class="form-input" type="time" id="edit-log-fin"></div></div><button class="form-btn" style="background:var(--blue)" onclick="sauvegarderLog()">Enregistrer</button></div></div>
-<div class="modal-overlay" id="modal-hmc">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-hmc')">✕</button>
-    <div class="modal-title">HMC — Checklist</div>
-    <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Cochez ce qui est fait pour l'enfant</div>
-    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
-      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--blue-light);border-radius:8px;cursor:pointer">
-        <input type="checkbox" id="hmc-habillage" style="width:20px;height:20px;cursor:pointer">
-        <span style="font-size:15px">👗</span>
-        <span style="font-size:14px;font-weight:600;color:var(--blue-dark)">Habillage</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:#fce7f3;border-radius:8px;cursor:pointer">
-        <input type="checkbox" id="hmc-maquillage" style="width:20px;height:20px;cursor:pointer">
-        <span style="font-size:15px">💄</span>
-        <span style="font-size:14px;font-weight:600;color:#9d174d">Maquillage</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--amber-light);border-radius:8px;cursor:pointer">
-        <input type="checkbox" id="hmc-coiffure" style="width:20px;height:20px;cursor:pointer">
-        <span style="font-size:15px">✂️</span>
-        <span style="font-size:14px;font-weight:600;color:var(--amber-dark)">Coiffure</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--gray-light);border-radius:8px;cursor:pointer">
-        <input type="checkbox" id="hmc-son" style="width:20px;height:20px;cursor:pointer">
-        <span style="font-size:15px">🎙️</span>
-        <span style="font-size:14px;font-weight:600;color:var(--gray-dark)">Son (micro)</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--purple-light);border-radius:8px;cursor:pointer">
-        <input type="checkbox" id="hmc-coaching" style="width:20px;height:20px;cursor:pointer">
-        <span style="font-size:15px">🎭</span>
-        <span style="font-size:14px;font-weight:600;color:var(--purple-dark)">Coaching</span>
-      </label>
-    </div>
-    <button class="form-btn" onclick="validerHMC()">Valider et démarrer le chrono</button>
-  </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
@@ -1255,7 +1216,10 @@ function todayStr() { return new Date().toISOString().slice(0, 10); }
 function initials(nom) { return nom.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2); }
 function activeFilm() { return state.films.find(f => f.id === state.activeFilmId); }
 function activeEnfants() { return state.enfants.filter(e => e.filmId === state.activeFilmId); }
-function todayLogs() { return state.logs.filter(l => l.filmId === state.activeFilmId && l.date === todayStr()); }
+function todayLogs(dateStr) {
+  var d = dateStr || resumeDate || todayStr();
+  return state.logs.filter(function(l){ return l.filmId === state.activeFilmId && l.date === d; });
+}
 // ─── CLOCK ────────────────────────────────────────────────────────
 function tickClock() {
   const n = new Date();
@@ -1281,7 +1245,15 @@ function showPage(name, btn) {
   document.getElementById('page-' + name).classList.add('active');
   if (btn) btn.classList.add('active');
   if (name === 'planning') 
-  if (name === 'resume') renderResume();
+  if (name === 'resume') {
+    resumeDate = resumeDate || todayStr();
+    renderResume();
+    // Relancer si vide après chargement async
+    setTimeout(function() {
+      var sp = document.getElementById('summary-txt');
+      if (sp && (!sp.textContent || sp.textContent.trim() === '')) renderResume();
+    }, 800);
+  }
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
   if (name === 'bilan') renderBilan();
@@ -1729,103 +1701,81 @@ function calcFinMax() {
     return { enf, dur, presence, lim, reste, finMax, alerteH, enAlerte };
   });
 }
-function renderResume() {
-  const sp = document.getElementById('summary-txt');
-  if (sp) sp.textContent = buildSummary();
-  
-  // Bloc résumé horaire en haut
-  const bilanDiv = document.getElementById('resume-bilan-haut');
-  if (bilanDiv) {
-    const stats = calcFinMax();
-    if (stats.length) {
-      let html = '';
-      stats.forEach(s => {
-        const pct = Math.round(s.presence / s.lim * 100);
-        const barColor = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
-        const alertClass = s.enAlerte ? 'background:#fee2e2;border:1px solid #ef4444;' : 'background:var(--gray-light);';
-        html += '<div style="' + alertClass + 'border-radius:10px;padding:10px 12px;margin-bottom:8px">';
-        html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">';
-        html += '<div style="font-size:13px;font-weight:700">' + s.enf.nom.split(' ')[0] + '</div>';
-        if (s.enAlerte) html += '<div style="font-size:11px;font-weight:700;color:#991b1b">⚠ ALERTER MISE EN SCENE</div>';
-        html += '</div>';
-        // Heure de début = HMC ou arrivée
-        const logsEnf = todayLogs().filter(l => l.enfantId === s.enf.id).sort((a,b) => a.heure.localeCompare(b.heure));
-        const debutEvR = logsEnf.find(l => l.type === 'hmc') || logsEnf.find(l => l.type === 'arrivee');
-        const debutH = debutEvR ? debutEvR.heure : '-';
-        html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Début</div><div style="font-size:14px;font-weight:600">' + debutH + '</div></div>';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.hmc||0) + '</div></div>';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Tournage</div><div style="font-size:14px;font-weight:600;color:#065f46">' + fmt(s.dur.tournage||0) + '</div></div>';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Pause</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.pause||0) + '</div></div>';
-        html += '</div>';
-        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">Repas non compté : ' + fmt(s.dur.repas||0) + ' · Hors plateau non compté : ' + fmt(s.dur.attente||0) + '</div>';
-        html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:6px">';
-        html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,pct) + '%"></div>';
-        html += '</div>';
-        html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted)">';
-        const presLabel = (pct >= 100 ? '⚠ DEPASSE : ' : 'Presence : ') + fmt(s.presence) + ' / ' + fmt(s.lim) + ' (' + pct + '%)';
-        html += '<span style="color:' + (pct>=100?'#991b1b':'var(--text-muted)') + ';font-weight:' + (pct>=100?'700':'400') + '">' + presLabel + '</span>';
-        let finInfo = '';
-        if (s.finMax) finInfo += 'Fin max : ' + s.finMax;
-        if (s.finReelH) finInfo += ' · Fin réelle : ' + s.finReelH;
-        if (s.depasseMin > 0) finInfo += ' · Dépassement : ' + fmt(s.depasseMin);
-        if (s.alerteH && !s.finReelH) finInfo += ' · Alerte : ' + s.alerteH;
-        if (finInfo) html += '<span style="font-weight:600;color:' + (s.depasse?'#991b1b':s.enAlerte?'#991b1b':'var(--text)') + '">' + finInfo + '</span>';
-        html += '</div>';
-        html += '</div>';
-      });
-      bilanDiv.innerHTML = html;
+
+function remplirSelectResume() {
+  var today = todayStr();
+  var dates = [];
+  var seen = {};
+  (state.logs||[]).forEach(function(l) {
+    if (l.filmId === state.activeFilmId && !seen[l.date]) {
+      seen[l.date] = true;
+      dates.push(l.date);
     }
-  }
-  // contacts sync
-  const ws = document.getElementById('wa-scripte');
-  const wp = document.getElementById('wa-prod');
-  if (ws && state.contacts.scripte) ws.value = state.contacts.scripte;
-  if (wp && state.contacts.prod) wp.value = state.contacts.prod;
-  // alerts + metrics
-  const enfs = activeEnfants();
-  const logs = todayLogs();
-  const alertDiv = document.getElementById('resume-alerts');
-  const metrics = document.getElementById('resume-metrics');
-  let alerts = '';
-  let totTournage = 0, present = new Set();
-  logs.forEach(l => {
-    if (l.type === 'tournage' && l.fin) { totTournage += Math.max(0, toMin(l.fin) - toMin(l.heure)); present.add(l.enfantId); }
   });
-  if (metrics) metrics.innerHTML = `
-    <div class="metric"><div class="metric-val">${present.size}</div><div class="metric-lbl">Présents</div></div>
-    <div class="metric"><div class="metric-val">${fmt(totTournage) || '—'}</div><div class="metric-lbl">Tournage</div></div>
-    <div class="metric"><div class="metric-val">${logs.length}</div><div class="metric-lbl">Entrées</div></div>
-  `;
-  enfs.forEach(e => {
-    const lim = LIMITES[e.age];
-    const travail = logs.filter(l => l.enfantId === e.id && WORK_TYPES.includes(l.type) && l.fin)
-      .reduce((s, l) => s + Math.max(0, toMin(l.fin) - toMin(l.heure)), 0);
-    const pct = Math.round(travail / lim * 100);
-    if (pct >= 100) alerts += `<div class="alert alert-danger">⚠ ${e.nom} a dépassé la limite légale (${fmt(travail)} / ${fmt(lim)})</div>`;
-    else if (pct >= 80) alerts += `<div class="alert alert-warn">⚠ ${e.nom} proche de la limite (${pct}%)</div>`;
-  });
-  if (!alerts && logs.length) alerts = '<div class="alert alert-ok">✅ Tous les enfants respectent les limites légales</div>';
-  if (alertDiv) alertDiv.innerHTML = alerts;
-  if (chrono) {
-    chrono.innerHTML = enfs.map(e => {
-      const evs = logs.filter(l => l.enfantId === e.id).sort((a, b) => a.heure.localeCompare(b.heure));
-      if (!evs.length) return '';
-      const items = evs.map(l => {
-        const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6', '#1f2937'];
-        return `<span class="chrono-item"><span class="chrono-item-time">${l.heure}</span> <span style="background:${bg};color:${tc};padding:1px 7px;border-radius:8px;font-size:11px;font-weight:600">${TYPE_LABEL[l.type]}</span>${l.fin ? '<span style="font-size:11px;color:var(--text-muted)">→' + l.fin + '</span>' : ''}</span>`;
-      }).join(' ');
-      return `<div class="chrono-block">
-        <div class="chrono-name">
-          <div style="width:22px;height:22px;border-radius:50%;background:${e.couleur}22;color:${e.couleur};font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">${initials(e.nom)}</div>
-          ${e.nom}
-        </div>
-        <div class="chrono-items">${items}</div>
-      </div>`;
-    }).join('') || '<div class="empty">Aucune donnée pour aujourd\'hui</div>';
+  dates.sort().reverse();
+  if (!seen[today]) dates.unshift(today);
+  if (!resumeDate || dates.indexOf(resumeDate) === -1) resumeDate = dates[0] || today;
+  // Remplir le conteneur de dates
+  var container = document.getElementById('resume-dates-container');
+  if (container) {
+    var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+    var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+    container.innerHTML = '';
+    dates.forEach(function(d) {
+      var dt = new Date(d + 'T12:00:00');
+      var label = (d === today ? 'Auj. ' : '') + jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
+      var isActive = d === resumeDate;
+      var btn = document.createElement('button');
+      btn.textContent = label;
+      btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid ' + (isActive?'#3b82f6':'#e2e8f0') + ';background:' + (isActive?'#3b82f6':'#fff') + ';color:' + (isActive?'#fff':'#0f172a') + ';font-size:12px;font-weight:600;cursor:pointer';
+      btn.onclick = (function(date) { return function() { changerDateResume(date); }; })(d);
+      container.appendChild(btn);
+    });
   }
 }
-// ─── WHATSAPP / SMS ───────────────────────────────────────────────
+
+function changerDateResume(date) {
+  resumeDate = date;
+  var sp = document.getElementById('summary-txt');
+  if (sp) sp.textContent = buildSummary() || '(Aucune donnee)';
+}
+
+function renderResume() {
+  if (!resumeDate) resumeDate = todayStr();
+  // Select des dates
+  var sel = document.getElementById('resume-date-select');
+  if (sel) {
+    var dates = [];
+    var seen = {};
+    (state.logs||[]).forEach(function(l) {
+      if (l.filmId === state.activeFilmId && !seen[l.date]) {
+        seen[l.date] = true;
+        dates.push(l.date);
+      }
+    });
+    dates.sort().reverse();
+    var today = todayStr();
+    if (!seen[today]) dates.unshift(today);
+    if (dates.indexOf(resumeDate) === -1) resumeDate = dates[0] || today;
+    var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+    var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+    sel.innerHTML = dates.map(function(d) {
+      var dt = new Date(d + 'T12:00:00');
+      var label = (d === today ? 'Auj. ' : '') + jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
+      return '<option value="' + d + '"' + (d === resumeDate ? ' selected' : '') + '>' + label + '</option>';
+    }).join('');
+  }
+  // Texte résumé
+  var sp = document.getElementById('summary-txt');
+  if (sp) sp.textContent = buildSummary() || '(Aucune donnee pour cette journee)';
+  // Contacts
+  var ws = document.getElementById('wa-scripte');
+  var wp = document.getElementById('wa-prod');
+  if (ws && state.contacts && state.contacts.scripte) ws.value = state.contacts.scripte;
+  if (wp && state.contacts && state.contacts.prod) wp.value = state.contacts.prod;
+  renderExtraContactsBtns();
+}
+
 function getNumber(role) {
   const fromResume = document.getElementById('wa-' + role)?.value;
   const fromContacts = state.contacts[role];
@@ -2421,6 +2371,23 @@ function getAllDates() {
   )].sort();
   return dates;
 }
+
+function ouvrirEditLogBilan(enfantId, date, type) {
+  var fid = bilanFilmId || state.activeFilmId;
+  var logs = state.logs.filter(function(l){ return l.filmId===fid && l.date===date && l.enfantId===enfantId && l.type===type; });
+  if (!logs.length) {
+    alert('Aucun log trouvé pour ce type sur cette journée.');
+    return;
+  }
+  // Prendre le premier log correspondant
+  var log = logs[0];
+  document.getElementById('edit-log-id').value = log.id;
+  document.getElementById('edit-log-type').value = log.type;
+  document.getElementById('edit-log-heure').value = log.heure;
+  document.getElementById('edit-log-fin').value = log.fin || '';
+  openModal('modal-edit-log');
+}
+
 function renderBilan() {
   const el = document.getElementById('bilan-content');
   if (!el) return;
@@ -2466,9 +2433,9 @@ function renderBilan() {
       const col = s.pct >= 100 ? '#fee2e2' : s.pct >= 80 ? '#fef3c7' : '';
       html += '<tr style="border-bottom:1px solid var(--border);' + (col ? 'background:' + col : '') + '">';
       html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '<br><span style="font-size:10px;font-weight:400;color:var(--text-muted)">' + statutLabel(s.enf.statut || 'role', s.enf.genre) + '</span></td>';
-      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
-      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'arrivee\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'hmc\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
+      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'tournage\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.pause ? fmt(s.dur.pause) : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin ? '-' + s.hRepas.fin : '') : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
@@ -2477,7 +2444,7 @@ function renderBilan() {
       const cBilan = (state.coursJour||[]).filter(c => c.date===date && c.enfantId===s.enf.id);
       const cStr = cBilan.length ? cBilan.map(c => c.matiere+' '+c.debut+(c.fin?'-'+c.fin:'')).join(', ') : '-';
       html += '<td style="padding:6px 8px;color:#5b21b6;font-size:10px">' + cStr + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'fin\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
       html += '<td style="padding:6px 8px;font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
       html += '</tr>';
     });
@@ -3125,6 +3092,23 @@ function saveNoteJour(date, note) {
   save();
 }
 
+
+function ouvrirEditLogBilan(enfantId, date, type) {
+  var fid = bilanFilmId || state.activeFilmId;
+  var logs = state.logs.filter(function(l){ return l.filmId===fid && l.date===date && l.enfantId===enfantId && l.type===type; });
+  if (!logs.length) {
+    alert('Aucun log trouvé pour ce type sur cette journée.');
+    return;
+  }
+  // Prendre le premier log correspondant
+  var log = logs[0];
+  document.getElementById('edit-log-id').value = log.id;
+  document.getElementById('edit-log-type').value = log.type;
+  document.getElementById('edit-log-heure').value = log.heure;
+  document.getElementById('edit-log-fin').value = log.fin || '';
+  openModal('modal-edit-log');
+}
+
 function renderBilan() {
   var el = document.getElementById('bilan-content');
   if (!el) return;
@@ -3157,9 +3141,9 @@ function renderBilan() {
       var col = s.pct >= 100 ? '#fee2e2' : s.pct >= 80 ? '#fef3c7' : '';
       html += '<tr style="border-bottom:1px solid var(--border);' + (col?'background:'+col:'') + '">';
       html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '<br><span style="font-size:10px;font-weight:400;color:var(--text-muted)">' + statutLabel(s.enf.statut||'role', s.enf.genre) + '</span></td>';
-      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
-      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'arrivee\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'hmc\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
+      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'tournage\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.pause ? fmt(s.dur.pause) : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin?'-'+s.hRepas.fin:'') : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
@@ -3167,7 +3151,7 @@ function renderBilan() {
       html += '<td style="padding:6px 8px;color:' + (s.hasSante?'#9d174d':'var(--text-muted)') + '">' + (s.hasSante?'!':'-') + '</td>';
       var cBilan = (state.coursJour||[]).filter(function(c){ return c.date===date && c.enfantId===s.enf.id; });
       html += '<td style="padding:6px 8px;color:#5b21b6;font-size:10px">' + (cBilan.length?cBilan.map(function(c){ return c.matiere+' '+c.debut+(c.fin?'-'+c.fin:''); }).join(', '):'-') + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'fin\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
       html += '<td style="padding:6px 8px;font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
       html += '</tr>';
     });
@@ -4055,6 +4039,23 @@ function saveNoteJour(date, note) {
   save();
 }
 
+
+function ouvrirEditLogBilan(enfantId, date, type) {
+  var fid = bilanFilmId || state.activeFilmId;
+  var logs = state.logs.filter(function(l){ return l.filmId===fid && l.date===date && l.enfantId===enfantId && l.type===type; });
+  if (!logs.length) {
+    alert('Aucun log trouvé pour ce type sur cette journée.');
+    return;
+  }
+  // Prendre le premier log correspondant
+  var log = logs[0];
+  document.getElementById('edit-log-id').value = log.id;
+  document.getElementById('edit-log-type').value = log.type;
+  document.getElementById('edit-log-heure').value = log.heure;
+  document.getElementById('edit-log-fin').value = log.fin || '';
+  openModal('modal-edit-log');
+}
+
 function renderBilan() {
   var el = document.getElementById('bilan-content');
   if (!el) return;
@@ -4087,9 +4088,9 @@ function renderBilan() {
       var col = s.pct >= 100 ? '#fee2e2' : s.pct >= 80 ? '#fef3c7' : '';
       html += '<tr style="border-bottom:1px solid var(--border);' + (col?'background:'+col:'') + '">';
       html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '<br><span style="font-size:10px;font-weight:400;color:var(--text-muted)">' + statutLabel(s.enf.statut||'role', s.enf.genre) + '</span></td>';
-      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
-      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'arrivee\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'hmc\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
+      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'tournage\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.pause ? fmt(s.dur.pause) : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin?'-'+s.hRepas.fin:'') : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
@@ -4097,7 +4098,7 @@ function renderBilan() {
       html += '<td style="padding:6px 8px;color:' + (s.hasSante?'#9d174d':'var(--text-muted)') + '">' + (s.hasSante?'!':'-') + '</td>';
       var cBilan = (state.coursJour||[]).filter(function(c){ return c.date===date && c.enfantId===s.enf.id; });
       html += '<td style="padding:6px 8px;color:#5b21b6;font-size:10px">' + (cBilan.length?cBilan.map(function(c){ return c.matiere+' '+c.debut+(c.fin?'-'+c.fin:''); }).join(', '):'-') + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'fin\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
       html += '<td style="padding:6px 8px;font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
       html += '</tr>';
     });
