@@ -1289,7 +1289,15 @@ function showPage(name, btn) {
   document.getElementById('page-' + name).classList.add('active');
   if (btn) btn.classList.add('active');
   if (name === 'planning') 
-  if (name === 'resume') renderResume();
+  if (name === 'resume') {
+    resumeDate = resumeDate || todayStr();
+    renderResume();
+    // Relancer si vide après chargement async
+    setTimeout(function() {
+      var sp = document.getElementById('summary-txt');
+      if (sp && (!sp.textContent || sp.textContent.trim() === '')) renderResume();
+    }, 800);
+  }
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
   if (name === 'bilan') renderBilan();
