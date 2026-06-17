@@ -1525,10 +1525,11 @@ function renderLog() {
     const enf = enfs.find(e => e.id === l.enfantId);
     const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6', '#1f2937'];
     const dur = l.fin ? fmt(toMin(l.fin) - toMin(l.heure)) : 'en cours';
+    const heures = l.fin ? l.heure + ' → ' + l.fin : l.heure + ' →';
     return `<div class="log-item">
-      <div class="log-time">${l.heure}</div>
+      <div class="log-time" style="font-size:12px;min-width:90px">${heures}</div>
       <div class="log-tag" style="background:${bg};color:${tc}">${TYPE_LABEL[l.type] || l.type}</div>
-      <div class="log-who">${enf ? enf.nom.split(' ')[0] : '?'}${l.fin ? ' → ' + l.fin : ''}${l.detail ? ' · ' + l.detail : ''}</div>
+      <div class="log-who">${enf ? enf.nom.split(' ')[0] : '?'}${l.detail ? ' · ' + l.detail : ''}</div>
       <div class="log-dur">${dur}</div>
       <button class="log-del" onclick="ouvrirEditLog(${l.id})" style="color:var(--blue)">&#9998;</button>
       <button class="log-del" onclick="delLog(${l.id})">✕</button>
@@ -1649,43 +1650,40 @@ function parseVoice(text) {
 function buildSummary() {
   const film = activeFilm();
   const enfs = activeEnfants();
-  const logs = todayLogs().sort((a, b) => a.heure.localeCompare(b.heure));
+  const dateRef = resumeDate || todayStr();
+  const logsDate = state.logs.filter(l => l.filmId === state.activeFilmId && l.date === dateRef)
+    .sort((a, b) => a.heure.localeCompare(b.heure));
   const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
   const months = ['janvier','fevrier','mars','avril','mai','juin','juillet','aout','septembre','octobre','novembre','decembre'];
-  // Utiliser resumeDate si sélectionné
-  const dateRef = resumeDate ? new Date(resumeDate + 'T12:00:00') : new Date();
-  const dateStr = days[dateRef.getDay()] + ' ' + dateRef.getDate() + ' ' + months[dateRef.getMonth()] + ' ' + dateRef.getFullYear();
+  const d = new Date(dateRef + 'T12:00:00');
+  const dateStr = days[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
   const commentaire = document.getElementById('commentaire-jour')?.value?.trim() || '';
   let txt = (film ? film.nom.toUpperCase() : 'TOURNAGE') + '\n' + dateStr + '\n\n';
   enfs.forEach(enf => {
-    const evs = logs.filter(l => l.enfantId === enf.id);
+    const evs = logsDate.filter(l => l.enfantId === enf.id);
     if (!evs.length) return;
     const dur = {};
     Object.keys(TYPE_LABEL).forEach(t => dur[t] = 0);
     evs.forEach(l => {
       if (l.fin) dur[l.type] = (dur[l.type] || 0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
     });
-    const hArrivee = evs.find(l => l.type === 'arrivee');
-    const hHmc = evs.find(l => l.type === 'hmc');
+    const hDebut = evs.find(l => l.type === 'hmc') || evs.find(l => l.type === 'arrivee');
     const hFin = [...evs].reverse().find(l => l.type === 'fin');
-    const hRepas = evs.find(l => l.type === 'repas');
-    txt += enf.nom + ' — ' + statutLabel(enf.statut || 'role', enf.genre) + '\n';
-    if (hArrivee) txt += 'Debut : ' + hArrivee.heure + '\n';
+    txt += enf.nom + '\n';
+    if (hDebut) txt += 'Debut : ' + hDebut.heure + '\n';
     if (dur.tournage) txt += 'Tournage : ' + fmt(dur.tournage) + '\n';
     if (dur.pause) txt += 'Pause : ' + fmt(dur.pause) + '\n';
-    if (dur.attente) txt += 'Temps d’attente : ' + fmt(dur.attente) + '\n';
-    if (hRepas) txt += 'Repas : ' + hRepas.heure + (hRepas.fin ? ' - ' + hRepas.fin : '') + '\n';
-    if (dur.cours) txt += 'Cours : ' + fmt(dur.cours) + '\n';
+    if (dur.attente) txt += 'Attente : ' + fmt(dur.attente) + '\n';
     if (hFin) txt += 'Fin : ' + hFin.heure + '\n';
     const travailEnf = WORK_TYPES.reduce((s,t) => s+(dur[t]||0), 0);
     const limEnf = LIMITES[enf.age];
-    if (travailEnf > limEnf) txt += '⚠ DEPASSEMENT : +' + fmt(travailEnf - limEnf) + '\n';
+    if (travailEnf > limEnf) txt += 'DEPASSEMENT : +' + fmt(travailEnf - limEnf) + '\n';
     txt += '\n';
   });
   if (commentaire) txt += 'Observation : ' + commentaire + '\n\n';
   txt += '— Liv ;-)';
-  return txt;
 }
+
 function calcFinMax() {
   // Calcule l'heure max de fin pour chaque enfant et l'alerte 1H avant
   const enfs = activeEnfants();
