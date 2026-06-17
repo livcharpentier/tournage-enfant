@@ -356,12 +356,7 @@
   </div>
   <div class="scroll-content">
     <div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-        <div class="card-title" style="margin-bottom:0">Journée à afficher</div>
-        <span id="resume-date-label" style="font-size:12px;font-weight:600;color:var(--blue-dark);background:var(--blue-light);padding:3px 8px;border-radius:6px"></span>
-      </div>
-      <div id="resume-dates-container" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px"></div>
-      <div class="card-title">Suivi temps</div>
+      <div class="card-title">Suivi temps — journée en cours</div>
       <div id="resume-bilan-haut"></div>
     </div>
     <div class="card">
@@ -370,7 +365,7 @@
     </div>
     <div class="card">
       <div class="card-title">Message WhatsApp / SMS</div>
-      <div class="summary-box" id="summary-txt" style="min-height:80px"></div>
+      <div class="summary-box" id="summary-txt"></div>
       <div style="margin-bottom:10px">
         <div class="form-row">
           <label class="form-label">Note / commentaire du jour (santé, incident, remarque…)</label>
@@ -1260,10 +1255,7 @@ function todayStr() { return new Date().toISOString().slice(0, 10); }
 function initials(nom) { return nom.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2); }
 function activeFilm() { return state.films.find(f => f.id === state.activeFilmId); }
 function activeEnfants() { return state.enfants.filter(e => e.filmId === state.activeFilmId); }
-function todayLogs(dateStr) {
-  var d = dateStr || resumeDate || todayStr();
-  return state.logs.filter(function(l){ return l.filmId === state.activeFilmId && l.date === d; });
-}
+function todayLogs() { return state.logs.filter(l => l.filmId === state.activeFilmId && l.date === todayStr()); }
 // ─── CLOCK ────────────────────────────────────────────────────────
 function tickClock() {
   const n = new Date();
@@ -1289,15 +1281,7 @@ function showPage(name, btn) {
   document.getElementById('page-' + name).classList.add('active');
   if (btn) btn.classList.add('active');
   if (name === 'planning') 
-  if (name === 'resume') {
-    resumeDate = resumeDate || todayStr();
-    renderResume();
-    // Relancer si vide après chargement async
-    setTimeout(function() {
-      var sp = document.getElementById('summary-txt');
-      if (sp && (!sp.textContent || sp.textContent.trim() === '')) renderResume();
-    }, 800);
-  }
+  if (name === 'resume') renderResume();
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
   if (name === 'bilan') renderBilan();
@@ -1746,8 +1730,6 @@ function calcFinMax() {
   });
 }
 function renderResume() {
-  if (!resumeDate) resumeDate = todayStr();
-  remplirSelectResume();
   const sp = document.getElementById('summary-txt');
   if (sp) sp.textContent = buildSummary();
   
@@ -2439,23 +2421,6 @@ function getAllDates() {
   )].sort();
   return dates;
 }
-
-function ouvrirEditLogBilan(enfantId, date, type) {
-  var fid = bilanFilmId || state.activeFilmId;
-  var logs = state.logs.filter(function(l){ return l.filmId===fid && l.date===date && l.enfantId===enfantId && l.type===type; });
-  if (!logs.length) {
-    alert('Aucun log trouvé pour ce type sur cette journée.');
-    return;
-  }
-  // Prendre le premier log correspondant
-  var log = logs[0];
-  document.getElementById('edit-log-id').value = log.id;
-  document.getElementById('edit-log-type').value = log.type;
-  document.getElementById('edit-log-heure').value = log.heure;
-  document.getElementById('edit-log-fin').value = log.fin || '';
-  openModal('modal-edit-log');
-}
-
 function renderBilan() {
   const el = document.getElementById('bilan-content');
   if (!el) return;
@@ -2501,9 +2466,9 @@ function renderBilan() {
       const col = s.pct >= 100 ? '#fee2e2' : s.pct >= 80 ? '#fef3c7' : '';
       html += '<tr style="border-bottom:1px solid var(--border);' + (col ? 'background:' + col : '') + '">';
       html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '<br><span style="font-size:10px;font-weight:400;color:var(--text-muted)">' + statutLabel(s.enf.statut || 'role', s.enf.genre) + '</span></td>';
-      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'arrivee\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'hmc\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
-      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'tournage\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
+      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.pause ? fmt(s.dur.pause) : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin ? '-' + s.hRepas.fin : '') : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
@@ -2512,7 +2477,7 @@ function renderBilan() {
       const cBilan = (state.coursJour||[]).filter(c => c.date===date && c.enfantId===s.enf.id);
       const cStr = cBilan.length ? cBilan.map(c => c.matiere+' '+c.debut+(c.fin?'-'+c.fin:'')).join(', ') : '-';
       html += '<td style="padding:6px 8px;color:#5b21b6;font-size:10px">' + cStr + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'fin\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure : '-') + '</td>';
       html += '<td style="padding:6px 8px;font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
       html += '</tr>';
     });
@@ -3160,23 +3125,6 @@ function saveNoteJour(date, note) {
   save();
 }
 
-
-function ouvrirEditLogBilan(enfantId, date, type) {
-  var fid = bilanFilmId || state.activeFilmId;
-  var logs = state.logs.filter(function(l){ return l.filmId===fid && l.date===date && l.enfantId===enfantId && l.type===type; });
-  if (!logs.length) {
-    alert('Aucun log trouvé pour ce type sur cette journée.');
-    return;
-  }
-  // Prendre le premier log correspondant
-  var log = logs[0];
-  document.getElementById('edit-log-id').value = log.id;
-  document.getElementById('edit-log-type').value = log.type;
-  document.getElementById('edit-log-heure').value = log.heure;
-  document.getElementById('edit-log-fin').value = log.fin || '';
-  openModal('modal-edit-log');
-}
-
 function renderBilan() {
   var el = document.getElementById('bilan-content');
   if (!el) return;
@@ -3209,9 +3157,9 @@ function renderBilan() {
       var col = s.pct >= 100 ? '#fee2e2' : s.pct >= 80 ? '#fef3c7' : '';
       html += '<tr style="border-bottom:1px solid var(--border);' + (col?'background:'+col:'') + '">';
       html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '<br><span style="font-size:10px;font-weight:400;color:var(--text-muted)">' + statutLabel(s.enf.statut||'role', s.enf.genre) + '</span></td>';
-      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'arrivee\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'hmc\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
-      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'tournage\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
+      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.pause ? fmt(s.dur.pause) : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin?'-'+s.hRepas.fin:'') : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
@@ -3219,7 +3167,7 @@ function renderBilan() {
       html += '<td style="padding:6px 8px;color:' + (s.hasSante?'#9d174d':'var(--text-muted)') + '">' + (s.hasSante?'!':'-') + '</td>';
       var cBilan = (state.coursJour||[]).filter(function(c){ return c.date===date && c.enfantId===s.enf.id; });
       html += '<td style="padding:6px 8px;color:#5b21b6;font-size:10px">' + (cBilan.length?cBilan.map(function(c){ return c.matiere+' '+c.debut+(c.fin?'-'+c.fin:''); }).join(', '):'-') + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'fin\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure : '-') + '</td>';
       html += '<td style="padding:6px 8px;font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
       html += '</tr>';
     });
@@ -4107,23 +4055,6 @@ function saveNoteJour(date, note) {
   save();
 }
 
-
-function ouvrirEditLogBilan(enfantId, date, type) {
-  var fid = bilanFilmId || state.activeFilmId;
-  var logs = state.logs.filter(function(l){ return l.filmId===fid && l.date===date && l.enfantId===enfantId && l.type===type; });
-  if (!logs.length) {
-    alert('Aucun log trouvé pour ce type sur cette journée.');
-    return;
-  }
-  // Prendre le premier log correspondant
-  var log = logs[0];
-  document.getElementById('edit-log-id').value = log.id;
-  document.getElementById('edit-log-type').value = log.type;
-  document.getElementById('edit-log-heure').value = log.heure;
-  document.getElementById('edit-log-fin').value = log.fin || '';
-  openModal('modal-edit-log');
-}
-
 function renderBilan() {
   var el = document.getElementById('bilan-content');
   if (!el) return;
@@ -4156,9 +4087,9 @@ function renderBilan() {
       var col = s.pct >= 100 ? '#fee2e2' : s.pct >= 80 ? '#fef3c7' : '';
       html += '<tr style="border-bottom:1px solid var(--border);' + (col?'background:'+col:'') + '">';
       html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '<br><span style="font-size:10px;font-weight:400;color:var(--text-muted)">' + statutLabel(s.enf.statut||'role', s.enf.genre) + '</span></td>';
-      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'arrivee\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'hmc\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
-      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'tournage\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
+      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.pause ? fmt(s.dur.pause) : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin?'-'+s.hRepas.fin:'') : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
@@ -4166,7 +4097,7 @@ function renderBilan() {
       html += '<td style="padding:6px 8px;color:' + (s.hasSante?'#9d174d':'var(--text-muted)') + '">' + (s.hasSante?'!':'-') + '</td>';
       var cBilan = (state.coursJour||[]).filter(function(c){ return c.date===date && c.enfantId===s.enf.id; });
       html += '<td style="padding:6px 8px;color:#5b21b6;font-size:10px">' + (cBilan.length?cBilan.map(function(c){ return c.matiere+' '+c.debut+(c.fin?'-'+c.fin:''); }).join(', '):'-') + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure + ' <button onclick="ouvrirEditLogBilan(' + s.enf.id + ',\'' + date + '\',\'fin\')" style="background:none;border:none;font-size:14px;cursor:pointer;color:#3b82f6;padding:0">&#9998;</button>' : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure : '-') + '</td>';
       html += '<td style="padding:6px 8px;font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
       html += '</tr>';
     });
