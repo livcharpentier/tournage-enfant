@@ -1705,21 +1705,30 @@ function changerDateResume(date) {
 
 function renderResume() {
   if (!resumeDate) resumeDate = todayStr();
-  // Remplir le select des dates
+  // Select des dates
   var sel = document.getElementById('resume-date-select');
   if (sel) {
-    var dates = [...new Set((state.logs||[]).filter(function(l){ return l.filmId===state.activeFilmId; }).map(function(l){ return l.date; }))].sort().reverse();
-    if (!dates.length || !dates.includes(todayStr())) dates.unshift(todayStr());
-    if (!dates.includes(resumeDate)) resumeDate = dates[0];
+    var dates = [];
+    var seen = {};
+    (state.logs||[]).forEach(function(l) {
+      if (l.filmId === state.activeFilmId && !seen[l.date]) {
+        seen[l.date] = true;
+        dates.push(l.date);
+      }
+    });
+    dates.sort().reverse();
+    var today = todayStr();
+    if (!seen[today]) dates.unshift(today);
+    if (dates.indexOf(resumeDate) === -1) resumeDate = dates[0] || today;
     var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
     var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
     sel.innerHTML = dates.map(function(d) {
       var dt = new Date(d + 'T12:00:00');
-      var label = (d === todayStr() ? 'Auj. ' : '') + jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
+      var label = (d === today ? 'Auj. ' : '') + jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
       return '<option value="' + d + '"' + (d === resumeDate ? ' selected' : '') + '>' + label + '</option>';
     }).join('');
   }
-  // Afficher le texte
+  // Texte résumé
   var sp = document.getElementById('summary-txt');
   if (sp) sp.textContent = buildSummary() || '(Aucune donnee pour cette journee)';
   // Contacts
