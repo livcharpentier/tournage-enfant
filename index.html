@@ -1755,9 +1755,12 @@ function makeDateButtons(containerId, dates, activeDate, onClickFn, extraBtn) {
 }
 function remplirSelectResume() {
   var today = todayStr();
-  var dates = [...new Set((state.logs||[]).filter(function(l){ return l.filmId===state.activeFilmId; }).map(function(l){ return l.date; }))].sort().reverse();
+  var allDates = (state.logs||[])
+    .filter(function(l){ return !state.activeFilmId || l.filmId===state.activeFilmId; })
+    .map(function(l){ return l.date; });
+  var dates = [...new Set(allDates)].sort().reverse();
   if (!dates.includes(today)) dates.unshift(today);
-  if (!resumeDate) resumeDate = today;
+  if (!resumeDate || !dates.includes(resumeDate)) resumeDate = today;
   makeDateButtons('resume-dates-container', dates, resumeDate, 'changerDateResume', '');
   // Mettre à jour le label de date
   var lbl = document.getElementById('resume-date-label');
