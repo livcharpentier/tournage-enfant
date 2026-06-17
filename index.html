@@ -356,6 +356,7 @@
   </div>
   <div class="scroll-content">
     <div class="card">
+      <div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:6px">Journée</div><div id="resume-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div></div>
       <div class="card-title">Suivi temps 2014 journ00e9e en cours</div>
       <div id="resume-bilan-haut"></div>
     </div>
@@ -893,7 +894,13 @@
         <input type="checkbox" id="hmc-coaching" style="width:20px;height:20px;cursor:pointer">
         <span style="font-size:15px">d83cdfad</span>
         <span style="font-size:14px;font-weight:600;color:var(--purple-dark)">Coaching</span>
-      </labe
+      </label>
+    </div>
+    <button class="form-btn" onclick="validerHMC()">Valider et d00e9marrer le chrono</button>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
 // 250025002500 CONSTANTES 250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 // Limites selon p00e9riode (scolaire ou vacances)
 const LIMITES_SCOLAIRE = { '<3': 60, '3-5': 120, '6-11': 180, '12-15': 240, '16-17': 480 };
@@ -1650,7 +1657,7 @@ function parseVoice(text) {
 function buildSummary() {
   const film = activeFilm();
   const enfs = activeEnfants();
-  const logs = todayLogs().sort((a, b) => a.heure.localeCompare(b.heure));
+  const logs = state.logs.filter(l => l.filmId === state.activeFilmId && l.date === (resumeDate || todayStr())).sort((a, b) => a.heure.localeCompare(b.heure));
   const today = new Date();
   const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
   const months = ['janvier','fevrier','mars','avril','mai','juin','juillet','aout','septembre','octobre','novembre','decembre'];
@@ -2767,75 +2774,6 @@ function changerDateCours(date) {
   renderCoursList();
 }
 
-
-function remplirSelectResume() {
-  var today = todayStr();
-  var dates = [];
-  var seen = {};
-  (state.logs||[]).forEach(function(l) {
-    if (l.filmId === state.activeFilmId && !seen[l.date]) { seen[l.date] = true; dates.push(l.date); }
-  });
-  dates.sort().reverse();
-  if (!seen[today]) dates.unshift(today);
-  if (!resumeDate || dates.indexOf(resumeDate) === -1) resumeDate = dates[0] || today;
-  var container = document.getElementById('resume-dates-container');
-  if (!container) return;
-  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
-  container.innerHTML = '';
-  dates.forEach(function(d) {
-    var dt = new Date(d + 'T12:00:00');
-    var label = (d===today?'Auj. ':'') + jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
-    var btn = document.createElement('button');
-    btn.textContent = label;
-    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid ' + (d===resumeDate?'#3b82f6':'#e2e8f0') + ';background:' + (d===resumeDate?'#3b82f6':'#fff') + ';color:' + (d===resumeDate?'#fff':'#0f172a') + ';font-size:12px;font-weight:600;cursor:pointer';
-    btn.onclick = (function(date){return function(){changerDateResume(date);};})(d);
-    container.appendChild(btn);
-  });
-}
-
-function changerDateResume(date) {
-  resumeDate = date;
-  remplirSelectResume();
-  var sp = document.getElementById('summary-txt');
-  if (sp) sp.textContent = buildSummary() || '(Aucune donnee)';
-}
-
-function remplirSelectCours() {
-  var today = todayStr();
-  var dates = [];
-  var seen = {};
-  (state.coursJour||[]).forEach(function(c){ var d=c.date||today; if(!seen[d]){seen[d]=true;dates.push(d);} });
-  (state.logs||[]).forEach(function(l){ if(l.filmId===state.activeFilmId&&!seen[l.date]){seen[l.date]=true;dates.push(l.date);} });
-  if (!seen[today]) dates.push(today);
-  dates.sort().reverse();
-  var container = document.getElementById('cours-dates-container');
-  if (!container) return;
-  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
-  container.innerHTML = '';
-  var btnTous = document.createElement('button');
-  btnTous.textContent = 'Tous';
-  btnTous.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid ' + (coursDateFiltre===null?'#3b82f6':'#e2e8f0') + ';background:' + (coursDateFiltre===null?'#3b82f6':'#fff') + ';color:' + (coursDateFiltre===null?'#fff':'#0f172a') + ';font-size:12px;font-weight:600;cursor:pointer';
-  btnTous.onclick = function(){ changerDateCours(null); };
-  container.appendChild(btnTous);
-  dates.forEach(function(d) {
-    var dt = new Date(d + 'T12:00:00');
-    var label = (d===today?'Auj. ':'') + jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
-    var btn = document.createElement('button');
-    btn.textContent = label;
-    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid ' + (d===coursDateFiltre?'#3b82f6':'#e2e8f0') + ';background:' + (d===coursDateFiltre?'#3b82f6':'#fff') + ';color:' + (d===coursDateFiltre?'#fff':'#0f172a') + ';font-size:12px;font-weight:600;cursor:pointer';
-    btn.onclick = (function(date){return function(){changerDateCours(date);};})(d);
-    container.appendChild(btn);
-  });
-}
-
-function changerDateCours(date) {
-  coursDateFiltre = date;
-  remplirSelectCours();
-  renderCoursList();
-}
-
 async function initApp() {
   await load();
   // Mode vacances : auto par d00e9faut
@@ -2961,75 +2899,6 @@ function changerDateCours(date) {
   renderCoursList();
 }
 
-
-function remplirSelectResume() {
-  var today = todayStr();
-  var dates = [];
-  var seen = {};
-  (state.logs||[]).forEach(function(l) {
-    if (l.filmId === state.activeFilmId && !seen[l.date]) { seen[l.date] = true; dates.push(l.date); }
-  });
-  dates.sort().reverse();
-  if (!seen[today]) dates.unshift(today);
-  if (!resumeDate || dates.indexOf(resumeDate) === -1) resumeDate = dates[0] || today;
-  var container = document.getElementById('resume-dates-container');
-  if (!container) return;
-  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
-  container.innerHTML = '';
-  dates.forEach(function(d) {
-    var dt = new Date(d + 'T12:00:00');
-    var label = (d===today?'Auj. ':'') + jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
-    var btn = document.createElement('button');
-    btn.textContent = label;
-    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid ' + (d===resumeDate?'#3b82f6':'#e2e8f0') + ';background:' + (d===resumeDate?'#3b82f6':'#fff') + ';color:' + (d===resumeDate?'#fff':'#0f172a') + ';font-size:12px;font-weight:600;cursor:pointer';
-    btn.onclick = (function(date){return function(){changerDateResume(date);};})(d);
-    container.appendChild(btn);
-  });
-}
-
-function changerDateResume(date) {
-  resumeDate = date;
-  remplirSelectResume();
-  var sp = document.getElementById('summary-txt');
-  if (sp) sp.textContent = buildSummary() || '(Aucune donnee)';
-}
-
-function remplirSelectCours() {
-  var today = todayStr();
-  var dates = [];
-  var seen = {};
-  (state.coursJour||[]).forEach(function(c){ var d=c.date||today; if(!seen[d]){seen[d]=true;dates.push(d);} });
-  (state.logs||[]).forEach(function(l){ if(l.filmId===state.activeFilmId&&!seen[l.date]){seen[l.date]=true;dates.push(l.date);} });
-  if (!seen[today]) dates.push(today);
-  dates.sort().reverse();
-  var container = document.getElementById('cours-dates-container');
-  if (!container) return;
-  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
-  container.innerHTML = '';
-  var btnTous = document.createElement('button');
-  btnTous.textContent = 'Tous';
-  btnTous.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid ' + (coursDateFiltre===null?'#3b82f6':'#e2e8f0') + ';background:' + (coursDateFiltre===null?'#3b82f6':'#fff') + ';color:' + (coursDateFiltre===null?'#fff':'#0f172a') + ';font-size:12px;font-weight:600;cursor:pointer';
-  btnTous.onclick = function(){ changerDateCours(null); };
-  container.appendChild(btnTous);
-  dates.forEach(function(d) {
-    var dt = new Date(d + 'T12:00:00');
-    var label = (d===today?'Auj. ':'') + jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
-    var btn = document.createElement('button');
-    btn.textContent = label;
-    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid ' + (d===coursDateFiltre?'#3b82f6':'#e2e8f0') + ';background:' + (d===coursDateFiltre?'#3b82f6':'#fff') + ';color:' + (d===coursDateFiltre?'#fff':'#0f172a') + ';font-size:12px;font-weight:600;cursor:pointer';
-    btn.onclick = (function(date){return function(){changerDateCours(date);};})(d);
-    container.appendChild(btn);
-  });
-}
-
-function changerDateCours(date) {
-  coursDateFiltre = date;
-  remplirSelectCours();
-  renderCoursList();
-}
-
 async function initApp() {
   await load();
   // Mode vacances : auto par d00e9faut
@@ -3079,13 +2948,6 @@ setTimeout(closeSplash, 3000);
 setInterval(() => {
   const activePage = document.querySelector('.page.active');
   if (activePage && activePage.id === 'page-planning') 
-  renderStatusBar();
-}, 60000);
-// D00e9sactiver et supprimer tous les service workers
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
-}
-g') 
   renderStatusBar();
 }, 60000);
 // D00e9sactiver et supprimer tous les service workers
