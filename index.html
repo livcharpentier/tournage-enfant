@@ -364,7 +364,7 @@
         <span> Résumé</span>
         <span id="resume-date-label" style="font-size:12px;font-weight:600;color:var(--blue-dark);background:var(--blue-light);padding:3px 8px;border-radius:6px"></span>
       </div>
-      <div class="summary-box" id="summary-txt" style="margin-top:8px">Chargement...</div>
+      <div class="summary-box" id="summary-txt" style="margin-top:8px"></div>
       <div id="resume-bilan-haut"></div>
     </div>
     <div class="card">
@@ -1689,7 +1689,8 @@ function buildSummary() {
 function calcFinMax() {
   // Calcule l'heure max de fin pour chaque enfant et l'alerte 1H avant
   const enfs = activeEnfants();
-  const logs = todayLogs();
+  const dateRef = resumeDate || todayStr();
+  const logs = state.logs.filter(l => l.filmId === state.activeFilmId && l.date === dateRef);
   const now = new Date();
   const nowMin = now.getHours() * 60 + now.getMinutes();
   
