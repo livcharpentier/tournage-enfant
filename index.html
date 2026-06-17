@@ -356,34 +356,31 @@
   </div>
   <div class="scroll-content">
     <div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-        <div class="card-title" style="margin-bottom:0">Journée à afficher</div>
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span>Journée</span>
         <span id="resume-date-label" style="font-size:12px;font-weight:600;color:var(--blue-dark);background:var(--blue-light);padding:3px 8px;border-radius:6px"></span>
       </div>
-      <div id="resume-dates-container" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px"></div>
-      <div class="card-title">Suivi temps</div>
-      <div id="resume-bilan-haut"></div>
+      <div id="resume-dates-container" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
+      <div class="summary-box" id="summary-txt" style="min-height:60px;white-space:pre-wrap;font-family:monospace;font-size:13px;line-height:1.8"></div>
     </div>
     <div class="card">
+      <div id="resume-bilan-haut"></div>
       <div id="resume-alerts"></div>
       <div class="metrics-grid" id="resume-metrics"></div>
     </div>
     <div class="card">
-      <div class="card-title">Message WhatsApp / SMS</div>
-      <div class="summary-box" id="summary-txt" style="min-height:80px"></div>
-      <div style="margin-bottom:10px">
-        <div class="form-row">
-          <label class="form-label">Note / commentaire du jour (santé, incident, remarque…)</label>
-          <textarea class="form-input" id="commentaire-jour" rows="3" placeholder="Ex : Léa s'est plainte d'un mal de tête à 14h, repos 20 min. Tom fatigué en fin de journée." style="resize:vertical;line-height:1.5" oninput="saveCommentaire()"></textarea>
-        </div>
-        <div class="form-row">
-          <label class="form-label">Numéro WhatsApp scripte (avec indicatif, ex: +33612...)</label>
-          <input class="form-input" type="tel" id="wa-scripte" placeholder="+336...">
-        </div>
-        <div class="form-row">
-          <label class="form-label">Numéro WhatsApp production</label>
-          <input class="form-input" type="tel" id="wa-prod" placeholder="+336...">
-        </div>
+      <div class="card-title">Envoyer</div>
+      <div class="form-row">
+        <label class="form-label">Note / commentaire du jour</label>
+        <textarea class="form-input" id="commentaire-jour" rows="2" placeholder="Ex : Léa fatiguée en fin de journée..." style="resize:vertical;line-height:1.5" oninput="saveCommentaire()"></textarea>
+      </div>
+      <div class="form-row">
+        <label class="form-label">WhatsApp scripte</label>
+        <input class="form-input" type="tel" id="wa-scripte" placeholder="+336...">
+      </div>
+      <div class="form-row">
+        <label class="form-label">WhatsApp production</label>
+        <input class="form-input" type="tel" id="wa-prod" placeholder="+336...">
       </div>
       <div class="send-btns">
         <button class="send-btn btn-wa" onclick="sendWhatsApp('scripte')">
@@ -1713,103 +1710,60 @@ function calcFinMax() {
 }
 function renderResume() {
   if (!resumeDate) resumeDate = todayStr();
+  // Dates
   remplirSelectResume();
-  const sp = document.getElementById('summary-txt');
-  if (sp) sp.textContent = buildSummary();
-  
-  // Bloc résumé horaire en haut
-  const bilanDiv = document.getElementById('resume-bilan-haut');
+  // Texte résumé
+  var sp = document.getElementById('summary-txt');
+  if (sp) sp.textContent = buildSummary() || '(Aucune donnee pour cette journee)';
+  // Bilan horaire
+  var bilanDiv = document.getElementById('resume-bilan-haut');
   if (bilanDiv) {
-    const stats = calcFinMax();
-    if (stats.length) {
-      let html = '';
-      stats.forEach(s => {
-        const pct = Math.round(s.presence / s.lim * 100);
-        const barColor = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
-        const alertClass = s.enAlerte ? 'background:#fee2e2;border:1px solid #ef4444;' : 'background:var(--gray-light);';
-        html += '<div style="' + alertClass + 'border-radius:10px;padding:10px 12px;margin-bottom:8px">';
-        html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">';
-        html += '<div style="font-size:13px;font-weight:700">' + s.enf.nom.split(' ')[0] + '</div>';
-        if (s.enAlerte) html += '<div style="font-size:11px;font-weight:700;color:#991b1b">⚠ ALERTER MISE EN SCENE</div>';
-        html += '</div>';
-        // Heure de début = HMC ou arrivée
-        const logsEnf = todayLogs().filter(l => l.enfantId === s.enf.id).sort((a,b) => a.heure.localeCompare(b.heure));
-        const debutEvR = logsEnf.find(l => l.type === 'hmc') || logsEnf.find(l => l.type === 'arrivee');
-        const debutH = debutEvR ? debutEvR.heure : '-';
-        html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Début</div><div style="font-size:14px;font-weight:600">' + debutH + '</div></div>';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.hmc||0) + '</div></div>';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Tournage</div><div style="font-size:14px;font-weight:600;color:#065f46">' + fmt(s.dur.tournage||0) + '</div></div>';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Pause</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.pause||0) + '</div></div>';
-        html += '</div>';
-        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">Repas non compté : ' + fmt(s.dur.repas||0) + ' · Hors plateau non compté : ' + fmt(s.dur.attente||0) + '</div>';
-        html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:6px">';
-        html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,pct) + '%"></div>';
-        html += '</div>';
-        html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted)">';
-        const presLabel = (pct >= 100 ? '⚠ DEPASSE : ' : 'Presence : ') + fmt(s.presence) + ' / ' + fmt(s.lim) + ' (' + pct + '%)';
-        html += '<span style="color:' + (pct>=100?'#991b1b':'var(--text-muted)') + ';font-weight:' + (pct>=100?'700':'400') + '">' + presLabel + '</span>';
-        let finInfo = '';
-        if (s.finMax) finInfo += 'Fin max : ' + s.finMax;
-        if (s.finReelH) finInfo += ' · Fin réelle : ' + s.finReelH;
-        if (s.depasseMin > 0) finInfo += ' · Dépassement : ' + fmt(s.depasseMin);
-        if (s.alerteH && !s.finReelH) finInfo += ' · Alerte : ' + s.alerteH;
-        if (finInfo) html += '<span style="font-weight:600;color:' + (s.depasse?'#991b1b':s.enAlerte?'#991b1b':'var(--text)') + '">' + finInfo + '</span>';
-        html += '</div>';
-        html += '</div>';
-      });
-      bilanDiv.innerHTML = html;
-    }
+    var stats = calcFinMax ? calcFinMax() : [];
+    var html = '';
+    stats.forEach(function(s) {
+      var pct = Math.round(s.presence / s.lim * 100);
+      var col = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
+      var logsEnf = todayLogs().filter(function(l){ return l.enfantId === s.enf.id; });
+      var debut = logsEnf.find(function(l){ return l.type==='hmc'; }) || logsEnf.find(function(l){ return l.type==='arrivee'; });
+      html += '<div style="background:var(--gray-light);border-radius:8px;padding:8px 12px;margin-bottom:6px">';
+      html += '<div style="display:flex;justify-content:space-between;margin-bottom:4px">';
+      html += '<span style="font-size:13px;font-weight:700">' + s.enf.nom.split(' ')[0] + '</span>';
+      html += '<span style="font-size:11px;font-weight:700;color:' + col + '">' + fmt(s.presence) + ' / ' + fmt(s.lim) + '</span>';
+      html += '</div>';
+      html += '<div style="background:#e2e8f0;border-radius:4px;height:6px"><div style="height:6px;border-radius:4px;background:' + col + ';width:' + Math.min(100,pct) + '%"></div></div>';
+      html += '</div>';
+    });
+    bilanDiv.innerHTML = html;
   }
-  // contacts sync
-  const ws = document.getElementById('wa-scripte');
-  const wp = document.getElementById('wa-prod');
+  // Alertes
+  var alertDiv = document.getElementById('resume-alerts');
+  var metricsDiv = document.getElementById('resume-metrics');
+  var logs = todayLogs();
+  var enfs = activeEnfants();
+  var totTournage = 0; var present = new Set();
+  logs.forEach(function(l){ if(l.type==='tournage'&&l.fin){totTournage+=Math.max(0,toMin(l.fin)-toMin(l.heure));present.add(l.enfantId);} });
+  if (metricsDiv) metricsDiv.innerHTML =
+    '<div class="metric"><div class="metric-val">'+present.size+'</div><div class="metric-lbl">Presents</div></div>'+
+    '<div class="metric"><div class="metric-val">'+(fmt(totTournage)||'-')+'</div><div class="metric-lbl">Tournage</div></div>'+
+    '<div class="metric"><div class="metric-val">'+logs.length+'</div><div class="metric-lbl">Entrees</div></div>';
+  var alerts = '';
+  enfs.forEach(function(e) {
+    var lim = LIMITES[e.age];
+    var travail = logs.filter(function(l){ return l.enfantId===e.id&&WORK_TYPES.includes(l.type)&&l.fin; }).reduce(function(s2,l){ return s2+Math.max(0,toMin(l.fin)-toMin(l.heure)); }, 0);
+    var pct = Math.round(travail/lim*100);
+    if (pct>=100) alerts+='<div class="alert alert-danger">DEPASSE : '+e.nom+' ('+fmt(travail)+' / '+fmt(lim)+')</div>';
+    else if (pct>=80) alerts+='<div class="alert alert-warn">'+e.nom+' proche limite ('+pct+'%)</div>';
+  });
+  if (!alerts && logs.length) alerts='<div class="alert alert-ok">Tous les enfants OK</div>';
+  if (alertDiv) alertDiv.innerHTML = alerts;
+  // Contacts
+  var ws = document.getElementById('wa-scripte');
+  var wp = document.getElementById('wa-prod');
   if (ws && state.contacts.scripte) ws.value = state.contacts.scripte;
   if (wp && state.contacts.prod) wp.value = state.contacts.prod;
-  // alerts + metrics
-  const enfs = activeEnfants();
-  const logs = todayLogs();
-  const alertDiv = document.getElementById('resume-alerts');
-  const metrics = document.getElementById('resume-metrics');
-  let alerts = '';
-  let totTournage = 0, present = new Set();
-  logs.forEach(l => {
-    if (l.type === 'tournage' && l.fin) { totTournage += Math.max(0, toMin(l.fin) - toMin(l.heure)); present.add(l.enfantId); }
-  });
-  if (metrics) metrics.innerHTML = `
-    <div class="metric"><div class="metric-val">${present.size}</div><div class="metric-lbl">Présents</div></div>
-    <div class="metric"><div class="metric-val">${fmt(totTournage) || '—'}</div><div class="metric-lbl">Tournage</div></div>
-    <div class="metric"><div class="metric-val">${logs.length}</div><div class="metric-lbl">Entrées</div></div>
-  `;
-  enfs.forEach(e => {
-    const lim = LIMITES[e.age];
-    const travail = logs.filter(l => l.enfantId === e.id && WORK_TYPES.includes(l.type) && l.fin)
-      .reduce((s, l) => s + Math.max(0, toMin(l.fin) - toMin(l.heure)), 0);
-    const pct = Math.round(travail / lim * 100);
-    if (pct >= 100) alerts += `<div class="alert alert-danger">⚠ ${e.nom} a dépassé la limite légale (${fmt(travail)} / ${fmt(lim)})</div>`;
-    else if (pct >= 80) alerts += `<div class="alert alert-warn">⚠ ${e.nom} proche de la limite (${pct}%)</div>`;
-  });
-  if (!alerts && logs.length) alerts = '<div class="alert alert-ok">✅ Tous les enfants respectent les limites légales</div>';
-  if (alertDiv) alertDiv.innerHTML = alerts;
-  if (chrono) {
-    chrono.innerHTML = enfs.map(e => {
-      const evs = logs.filter(l => l.enfantId === e.id).sort((a, b) => a.heure.localeCompare(b.heure));
-      if (!evs.length) return '';
-      const items = evs.map(l => {
-        const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6', '#1f2937'];
-        return `<span class="chrono-item"><span class="chrono-item-time">${l.heure}</span> <span style="background:${bg};color:${tc};padding:1px 7px;border-radius:8px;font-size:11px;font-weight:600">${TYPE_LABEL[l.type]}</span>${l.fin ? '<span style="font-size:11px;color:var(--text-muted)">→' + l.fin + '</span>' : ''}</span>`;
-      }).join(' ');
-      return `<div class="chrono-block">
-        <div class="chrono-name">
-          <div style="width:22px;height:22px;border-radius:50%;background:${e.couleur}22;color:${e.couleur};font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">${initials(e.nom)}</div>
-          ${e.nom}
-        </div>
-        <div class="chrono-items">${items}</div>
-      </div>`;
-    }).join('') || '<div class="empty">Aucune donnée pour aujourd\'hui</div>';
-  }
+  renderExtraContactsBtns();
 }
-// ─── WHATSAPP / SMS ───────────────────────────────────────────────
+
 function getNumber(role) {
   const fromResume = document.getElementById('wa-' + role)?.value;
   const fromContacts = state.contacts[role];
