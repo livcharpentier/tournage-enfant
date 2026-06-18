@@ -2207,17 +2207,27 @@ function renderBilan() {
       var col = s.pct >= 100 ? '#fee2e2' : s.pct >= 80 ? '#fef3c7' : '';
       html += '<tr style="border-bottom:1px solid var(--border);' + (col?'background:'+col:'') + '">';
       html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '<br><span style="font-size:10px;font-weight:400;color:var(--text-muted)">' + statutLabel(s.enf.statut||'role', s.enf.genre) + '</span></td>';
-      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
-      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.dur.pause ? fmt(s.dur.pause) : '-') + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin?'-'+s.hRepas.fin:'') : '-') + '</td>';
+      var logArrivee = state.logs.filter(function(l){ return l.filmId===state.activeFilmId && l.date===date && l.enfantId===s.enf.id && l.type==='arrivee'; })[0];
+      var logHmc = state.logs.filter(function(l){ return l.filmId===state.activeFilmId && l.date===date && l.enfantId===s.enf.id && l.type==='hmc'; })[0];
+      var logTournage = state.logs.filter(function(l){ return l.filmId===state.activeFilmId && l.date===date && l.enfantId===s.enf.id && l.type==='tournage'; })[0];
+      var logPause = state.logs.filter(function(l){ return l.filmId===state.activeFilmId && l.date===date && l.enfantId===s.enf.id && l.type==='pause'; })[0];
+      var logRepas = state.logs.filter(function(l){ return l.filmId===state.activeFilmId && l.date===date && l.enfantId===s.enf.id && l.type==='repas'; })[0];
+      var logFin = state.logs.filter(function(l){ return l.filmId===state.activeFilmId && l.date===date && l.enfantId===s.enf.id && l.type==='fin'; }).slice(-1)[0];
+      function cellEdit(logItem, valTxt) {
+        var btn = logItem ? ' <button onclick="ouvrirEditLog('+logItem.id+')" style="background:none;border:none;color:#3b82f6;cursor:pointer;font-size:14px;padding:0">&#9998;</button>' : '';
+        return '<td style="padding:6px 8px;white-space:nowrap">' + valTxt + btn + '</td>';
+      }
+      html += cellEdit(logArrivee, s.hArrivee ? s.hArrivee.heure : '-');
+      html += cellEdit(logHmc, s.dur.hmc ? fmt(s.dur.hmc) : '-');
+      html += cellEdit(logTournage, s.dur.tournage ? '<strong>'+fmt(s.dur.tournage)+'</strong>' : '-');
+      html += cellEdit(logPause, s.dur.pause ? fmt(s.dur.pause) : '-');
+      html += cellEdit(logRepas, s.hRepas ? s.hRepas.heure + (s.hRepas.fin?'-'+s.hRepas.fin:'') : '-');
       html += '<td style="padding:6px 8px">' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
       html += '<td style="padding:6px 8px;color:' + (s.hasCascade?'#991b1b':'var(--text-muted)') + '">' + (s.hasCascade?fmt(s.dur.cascade):'-') + '</td>';
       html += '<td style="padding:6px 8px;color:' + (s.hasSante?'#9d174d':'var(--text-muted)') + '">' + (s.hasSante?'!':'-') + '</td>';
       var cBilan = (state.coursJour||[]).filter(function(c){ return c.date===date && c.enfantId===s.enf.id; });
       html += '<td style="padding:6px 8px;color:#5b21b6;font-size:10px">' + (cBilan.length?cBilan.map(function(c){ return c.matiere+' '+c.debut+(c.fin?'-'+c.fin:''); }).join(', '):'-') + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure : '-') + '</td>';
+      html += cellEdit(logFin, s.hFin ? s.hFin.heure : '-');
       html += '<td style="padding:6px 8px;font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
       html += '</tr>';
     });
