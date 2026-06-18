@@ -1525,7 +1525,8 @@ function renderLog() {
     const enf = enfs.find(e => e.id === l.enfantId);
     const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6', '#1f2937'];
     const dur = l.fin ? fmt(toMin(l.fin) - toMin(l.heure)) : 'en cours';
-    const heures = l.fin ? l.heure + ' → ' + l.fin : l.heure + ' →';
+    const SINGLE_TIME = ['arrivee', 'fin'];
+    const heures = (SINGLE_TIME.includes(l.type) || !l.fin) ? l.heure : l.heure + ' → ' + l.fin;
     return `<div class="log-item">
       <div class="log-time" style="font-size:12px;min-width:90px">${heures}</div>
       <div class="log-tag" style="background:${bg};color:${tc}">${TYPE_LABEL[l.type] || l.type}</div>
@@ -1668,13 +1669,16 @@ function buildSummary() {
       if (l.fin) dur[l.type] = (dur[l.type] || 0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
     });
     const hDebut = evs.find(l => l.type === 'hmc') || evs.find(l => l.type === 'arrivee');
-    const hFin = [...evs].reverse().find(l => l.type === 'fin');
+    // Fin = log 'fin' explicite, sinon dernière entrée avec heure de fin renseignée
+    const logFin = evs.slice().reverse().find(l => l.type === 'fin');
+    const dernierLogFerme = evs.slice().reverse().find(l => l.fin);
+    const hFinHeure = logFin ? logFin.heure : (dernierLogFerme ? dernierLogFerme.fin : null);
     txt += enf.nom + '\n';
     if (hDebut) txt += 'Debut : ' + hDebut.heure + '\n';
     if (dur.tournage) txt += 'Tournage : ' + fmt(dur.tournage) + '\n';
     if (dur.pause) txt += 'Pause : ' + fmt(dur.pause) + '\n';
     if (dur.attente) txt += 'Attente : ' + fmt(dur.attente) + '\n';
-    if (hFin) txt += 'Fin : ' + hFin.heure + '\n';
+    if (hFinHeure) txt += 'Fin : ' + hFinHeure + '\n';
     const travailEnf = WORK_TYPES.reduce((s,t) => s+(dur[t]||0), 0);
     const limEnf = LIMITES[enf.age];
     if (travailEnf > limEnf) txt += 'DEPASSEMENT : +' + fmt(travailEnf - limEnf) + '\n';
