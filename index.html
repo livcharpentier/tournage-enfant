@@ -1463,17 +1463,19 @@ function logAction(type) {
   const targets = selectedEnfants.length > 0 ? selectedEnfants : enfs.map(e => e.id);
   targets.forEach(eid => {
     // fermer l'entrée précédente ouverte pour cet enfant aujourd'hui
+    // sauf pour arrivee et fin qui sont des horaires ponctuels
+    const PONCTUEL = ['arrivee', 'fin'];
     const prev = todayLogs()
       .filter(l => l.enfantId === eid && !l.fin)
       .sort((a, b) => b.heure.localeCompare(a.heure))[0];
-    if (prev) prev.fin = hm;
+    if (prev && !PONCTUEL.includes(type)) prev.fin = hm;
     state.logs.push({
       id: nextId++,
       filmId: state.activeFilmId,
       enfantId: eid,
       type,
       heure: hm,
-      fin: null,
+      fin: PONCTUEL.includes(type) ? hm : null,
       date: todayStr()
     });
   });
