@@ -1264,6 +1264,7 @@ function showPage(name, btn) {
   if (name === 'planning') 
   if (name === 'resume') {
     resumeDate = resumeDate || todayStr();
+    remplirSelectResume();
     renderResume();
   }
   if (name === 'films') renderFilmsPage();
@@ -2601,6 +2602,8 @@ async function initApp() {
     renderContactsExtra();
     renderExtraContactsBtns();
     updatePeriodeLabel();
+    remplirSelectResume();
+    remplirSelectCours();
     resumeDate = todayStr();
     // Rafraîchir la page résumé si active
     var pageResume = document.getElementById('page-resume');
