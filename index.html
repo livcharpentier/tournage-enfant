@@ -296,6 +296,12 @@
       <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Action rapide</div>
     </div>
     <div class="action-grid">
+      <button class="action-btn" onclick="logAction('pickup')" style="background:#d1fae5;color:#065f46">
+        <span class="icon">🏠</span><span class="lbl">Pick-up maison</span><span class="last-t" id="lt-pickup"></span>
+      </button>
+      <button class="action-btn" onclick="logAction('transport')" style="background:#e0f2fe;color:#0369a1">
+        <span class="icon">🚗</span><span class="lbl">Transport</span><span class="last-t" id="lt-transport"></span>
+      </button>
       <button class="action-btn btn-arrivee" onclick="logAction('arrivee')">
         <span class="icon">🎬</span><span class="lbl">Arrivée</span><span class="last-t" id="lt-arrivee"></span>
       </button>
@@ -303,7 +309,7 @@
         <span class="icon">✂️👗🎨</span><span class="lbl">HMC / Prép.</span><span class="last-t" id="lt-hmc"></span>
       </button>
       <button class="action-btn btn-tournage" onclick="logAction('tournage')">
-        <span class="icon">🎥</span><span class="lbl">Tournage</span><span class="last-t" id="lt-tournage"></span>
+        <span class="icon">🎥</span><span class="lbl">Plateau / Tournage</span><span class="last-t" id="lt-tournage"></span>
       </button>
       <button class="action-btn btn-pause" onclick="logAction('pause')">
         <span class="icon">🧩</span><span class="lbl">Pause</span><span class="last-t" id="lt-pause"></span>
@@ -325,12 +331,6 @@
       </button>
       <button class="action-btn btn-sante" onclick="logAction('sante')">
         <span class="icon">🩺</span><span class="lbl">Santé</span><span class="last-t" id="lt-sante"></span>
-      </button>
-      <button class="action-btn" onclick="logAction('transport')" style="background:#e0f2fe;color:#0369a1">
-        <span class="icon">🚗</span><span class="lbl">Transport</span><span class="last-t" id="lt-transport"></span>
-      </button>
-      <button class="action-btn" onclick="logAction('pickup')" style="background:#d1fae5;color:#065f46">
-        <span class="icon">🏠</span><span class="lbl">Pick-up maison</span><span class="last-t" id="lt-pickup"></span>
       </button>
       <button class="action-btn btn-fin" onclick="logAction('fin')" style="grid-column:span 3">
         <span class="icon">🏁</span><span class="lbl">Fin de journée</span><span class="last-t" id="lt-fin"></span>
