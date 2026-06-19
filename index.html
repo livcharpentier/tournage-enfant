@@ -150,7 +150,7 @@
     .alert-danger { background: var(--red-light); color: var(--red-dark); }
     
     /* SUMMARY */
-    .summary-box { background: var(--bg); border-radius: var(--radius-sm); padding: 14px; font-size: 13px; font-family: monospace; white-space: pre-wrap; line-height: 1.8; color: var(--text); max-height: 400px; overflow-y: auto; margin-bottom: 10px; border: 1.5px solid var(--border); }
+    .summary-box { background: var(--gray-light); border-radius: var(--radius-sm); padding: 12px; font-size: 12px; font-family: monospace; white-space: pre-wrap; line-height: 1.7; color: var(--text); max-height: 260px; overflow-y: auto; margin-bottom: 10px; }
     .send-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .send-btn { padding: 13px 8px; border-radius: var(--radius); border: none; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .btn-wa { background: #25D366; color: #fff; }
@@ -297,41 +297,41 @@
     </div>
     <div class="action-grid">
       <button class="action-btn btn-arrivee" onclick="logAction('arrivee')">
-        <span class="icon">🎬</span><span class="lbl">Arrivée</span><span class="last-t" id="lt-arrivee"></span>
+        <span class="icon"></span><span class="lbl">Arrivée</span><span class="last-t" id="lt-arrivee"></span>
       </button>
       <button class="action-btn btn-hmc" onclick="logAction('hmc')">
-        <span class="icon">✂️👗🎨</span><span class="lbl">HMC / Prép.</span><span class="last-t" id="lt-hmc"></span>
+        <span class="icon">✂️</span><span class="lbl">HMC / Prép.</span><span class="last-t" id="lt-hmc"></span>
       </button>
       <button class="action-btn btn-tournage" onclick="logAction('tournage')">
-        <span class="icon">🎥</span><span class="lbl">Tournage</span><span class="last-t" id="lt-tournage"></span>
+        <span class="icon"></span><span class="lbl">Tournage</span><span class="last-t" id="lt-tournage"></span>
       </button>
       <button class="action-btn btn-pause" onclick="logAction('pause')">
-        <span class="icon">🧩</span><span class="lbl">Pause</span><span class="last-t" id="lt-pause"></span>
+        <span class="icon"></span><span class="lbl">Pause</span><span class="last-t" id="lt-pause"></span>
       </button>
       <button class="action-btn btn-repas" onclick="logAction('repas')">
-        <span class="icon">🍽</span><span class="lbl">Repas</span><span class="last-t" id="lt-repas"></span>
+        <span class="icon"></span><span class="lbl">Repas</span><span class="last-t" id="lt-repas"></span>
       </button>
       <button class="action-btn btn-attente" onclick="logAction('attente')">
         <span class="icon">☁️</span><span class="lbl">Hors plateau</span><span class="last-t" id="lt-attente"></span>
       </button>
       <button class="action-btn btn-cours" onclick="logAction('cours')">
-        <span class="icon">📚</span><span class="lbl">Cours</span><span class="last-t" id="lt-cours"></span>
+        <span class="icon"></span><span class="lbl">Cours</span><span class="last-t" id="lt-cours"></span>
       </button>
       <button class="action-btn btn-cascade" onclick="logAction('cascade')">
-        <span class="icon">🤸</span><span class="lbl">Cascade</span><span class="last-t" id="lt-cascade"></span>
+        <span class="icon"></span><span class="lbl">Cascade</span><span class="last-t" id="lt-cascade"></span>
       </button>
       <button class="action-btn btn-hmc" onclick="logAction('son')">
-        <span class="icon">🎙️</span><span class="lbl">Équipage son</span><span class="last-t" id="lt-son"></span>
+        <span class="icon">️</span><span class="lbl">Équipage son</span><span class="last-t" id="lt-son"></span>
       </button>
       <button class="action-btn btn-sante" onclick="logAction('sante')">
-        <span class="icon">🩺</span><span class="lbl">Santé</span><span class="last-t" id="lt-sante"></span>
+        <span class="icon"></span><span class="lbl">Santé</span><span class="last-t" id="lt-sante"></span>
       </button>
       <button class="action-btn btn-fin" onclick="logAction('fin')" style="grid-column:span 3">
-        <span class="icon">🏁</span><span class="lbl">Fin de journée</span><span class="last-t" id="lt-fin"></span>
+        <span class="icon"></span><span class="lbl">Fin de journée</span><span class="last-t" id="lt-fin"></span>
       </button>
     </div>
     <div class="mic-wrap">
-      <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎤</button>
+      <button class="mic-btn" id="mic-btn" onclick="toggleMic()"></button>
       <div class="mic-hint" id="mic-hint">Dicter : "tournage", "pause", "repas"…</div>
       <div class="mic-txt" id="mic-txt"></div>
     </div>
@@ -356,15 +356,8 @@
   </div>
   <div class="scroll-content">
     <div class="card">
-      <div style="margin-bottom:10px">
-        <div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:6px">Journée à afficher</div>
-        <div id="resume-dates-container" style="display:flex;flex-wrap:wrap;gap:6px"></div>
-      </div>
-      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
-        <span> Résumé</span>
-        <span id="resume-date-label" style="font-size:12px;font-weight:600;color:var(--blue-dark);background:var(--blue-light);padding:3px 8px;border-radius:6px"></span>
-      </div>
-      <div class="summary-box" id="summary-txt" style="margin-top:8px"></div>
+      <div style="margin-bottom:10px"><div id="resume-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div></div>
+      <div class="card-title">Suivi temps — journée en cours</div>
       <div id="resume-bilan-haut"></div>
     </div>
     <div class="card">
@@ -372,7 +365,8 @@
       <div class="metrics-grid" id="resume-metrics"></div>
     </div>
     <div class="card">
-      <div class="card-title">Envoyer par WhatsApp / SMS</div>
+      <div class="card-title">Message WhatsApp / SMS</div>
+      <div class="summary-box" id="summary-txt"></div>
       <div style="margin-bottom:10px">
         <div class="form-row">
           <label class="form-label">Note / commentaire du jour (santé, incident, remarque…)</label>
@@ -487,14 +481,9 @@
     <div class="page-sub" id="bilan-film-name">Toutes les journees</div>
   </div>
   <div class="scroll-content">
-    <div style="padding:10px 12px 0">
-      <label style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;display:block">Film à consulter</label>
-      <select id="bilan-film-select" onchange="changerFilmBilan(this.value)" style="width:100%;padding:10px 12px;border:1.5px solid var(--blue);border-radius:8px;font-size:14px;font-weight:600;background:var(--blue-light);color:var(--blue-dark);margin-bottom:8px"></select>
-    </div>
-    <div style="display:flex;gap:8px;padding:4px 12px 8px;flex-wrap:wrap;align-items:center">
+    <div style="display:flex;gap:8px;padding:10px 12px;flex-wrap:wrap;align-items:center">
       <button onclick="renderBilan()" style="padding:7px 14px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer">Actualiser</button>
       <button onclick="genererPDFBilan()" style="padding:7px 14px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-size:12px;font-weight:600;cursor:pointer"> PDF Bilan</button>
-      <button onclick="revenirFilmActif()" id="btn-revenir-actif" style="display:none;padding:7px 14px;border-radius:8px;border:none;background:#10b981;color:#fff;font-size:12px;font-weight:600;cursor:pointer">↩ Revenir au tournage</button>
     </div>
     <div id="bilan-content" style="padding:0 12px 10px"></div>
   </div>
@@ -792,7 +781,7 @@
     </div>
   </div>
 </div>
-<div id="page-cours" class="page"><div class="page-header"><div class="page-title">Cours sur plateau</div><div class="page-sub" id="cours-film-name">Planning scolaire</div></div><div class="scroll-content"><div class="card"><div class="card-title" style="margin-bottom:6px">Filtrer par date</div><div id="cours-dates-container" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Planning</span><button onclick="openModal('modal-cours')" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter</button></div><div id="cours-list"><div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div></div></div><div class="card"><div class="card-title">Envoyer le planning</div><div class="send-btns"><button class="send-btn btn-wa" onclick="envoyerCoursWA('parents')"><span style="font-size:20px">&#128172;</span>Parents<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-wa" onclick="envoyerCoursWA('prod')" style="background:#1a9e5a"><span style="font-size:20px">&#128172;</span>Production<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-copy" onclick="copierCours()" style="grid-column:span 2"><span style="font-size:20px">&#128203;</span>Copier</button></div></div></div></div>
+<div id="page-cours" class="page"><div class="page-header"><div class="page-title">Cours sur plateau</div><div class="page-sub" id="cours-film-name">Planning scolaire</div></div><div class="scroll-content"><div class="card"><div style="margin-bottom:10px"><div id="cours-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div></div><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Planning du jour</span><button onclick="openModal('modal-cours')" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter</button></div><div id="cours-list"><div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div></div></div><div class="card"><div class="card-title">Envoyer le planning</div><div class="send-btns"><button class="send-btn btn-wa" onclick="envoyerCoursWA('parents')"><span style="font-size:20px">&#128172;</span>Parents<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-wa" onclick="envoyerCoursWA('prod')" style="background:#1a9e5a"><span style="font-size:20px">&#128172;</span>Production<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-copy" onclick="copierCours()" style="grid-column:span 2"><span style="font-size:20px">&#128203;</span>Copier</button></div></div></div></div>
 <nav class="nav">
   <button class="nav-btn" onclick="showPage('films',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
@@ -956,10 +945,10 @@ let state = {
 };
 let selectedEnfants = [];  // [] = tous
 let filtreStatut = 'tous'; // 'tous', 'role', 'figurant'
-let filtreFilms = 'tous'; // filtre dans la page Films
 let bilanFilmId = null;
-let resumeDate = null; // film consulté dans le bilan (null = film actif)
-let coursDateFiltre = null; // filtre date cours
+let resumeDate = null;
+let coursDateFiltre = null;
+let filtreFilms = 'tous'; // filtre dans la page Films
 function setFiltreFilms(f) {
   filtreFilms = f;
   // Mettre à jour les boutons
@@ -1233,10 +1222,7 @@ function todayStr() { return new Date().toISOString().slice(0, 10); }
 function initials(nom) { return nom.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2); }
 function activeFilm() { return state.films.find(f => f.id === state.activeFilmId); }
 function activeEnfants() { return state.enfants.filter(e => e.filmId === state.activeFilmId); }
-function todayLogs(dateStr) {
-  var d = dateStr || resumeDate || todayStr();
-  return state.logs.filter(l => l.filmId === state.activeFilmId && l.date === d);
-}
+function todayLogs() { return state.logs.filter(l => l.filmId === state.activeFilmId && l.date === todayStr()); }
 // ─── CLOCK ────────────────────────────────────────────────────────
 function tickClock() {
   const n = new Date();
@@ -1262,20 +1248,11 @@ function showPage(name, btn) {
   document.getElementById('page-' + name).classList.add('active');
   if (btn) btn.classList.add('active');
   if (name === 'planning') 
-  if (name === 'resume') {
-    resumeDate = resumeDate || todayStr();
-    remplirSelectResume();
-    renderResume();
-  }
+  if (name === 'resume') { remplirSelectResume(); renderResume(); }
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
-  if (name === 'bilan') { bilanFilmId = bilanFilmId || state.activeFilmId; remplirSelectBilan(); renderBilan(); }
-  if (name === 'cours') {
-    remplirSelectCours();
-    renderCoursList();
-    var cfn = document.getElementById('cours-film-name');
-    if (cfn) cfn.textContent = activeFilm() ? activeFilm().nom : 'Scolaire';
-  }
+  if (name === 'bilan') renderBilan();
+  if (name === 'cours') { remplirSelectCours(); renderCoursList(); const cfn=document.getElementById('cours-film-name'); if(cfn) cfn.textContent=activeFilm()?activeFilm().nom:'Scolaire'; }
   if (name === 'resume') renderExtraContactsBtns();
   if (name === 'live') { renderChips(); renderStatusBar(); renderLog(); updateFilmDisplay(); renderProgressBars(); }
 }
@@ -1463,9 +1440,7 @@ function logAction(type) {
   const hm = nowHM();
   const targets = selectedEnfants.length > 0 ? selectedEnfants : enfs.map(e => e.id);
   targets.forEach(eid => {
-    // fermer l'entrée précédente ouverte pour cet enfant aujourd'hui
-    // sauf pour arrivee et fin qui sont des horaires ponctuels
-    const PONCTUEL = ['arrivee', 'fin'];
+    const PONCTUEL = ['arrivee', 'fin', 'pickup'];
     const prev = todayLogs()
       .filter(l => l.enfantId === eid && !l.fin)
       .sort((a, b) => b.heure.localeCompare(a.heure))[0];
@@ -1527,13 +1502,13 @@ function renderLog() {
   el.innerHTML = logs.map(l => {
     const enf = enfs.find(e => e.id === l.enfantId);
     const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6', '#1f2937'];
-    const dur = l.fin ? fmt(toMin(l.fin) - toMin(l.heure)) : 'en cours';
-    const SINGLE_TIME = ['arrivee', 'fin'];
-    const heures = (SINGLE_TIME.includes(l.type) || !l.fin) ? l.heure : l.heure + ' → ' + l.fin;
+    const dur = l.fin && l.fin !== l.heure ? fmt(toMin(l.fin) - toMin(l.heure)) : '';
+    const PONCT = ['arrivee','fin','pickup'];
+    const heures = (PONCT.includes(l.type) || !l.fin || l.fin===l.heure) ? l.heure : l.heure + ' → ' + l.fin;
     return `<div class="log-item">
       <div class="log-time" style="font-size:12px;min-width:90px">${heures}</div>
       <div class="log-tag" style="background:${bg};color:${tc}">${TYPE_LABEL[l.type] || l.type}</div>
-      <div class="log-who">${enf ? enf.nom.split(' ')[0] : '?'}${l.detail ? ' · ' + l.detail : ''}</div>
+      <div class="log-who">${enf ? enf.nom.split(' ')[0] : '?'}${l.fin ? ' → ' + l.fin : ''}${l.detail ? ' · ' + l.detail : ''}</div>
       <div class="log-dur">${dur}</div>
       <button class="log-del" onclick="ouvrirEditLog(${l.id})" style="color:var(--blue)">&#9998;</button>
       <button class="log-del" onclick="delLog(${l.id})">✕</button>
@@ -1559,12 +1534,11 @@ function renderProgressBars() {
     const col = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : enf.couleur || '#10b981';
     const statutTxt = statutLabel(enf.statut || 'role', enf.genre);
     const resteLabel = pct >= 100 ? 'LIMITE ATTEINTE' : 'Reste ' + fmt(reste);
-    const debugLim = '(' + enf.age + ' = ' + lim + 'min)';
     return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;margin-bottom:6px">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">' +
       '<div><span style="font-size:13px;font-weight:700">' + enf.nom.split(' ')[0] + '</span>' +
       '<span style="font-size:10px;color:var(--text-muted);margin-left:6px">' + statutTxt + '</span></div>' +
-      '<div style="font-size:11px;font-weight:700;color:' + col + '">' + resteLabel + ' <span style=\'font-size:9px;opacity:.6\'>' + debugLim + '</span></div>' +
+      '<div style="font-size:11px;font-weight:700;color:' + col + '">' + resteLabel + '</div>' +
       '</div>' +
       '<div style="background:var(--border);border-radius:4px;height:7px;overflow:hidden">' +
       '<div style="height:100%;border-radius:4px;background:' + col + ';width:' + pct + '%"></div>' +
@@ -1669,22 +1643,24 @@ function buildSummary() {
     const dur = {};
     Object.keys(TYPE_LABEL).forEach(t => dur[t] = 0);
     evs.forEach(l => {
-      if (l.fin) dur[l.type] = (dur[l.type] || 0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
+      if (l.fin && l.fin !== l.heure) dur[l.type] = (dur[l.type]||0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
     });
-    const hDebut = evs.find(l => l.type === 'hmc') || evs.find(l => l.type === 'arrivee');
-    // Fin = log 'fin' explicite, sinon dernière entrée avec heure de fin renseignée
-    const logFin = evs.slice().reverse().find(l => l.type === 'fin');
-    const dernierLogFerme = evs.slice().reverse().find(l => l.fin);
-    const hFinHeure = logFin ? logFin.heure : (dernierLogFerme ? dernierLogFerme.fin : null);
+    const hDebut = evs.find(l => l.type==='hmc') || evs.find(l => l.type==='arrivee');
+    const hPickup = evs.slice().reverse().find(l => l.type==='pickup');
+    const logFin = evs.slice().reverse().find(l => l.type==='fin');
+    const dernierFerme = evs.slice().reverse().find(l => l.fin && l.fin!==l.heure);
+    const hFinHeure = logFin ? logFin.heure : (dernierFerme ? dernierFerme.fin : null);
     txt += enf.nom + '\n';
     if (hDebut) txt += 'Debut : ' + hDebut.heure + '\n';
     if (dur.tournage) txt += 'Tournage : ' + fmt(dur.tournage) + '\n';
     if (dur.pause) txt += 'Pause : ' + fmt(dur.pause) + '\n';
     if (dur.attente) txt += 'Attente : ' + fmt(dur.attente) + '\n';
+    if (dur.transport) txt += 'Transport : ' + fmt(dur.transport) + '\n';
+    if (hPickup) txt += 'Pick-up maison : ' + hPickup.heure + '\n';
     if (hFinHeure) txt += 'Fin : ' + hFinHeure + '\n';
-    const travailEnf = WORK_TYPES.reduce((s,t) => s+(dur[t]||0), 0);
-    const limEnf = LIMITES[enf.age];
-    if (travailEnf > limEnf) txt += 'DEPASSEMENT : +' + fmt(travailEnf - limEnf) + '\n';
+    const travail = WORK_TYPES.reduce((s,t) => s+(dur[t]||0), 0);
+    const lim = LIMITES[enf.age];
+    if (travail > lim) txt += 'DEPASSEMENT : +' + fmt(travail-lim) + '\n';
     txt += '\n';
   });
   if (commentaire) txt += 'Observation : ' + commentaire + '\n\n';
@@ -1695,8 +1671,7 @@ function buildSummary() {
 function calcFinMax() {
   // Calcule l'heure max de fin pour chaque enfant et l'alerte 1H avant
   const enfs = activeEnfants();
-  const dateRef = resumeDate || todayStr();
-  const logs = state.logs.filter(l => l.filmId === state.activeFilmId && l.date === dateRef);
+  const logs = todayLogs();
   const now = new Date();
   const nowMin = now.getHours() * 60 + now.getMinutes();
   
@@ -1707,7 +1682,7 @@ function calcFinMax() {
     evs.forEach(l => {
       if (l.fin) dur[l.type] = (dur[l.type]||0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
     });
-    // Presence = HMC + tournage + cascade + pause + son (sans repas, attente, cours)
+    // Presence = HMC + tournage + cascade + cours + pause (sans repas ni attente)
     const presence = WORK_TYPES.reduce((sum,t) => sum+(dur[t]||0), 0);
     const lim = LIMITES[enf.age];
     const reste = Math.max(0, lim - presence);
@@ -1730,97 +1705,836 @@ function calcFinMax() {
     return { enf, dur, presence, lim, reste, finMax, alerteH, enAlerte };
   });
 }
-function makeDateButtons(containerId, dates, activeDate, onClickFn, extraBtn) {
-  var container = document.getElementById(containerId);
-  if (!container) return;
-  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
-  var today = todayStr();
-  container.innerHTML = '';
-  if (extraBtn) {
-    var tmpDiv = document.createElement('div');
-    tmpDiv.innerHTML = extraBtn;
-    while (tmpDiv.firstChild) container.appendChild(tmpDiv.firstChild);
+function renderResume() {
+  const sp = document.getElementById('summary-txt');
+  if (sp) sp.textContent = buildSummary();
+  
+  // Bloc résumé horaire en haut
+  const bilanDiv = document.getElementById('resume-bilan-haut');
+  if (bilanDiv) {
+    const stats = calcFinMax();
+    if (stats.length) {
+      let html = '';
+      stats.forEach(s => {
+        const pct = Math.round(s.presence / s.lim * 100);
+        const barColor = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
+        const alertClass = s.enAlerte ? 'background:#fee2e2;border:1px solid #ef4444;' : 'background:var(--gray-light);';
+        html += '<div style="' + alertClass + 'border-radius:10px;padding:10px 12px;margin-bottom:8px">';
+        html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">';
+        html += '<div style="font-size:13px;font-weight:700">' + s.enf.nom.split(' ')[0] + '</div>';
+        if (s.enAlerte) html += '<div style="font-size:11px;font-weight:700;color:#991b1b">⚠ ALERTER MISE EN SCENE</div>';
+        html += '</div>';
+        // Heure de début = HMC ou arrivée
+        const logsEnf = todayLogs().filter(l => l.enfantId === s.enf.id).sort((a,b) => a.heure.localeCompare(b.heure));
+        const debutEvR = logsEnf.find(l => l.type === 'hmc') || logsEnf.find(l => l.type === 'arrivee');
+        const debutH = debutEvR ? debutEvR.heure : '-';
+        html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Début</div><div style="font-size:14px;font-weight:600">' + debutH + '</div></div>';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.hmc||0) + '</div></div>';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Tournage</div><div style="font-size:14px;font-weight:600;color:#065f46">' + fmt(s.dur.tournage||0) + '</div></div>';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Pause</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.pause||0) + '</div></div>';
+        html += '</div>';
+        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">Repas non compté : ' + fmt(s.dur.repas||0) + ' · Hors plateau non compté : ' + fmt(s.dur.attente||0) + '</div>';
+        html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:6px">';
+        html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,pct) + '%"></div>';
+        html += '</div>';
+        html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted)">';
+        const presLabel = (pct >= 100 ? '⚠ DEPASSE : ' : 'Presence : ') + fmt(s.presence) + ' / ' + fmt(s.lim) + ' (' + pct + '%)';
+        html += '<span style="color:' + (pct>=100?'#991b1b':'var(--text-muted)') + ';font-weight:' + (pct>=100?'700':'400') + '">' + presLabel + '</span>';
+        let finInfo = '';
+        if (s.finMax) finInfo += 'Fin max : ' + s.finMax;
+        if (s.finReelH) finInfo += ' · Fin réelle : ' + s.finReelH;
+        if (s.depasseMin > 0) finInfo += ' · Dépassement : ' + fmt(s.depasseMin);
+        if (s.alerteH && !s.finReelH) finInfo += ' · Alerte : ' + s.alerteH;
+        if (finInfo) html += '<span style="font-weight:600;color:' + (s.depasse?'#991b1b':s.enAlerte?'#991b1b':'var(--text)') + '">' + finInfo + '</span>';
+        html += '</div>';
+        html += '</div>';
+      });
+      bilanDiv.innerHTML = html;
+    }
   }
-  dates.forEach(function(d) {
-    var dt = new Date(d + 'T12:00:00');
-    var label = jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
-    if (d === today) label = 'Auj. ' + label;
-    var isActive = d === activeDate;
-    var btn = document.createElement('button');
-    btn.textContent = label;
-    btn.style.cssText = 'padding:6px 10px;margin:2px;border-radius:8px;border:1.5px solid ' + (isActive?'#3b82f6':'#e2e8f0') + ';background:' + (isActive?'#3b82f6':'#ffffff') + ';color:' + (isActive?'#fff':'#0f172a') + ';font-size:11px;font-weight:600;cursor:pointer';
-    btn.setAttribute('data-date', d);
-    btn.setAttribute('data-fn', onClickFn);
-    btn.onclick = function() {
-      var fn = window[this.getAttribute('data-fn')];
-      if (fn) fn(this.getAttribute('data-date'));
-    };
-    container.appendChild(btn);
+  // contacts sync
+  const ws = document.getElementById('wa-scripte');
+  const wp = document.getElementById('wa-prod');
+  if (ws && state.contacts.scripte) ws.value = state.contacts.scripte;
+  if (wp && state.contacts.prod) wp.value = state.contacts.prod;
+  // alerts + metrics
+  const enfs = activeEnfants();
+  const logs = todayLogs();
+  const alertDiv = document.getElementById('resume-alerts');
+  const metrics = document.getElementById('resume-metrics');
+  let alerts = '';
+  let totTournage = 0, present = new Set();
+  logs.forEach(l => {
+    if (l.type === 'tournage' && l.fin) { totTournage += Math.max(0, toMin(l.fin) - toMin(l.heure)); present.add(l.enfantId); }
+  });
+  if (metrics) metrics.innerHTML = `
+    <div class="metric"><div class="metric-val">${present.size}</div><div class="metric-lbl">Présents</div></div>
+    <div class="metric"><div class="metric-val">${fmt(totTournage) || '—'}</div><div class="metric-lbl">Tournage</div></div>
+    <div class="metric"><div class="metric-val">${logs.length}</div><div class="metric-lbl">Entrées</div></div>
+  `;
+  enfs.forEach(e => {
+    const lim = LIMITES[e.age];
+    const travail = logs.filter(l => l.enfantId === e.id && WORK_TYPES.includes(l.type) && l.fin)
+      .reduce((s, l) => s + Math.max(0, toMin(l.fin) - toMin(l.heure)), 0);
+    const pct = Math.round(travail / lim * 100);
+    if (pct >= 100) alerts += `<div class="alert alert-danger">⚠ ${e.nom} a dépassé la limite légale (${fmt(travail)} / ${fmt(lim)})</div>`;
+    else if (pct >= 80) alerts += `<div class="alert alert-warn">⚠ ${e.nom} proche de la limite (${pct}%)</div>`;
+  });
+  if (!alerts && logs.length) alerts = '<div class="alert alert-ok">✅ Tous les enfants respectent les limites légales</div>';
+  if (alertDiv) alertDiv.innerHTML = alerts;
+  if (chrono) {
+    chrono.innerHTML = enfs.map(e => {
+      const evs = logs.filter(l => l.enfantId === e.id).sort((a, b) => a.heure.localeCompare(b.heure));
+      if (!evs.length) return '';
+      const items = evs.map(l => {
+        const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6', '#1f2937'];
+        return `<span class="chrono-item"><span class="chrono-item-time">${l.heure}</span> <span style="background:${bg};color:${tc};padding:1px 7px;border-radius:8px;font-size:11px;font-weight:600">${TYPE_LABEL[l.type]}</span>${l.fin ? '<span style="font-size:11px;color:var(--text-muted)">→' + l.fin + '</span>' : ''}</span>`;
+      }).join(' ');
+      return `<div class="chrono-block">
+        <div class="chrono-name">
+          <div style="width:22px;height:22px;border-radius:50%;background:${e.couleur}22;color:${e.couleur};font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">${initials(e.nom)}</div>
+          ${e.nom}
+        </div>
+        <div class="chrono-items">${items}</div>
+      </div>`;
+    }).join('') || '<div class="empty">Aucune donnée pour aujourd\'hui</div>';
+  }
+}
+// ─── WHATSAPP / SMS ───────────────────────────────────────────────
+function getNumber(role) {
+  const fromResume = document.getElementById('wa-' + role)?.value;
+  const fromContacts = state.contacts[role];
+  const n = fromResume || fromContacts || '';
+  if (!n) { alert(`Entrez le numéro ${role === 'scripte' ? 'de la scripte' : 'de la production'} dans le champ ci-dessous.`); }
+  // save it
+  if (n) { state.contacts[role] = n; save(); }
+  return n;
+}
+function sendWhatsApp(role) {
+  const n = getNumber(role);
+  if (!n) return;
+  const clean = n.replace(/\s/g, '').replace(/^00/, '+');
+  const msg = encodeURIComponent(buildSummary());
+  window.open(`https://wa.me/${clean}?text=${msg}`);
+}
+function sendSMS(role) {
+  const n = getNumber(role);
+  if (!n) return;
+  const msg = encodeURIComponent(buildSummary());
+  // iOS uses &, Android uses ?
+  const sep = /iPhone|iPad|iPod/.test(navigator.userAgent) ? '&' : '?';
+  window.open(`sms:${n}${sep}body=${msg}`);
+}
+function copyResume() {
+  const txt = buildSummary();
+  navigator.clipboard.writeText(txt)
+    .then(() => alert('Résumé copié !'))
+    .catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = txt; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      alert('Résumé copié !');
+    });
+}
+// ─── CONTACTS EXTRA ──────────────────────────────────────────────
+function getContactsExtra() { return state.contactsExtra || []; }
+function ajouterContactExtra() {
+  const nom = document.getElementById('new-contact-nom').value.trim();
+  const tel = document.getElementById('new-contact-tel').value.trim();
+  if (!nom || !tel) { alert('Merci de renseigner un nom et un numéro.'); return; }
+  if (!state.contactsExtra) state.contactsExtra = [];
+  state.contactsExtra.push({ id: nextId++, nom, tel });
+  document.getElementById('new-contact-nom').value = '';
+  document.getElementById('new-contact-tel').value = '';
+  closeModal('modal-contact');
+  save();
+  renderContactsExtra();
+  renderExtraContactsBtns();
+}
+function supprimerContactExtra(id) {
+  state.contactsExtra = (state.contactsExtra || []).filter(c => c.id !== id);
+  save();
+  renderContactsExtra();
+  renderExtraContactsBtns();
+}
+function renderContactsExtra() {
+  const el = document.getElementById('contacts-extra-list');
+  if (!el) return;
+  const contacts = getContactsExtra();
+  if (!contacts.length) { el.innerHTML = ''; return; }
+  el.innerHTML = contacts.map(c => `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border)">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">${c.nom}</div>
+        <div style="font-size:11px;color:var(--text-muted)">${c.tel}</div>
+      </div>
+      <button onclick="sendWhatsAppExtra(${c.id})" style="padding:5px 10px;border-radius:8px;border:none;background:#25D366;color:#fff;font-size:11px;font-weight:600;cursor:pointer">WA</button>
+      <button onclick="supprimerContactExtra(${c.id})" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--text-muted)">✕</button>
+    </div>`).join('');
+}
+function renderExtraContactsBtns() {
+  const el = document.getElementById('extra-contacts-btns');
+  if (!el) return;
+  const contacts = getContactsExtra();
+  if (!contacts.length) { el.innerHTML = ''; return; }
+  el.innerHTML = contacts.map(c => `
+    <button class="send-btn btn-wa" onclick="sendWhatsAppExtra(${c.id})" style="background:#1a9e5a">
+      <span style="font-size:16px"></span>${c.nom}<span style="font-size:10px;opacity:.8">WhatsApp</span>
+    </button>`).join('');
+}
+function sendWhatsAppExtra(id) {
+  const c = getContactsExtra().find(x => x.id === id);
+  if (!c) return;
+  const clean = c.tel.replace(/\s/g, '').replace(/^00/, '+');
+  const msg = encodeURIComponent(buildSummary());
+  window.open(`https://wa.me/${clean}?text=${msg}`);
+}
+// ─── AGENDA PARENT + PDF ─────────────────────────────────────────
+function buildMsgEvenement(ev, enfId) {
+  const months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  const film = activeFilm();
+  const enf = state.enfants.find(e => e.id === enfId);
+  const d = new Date(ev.date);
+  let txt = '';
+  if (film) txt += film.nom + '\n';
+  txt += jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + '\n\n';
+  txt += ev.titre + '\n';
+  if (ev.debut) txt += 'Horaire : ' + ev.debut + (ev.fin ? ' - ' + ev.fin : '') + '\n';
+  if (ev.lieu) txt += 'Lieu : ' + ev.lieu + '\n';
+  if (ev.scenes) txt += 'Scenes : ' + ev.scenes + '\n';
+  if (ev.repasDebut) txt += 'Repas : ' + ev.repasDebut + (ev.repasFin ? ' - ' + ev.repasFin : '') + '\n';
+  if (ev.retour) txt += 'Retour estime : ' + ev.retour + '\n';
+  if (enf) txt += '\nPour : ' + enf.nom;
+  txt += '\n\n— Liv ;-)';
+  return txt;
+}
+function envoyerEvenementParent(evId, enfId) {
+  const ev = (state.calEvents || []).find(e => e.id === evId);
+  if (!ev) return;
+  const targetId = enfId || ev.enfantId;
+  const enf = state.enfants.find(e => e.id === targetId);
+  if (!enf || !enf.tel) { alert('Pas de numero pour ' + (enf ? enf.nom : 'cet enfant') + '. Ajoutez-le dans Films.'); return; }
+  const txt = buildMsgEvenement(ev, targetId);
+  const clean = enf.tel.replace(/\s/g, '').replace(/^00/, '+');
+  window.open('https://wa.me/' + clean + '?text=' + encodeURIComponent(txt));
+}
+function envoyerEvenementTous(evId) {
+  const ev = (state.calEvents || []).find(e => e.id === evId);
+  if (!ev) return;
+  const enfsAvecTel = activeEnfants().filter(en => en.tel);
+  if (!enfsAvecTel.length) { alert('Aucun parent avec numero. Ajoutez les numeros dans Films.'); return; }
+  // Envoyer à chacun
+  enfsAvecTel.forEach((enf, idx) => {
+    setTimeout(() => {
+      const txt = buildMsgEvenement(ev, enf.id);
+      const clean = enf.tel.replace(/\s/g, '').replace(/^00/, '+');
+      window.open('https://wa.me/' + clean + '?text=' + encodeURIComponent(txt));
+    }, idx * 1000);
   });
 }
-function remplirSelectResume() {
-  var today = todayStr();
-  var allDates = (state.logs||[])
-    .filter(function(l){ return !state.activeFilmId || l.filmId===state.activeFilmId; })
-    .map(function(l){ return l.date; });
-  var dates = [...new Set(allDates)].sort().reverse();
-  if (!dates.includes(today)) dates.unshift(today);
-  if (!resumeDate || !dates.includes(resumeDate)) resumeDate = today;
-  makeDateButtons('resume-dates-container', dates, resumeDate, 'changerDateResume', '');
-  // Mettre à jour le label de date
-  var lbl = document.getElementById('resume-date-label');
-  if (lbl) {
-    var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-    var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
-    var d = new Date((resumeDate||today) + 'T12:00:00');
-    lbl.textContent = jrs[d.getDay()] + ' ' + d.getDate() + ' ' + mts[d.getMonth()];
+function envoyerAgendaParent(enfantId) {
+  const enf = state.enfants.find(e => e.id === enfantId);
+  if (!enf || !enf.tel) { alert('Aucun numero pour cet enfant.'); return; }
+  const months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  const film = activeFilm();
+  const events = (state.calEvents || []).filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === calYear && d.getMonth() === calMonth &&
+      (!e.filmId || e.filmId === state.activeFilmId) &&
+      (!e.enfantId || e.enfantId === enfantId);
+  }).sort((a,b) => a.date.localeCompare(b.date));
+  if (!events.length) { alert('Aucun evenement pour ' + enf.nom + ' ce mois-ci.'); return; }
+  const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  let txt = 'Planning ' + months[calMonth] + ' ' + calYear;
+  if (film) txt += ' - ' + film.nom;
+  txt += '\nPour : ' + enf.nom + '\n\n';
+  events.forEach(e => {
+    const d = new Date(e.date);
+    txt += jours[d.getDay()] + ' ' + d.getDate() + ' - ' + e.titre;
+    if (e.debut) txt += ' de ' + e.debut + (e.fin ? ' a ' + e.fin : '');
+    if (e.lieu) txt += '\n    Lieu : ' + e.lieu;
+    if (e.scenes) txt += '\n    Scenes : ' + e.scenes;
+    if (e.repasDebut) txt += '\n    Repas : ' + e.repasDebut + (e.repasFin ? ' - ' + e.repasFin : '');
+    if (e.retour) txt += '\n    Retour estime : ' + e.retour;
+    txt += '\n';
+  });
+  txt += '\n— Liv ;-)';
+  const clean = enf.tel.replace(/\s/g, '').replace(/^00/, '+');
+  window.open('https://wa.me/' + clean + '?text=' + encodeURIComponent(txt));
+}
+function ouvrirModalPDF() {
+  // Remplir les jours disponibles
+  const months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  const events = (state.calEvents || []).filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
+  });
+  // Dates uniques triées
+  const dates = [...new Set(events.map(e => e.date))].sort();
+  const daysEl = document.getElementById('pdf-days-list');
+  if (!daysEl) return;
+  if (!dates.length) { alert('Aucun evenement ce mois-ci.'); return; }
+  daysEl.innerHTML = dates.map(date => {
+    const d = new Date(date);
+    const label = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
+    return '<label style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer">' +
+      '<input type="checkbox" class="pdf-day-cb" value="' + date + '" checked style="width:16px;height:16px;cursor:pointer">' +
+      '<span style="font-size:13px;font-weight:500">' + label + '</span>' +
+      '</label>';
+  }).join('');
+  // Remplir les enfants
+  const enfsEl = document.getElementById('pdf-enfs-list');
+  const enfs = activeEnfants();
+  enfsEl.innerHTML = '<label style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer">' +
+    '<input type="checkbox" class="pdf-enf-cb" value="all" checked style="width:16px;height:16px;cursor:pointer">' +
+    '<span style="font-size:13px;font-weight:500">Tous les enfants</span></label>' +
+    enfs.map(e => '<label style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer">' +
+      '<input type="checkbox" class="pdf-enf-cb" value="' + e.id + '" style="width:16px;height:16px;cursor:pointer">' +
+      '<span style="font-size:13px">' + e.nom + '</span></label>').join('');
+  openModal('modal-pdf');
+}
+function genererPDF() {
+  const months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const film = activeFilm();
+  // Récupérer jours sélectionnés
+  const selDays = [...document.querySelectorAll('.pdf-day-cb:checked')].map(cb => cb.value);
+  if (!selDays.length) { alert('Selectionnez au moins un jour.'); return; }
+  // Récupérer enfants sélectionnés
+  const allEnfs = document.querySelector('.pdf-enf-cb[value="all"]:checked');
+  const selEnfIds = allEnfs ? null : [...document.querySelectorAll('.pdf-enf-cb:checked')].map(cb => parseInt(cb.value));
+  const events = (state.calEvents || []).filter(e => {
+    const d = new Date(e.date);
+    return (!e.filmId || e.filmId === state.activeFilmId) &&
+      selDays.includes(e.date) &&
+      (selEnfIds === null || !e.enfantId || selEnfIds.includes(e.enfantId));
+  }).sort((a,b) => a.date.localeCompare(b.date));
+  if (!events.length) { alert('Aucun evenement pour cette selection.'); return; }
+  // Grouper par date
+  const byDate = {};
+  events.forEach(e => { if (!byDate[e.date]) byDate[e.date] = []; byDate[e.date].push(e); });
+  let rows = '';
+  Object.keys(byDate).sort().forEach(date => {
+    const d = new Date(date);
+    const dayLabel = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
+    byDate[date].forEach((e, idx) => {
+      const enf = state.enfants.find(en => en.id === e.enfantId);
+      const typeColor = e.type === 't' ? '#dbeafe' : '#fef3c7';
+      rows += '<tr>' +
+        '<td style="background:#f8fafc;font-weight:600;color:#334155;white-space:nowrap">' + (idx === 0 ? dayLabel : '') + '</td>' +
+        '<td style="background:' + typeColor + ';font-size:11px">' + (e.type === 't' ? 'Tournage' : 'Famille') + '</td>' +
+        '<td style="font-weight:600">' + e.titre + '</td>' +
+        '<td style="white-space:nowrap">' + (e.debut ? e.debut + (e.fin ? ' - ' + e.fin : '') : '-') + '</td>' +
+        '<td style="white-space:nowrap">' + (e.repasDebut ? e.repasDebut + (e.repasFin ? '-' + e.repasFin : '') : '-') + '</td>' +
+        '<td>' + (e.lieu || '-') + '</td>' +
+        '<td>' + (e.scenes || '-') + '</td>' +
+        '<td style="color:#10b981;font-weight:600;white-space:nowrap">' + (e.retour || '-') + '</td>' +
+        '<td>' + (enf ? enf.nom.split(' ')[0] : 'Tous') + '</td>' +
+        '</tr>';
+    });
+  });
+  const titre = (film ? film.nom + ' — ' : '') + months[calYear === new Date().getFullYear() ? calMonth : calMonth] + ' ' + calYear;
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' +
+    'body{font-family:Arial,sans-serif;padding:20px;color:#1e293b;font-size:13px}' +
+    'h1{font-size:18px;margin-bottom:4px;color:#1a1a2e}' +
+    '.sub{font-size:12px;color:#64748b;margin-bottom:16px}' +
+    'table{width:100%;border-collapse:collapse}' +
+    'th{background:#1a1a2e;color:#fff;padding:7px 8px;text-align:left;font-size:11px}' +
+    'td{padding:6px 8px;border-bottom:1px solid #e2e8f0;vertical-align:top}' +
+    'tr:nth-child(even) td{background:#f8fafc}' +
+    '.footer{margin-top:16px;font-size:11px;color:#94a3b8;text-align:right}' +
+    '@media print{body{padding:10px}}' +
+    '</style></head><body>' +
+    '<h1>' + titre + '</h1>' +
+    '<div class="sub">Planning — Liv · RESPONSABLE ENFANTS (ARECA)</div>' +
+    '<table><thead><tr>' +
+    '<th>Date</th><th>Type</th><th>Evenement</th><th>Horaires</th><th>Repas</th>' +
+    '<th>Lieu</th><th>Scenes</th><th>Retour</th><th>Enfant</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div class="footer">- Liv ;-) - ' + new Date().toLocaleDateString('fr-FR') + '</div>' +
+    '</body></html>';
+  const blob = new Blob([html], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url, '_blank');
+  if (win) { win.onload = () => { setTimeout(() => { win.print(); }, 500); }; }
+  closeModal('modal-pdf');
+}
+// ─── CALENDRIER ──────────────────────────────────────────────────
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+function calKey(y, m) { return `${y}-${String(m+1).padStart(2,'0')}`; }
+function getCalEvents() {
+  return state.calEvents || [];
+}
+function saveCalEvent(ev) {
+  if (!state.calEvents) state.calEvents = [];
+  state.calEvents.push(ev);
+  save();
+  renderCal();
+}
+function delCalEvent(id) {
+  state.calEvents = (state.calEvents || []).filter(e => e.id !== id);
+  save();
+  renderCal();
+}
+function calPrev() { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCal(); }
+function calNext() { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCal(); }
+function renderCal() {
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const lbl = document.getElementById('cal-month-label');
+  if (lbl) lbl.textContent = months[calMonth] + ' ' + calYear;
+  const film = activeFilm();
+  const fn = document.getElementById('cal-film-name');
+  if (fn) fn.textContent = film ? film.nom : 'Planning du film';
+  const grid = document.getElementById('cal-grid');
+  if (!grid) return;
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const today = new Date();
+  const events = getCalEvents().filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
+  });
+  const jours = ['Lu','Ma','Me','Je','Ve','Sa','Di'];
+  let html = jours.map(j => `<div class="cal-day-name">${j}</div>`).join('');
+  const startOffset = (firstDay + 6) % 7;
+  for (let i = 0; i < startOffset; i++) html += '<div class="cal-day empty"></div>';
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayEvs = events.filter(e => e.date === dateStr);
+    const isToday = today.getFullYear() === calYear && today.getMonth() === calMonth && today.getDate() === d;
+    const evHtml = dayEvs.slice(0,3).map(e => `<div class="cal-ev ${e.type}">${e.titre}</div>`).join('');
+    html += `<div class="cal-day ${isToday ? 'today' : ''}" onclick="openAddEvent('${dateStr}')">
+      <div class="cal-day-num">${d}</div>
+      ${evHtml}
+    </div>`;
+  }
+  grid.innerHTML = html;
+  // liste événements du mois
+  const list = document.getElementById('cal-events-list');
+  const title = document.getElementById('cal-events-title');
+  if (title) title.textContent = `Événements — ${months[calMonth]} ${calYear}`;
+  const monthEvs = events.sort((a,b) => a.date.localeCompare(b.date));
+  if (!monthEvs.length) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon"></div>Appuyez sur un jour pour ajouter un événement</div>';
+    return;
+  }
+  list.innerHTML = monthEvs.map(e => {
+    const col = e.type === 't' ? '#3b82f6' : '#f59e0b';
+    const d = new Date(e.date);
+    const jours2 = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+    const dateLabel = jours2[d.getDay()] + ' ' + d.getDate();
+    const enf = state.enfants.find(en => en.id === e.enfantId);
+    // Boutons d'envoi selon les enfants concernés
+    let sendBtns = '';
+    if (e.enfantId) {
+      // Événement pour un enfant spécifique
+      const enfEv = state.enfants.find(en => en.id === e.enfantId);
+      if (enfEv && enfEv.tel) {
+        sendBtns += `<button onclick="envoyerEvenementParent(${e.id})" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer;margin-right:4px"> ${enfEv.nom.split(' ')[0]}</button>`;
+      }
+    } else {
+      // Événement pour tous - un bouton par enfant qui a un numéro
+      activeEnfants().filter(en => en.tel).forEach(en => {
+        sendBtns += `<button onclick="envoyerEvenementParent(${e.id},${en.id})" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer;margin-right:4px"> ${en.nom.split(' ')[0]}</button>`;
+      });
+      if (activeEnfants().some(en => en.tel)) {
+        sendBtns += `<button onclick="envoyerEvenementTous(${e.id})" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#3b82f6;color:#fff;font-weight:600;cursor:pointer"> Tous</button>`;
+      }
+    }
+    return `<div class="ev-item">
+      <div class="ev-dot" style="background:${col}"></div>
+      <div class="ev-info">
+        <div class="ev-title">${e.titre}</div>
+        <div class="ev-sub">${dateLabel}${e.debut ? ' · ' + e.debut + (e.fin ? ' - ' + e.fin : '') : ''}${e.retour ? ' · ' + e.retour : ''}${e.repasDebut ? ' · ' + e.repasDebut + (e.repasFin ? '-' + e.repasFin : '') : ''}${e.lieu ? ' · ' + e.lieu : ''}${e.scenes ? ' · ' + e.scenes : ''} ${enf ? '· ' + enf.nom.split(' ')[0] : '· Tous'}</div>
+        ${sendBtns ? '<div style="margin-top:5px">' + sendBtns + '</div>' : ''}
+      </div>
+      <button class="ev-del" onclick="delCalEvent(${e.id})">✕</button>
+    </div>`;
+  }).join('');
+}
+let calSelectedEnfants = [];
+function openAddEvent(dateStr) {
+  const d = new Date(dateStr);
+  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const label = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
+  calSelectedEnfants = [];
+  document.getElementById('modal-cal-title').textContent = label;
+  document.getElementById('cal-ev-date').value = dateStr;
+  document.getElementById('cal-ev-titre').value = '';
+  document.getElementById('cal-ev-debut').value = '';
+  document.getElementById('cal-ev-fin').value = '';
+  document.getElementById('cal-ev-lieu').value = '';
+  document.getElementById('cal-ev-scenes').value = '';
+  document.getElementById('cal-ev-retour').value = '';
+  document.getElementById('cal-ev-repas-debut').value = '';
+  document.getElementById('cal-ev-repas-fin').value = '';
+  document.getElementById('cal-ev-type').value = 't';
+  renderCalChips();
+  openModal('modal-cal');
+}
+function renderCalChips() {
+  const enfs = activeEnfants();
+  const el = document.getElementById('cal-enfants-chips');
+  if (!el) return;
+  let html = '';
+  const allSel = calSelectedEnfants.length === 0;
+  html += `<div onclick="calSelectEnfant('all')" style="padding:7px 14px;border-radius:20px;border:1.5px solid ${allSel ? 'var(--blue)' : 'var(--border)'};background:${allSel ? 'var(--blue-light)' : 'var(--surface)'};color:${allSel ? 'var(--blue-dark)' : 'var(--text-muted)'};font-size:13px;font-weight:600;cursor:pointer">Tous</div>`;
+  enfs.forEach(e => {
+    const sel = calSelectedEnfants.includes(e.id);
+    html += `<div onclick="calSelectEnfant(${e.id})" style="padding:7px 14px;border-radius:20px;border:1.5px solid ${sel ? e.couleur : 'var(--border)'};background:${sel ? e.couleur : 'var(--surface)'};color:${sel ? '#fff' : 'var(--text-muted)'};font-size:13px;font-weight:600;cursor:pointer">${e.nom.split(' ')[0]}</div>`;
+  });
+  el.innerHTML = html;
+}
+function calSelectEnfant(id) {
+  if (id === 'all') { calSelectedEnfants = []; }
+  else {
+    if (calSelectedEnfants.includes(id)) calSelectedEnfants = calSelectedEnfants.filter(x => x !== id);
+    else calSelectedEnfants.push(id);
+  }
+  renderCalChips();
+}
+function validerCalEvent() {
+  const titre = document.getElementById('cal-ev-titre').value.trim();
+  if (!titre) { alert('Entrez un titre.'); return; }
+  const debut = document.getElementById('cal-ev-debut').value;
+  const fin = document.getElementById('cal-ev-fin').value;
+  const type = document.getElementById('cal-ev-type').value;
+  const date = document.getElementById('cal-ev-date').value;
+  const enfs = activeEnfants();
+  const targets = calSelectedEnfants.length > 0 ? calSelectedEnfants : [null];
+  targets.forEach(eid => {
+    const lieu = document.getElementById('cal-ev-lieu').value.trim();
+    const scenes = document.getElementById('cal-ev-scenes').value.trim();
+    const retour = document.getElementById('cal-ev-retour').value;
+    const repasDebut = document.getElementById('cal-ev-repas-debut').value;
+    const repasFin = document.getElementById('cal-ev-repas-fin').value;
+    const ev = {
+      id: nextId++,
+      filmId: state.activeFilmId,
+      enfantId: eid,
+      date,
+      debut,
+      fin,
+      heure: debut,
+      lieu,
+      scenes,
+      retour,
+      repasDebut,
+      repasFin,
+      titre,
+      type
+    };
+    if (!state.calEvents) state.calEvents = [];
+    state.calEvents.push(ev);
+  });
+  save();
+  renderCal();
+  closeModal('modal-cal');
+}
+function copierParents() {
+  const txt = buildParentsMessage();
+  if (!txt) return;
+  navigator.clipboard.writeText(txt)
+    .then(() => alert('Message copié ! Ouvrez votre groupe WhatsApp parents et collez le message.'))
+    .catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = txt; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      alert('Message copié ! Ouvrez votre groupe WhatsApp parents et collez le message.');
+    });
+}
+function buildParentsMessage() {
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const film = activeFilm();
+  const events = getCalEvents().filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
+  }).sort((a,b) => a.date.localeCompare(b.date));
+  if (!events.length) { alert('Aucun événement ce mois-ci.'); return null; }
+  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  let txt = 'Planning ' + months[calMonth] + ' ' + calYear;
+  if (film) txt += ' - ' + film.nom;
+  txt += '\n\n';
+  const byDate = {};
+  events.forEach(e => {
+    if (!byDate[e.date]) byDate[e.date] = [];
+    byDate[e.date].push(e);
+  });
+  Object.keys(byDate).sort().forEach(date => {
+    const d = new Date(date);
+    txt += jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + '\n';
+    byDate[date].forEach(e => {
+      const enf = state.enfants.find(en => en.id === e.enfantId);
+      txt += '  • ' + e.titre;
+      if (e.debut) txt += ' de ' + e.debut + (e.fin ? ' a ' + e.fin : '');
+      if (e.lieu) txt += '\n    Lieu : ' + e.lieu;
+      if (e.scenes) txt += '\n    Scenes : ' + e.scenes;
+      if (e.repasDebut) txt += '\n    Coupure repas : ' + e.repasDebut + (e.repasFin ? ' - ' + e.repasFin : '');
+      if (e.retour) txt += '\n    Retour estime : ' + e.retour;
+      if (enf) txt += '\n    Enfant : ' + enf.nom;
+      else txt += '\n    Tous les enfants';
+      txt += '\n';
+    });
+    txt += '\n';
+  });
+  txt += '— Liv ;-)';
+  return txt;
+}
+function partagerParents() {
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const film = activeFilm();
+  const events = getCalEvents().filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
+  }).sort((a,b) => a.date.localeCompare(b.date));
+  if (!events.length) { alert('Aucun événement ce mois-ci.'); return; }
+  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  let txt = `Planning ${months[calMonth]} ${calYear}`;
+  if (film) txt += ' - ' + film.nom;
+  txt += '\n\n';
+  // Grouper par date
+  const byDate = {};
+  events.forEach(e => {
+    if (!byDate[e.date]) byDate[e.date] = [];
+    byDate[e.date].push(e);
+  });
+  Object.keys(byDate).sort().forEach(date => {
+    const d = new Date(date);
+    txt += `${jours[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}` + '\n';
+    byDate[date].forEach(e => {
+      const enf = state.enfants.find(en => en.id === e.enfantId);
+      const typeLabel = e.type === 't' ? 'Tournage' : 'Info';
+      txt += `  • ${e.titre}`;
+      if (e.debut) txt += ` de ${e.debut}${e.fin ? ' a ' + e.fin : ''}`;
+      if (e.lieu) txt += '\n    Lieu : ' + e.lieu;
+      if (enf) txt += '\n    Enfant : ' + enf.nom;
+      else txt += '\n    Tous les enfants';
+      txt += '\n';
+    });
+    txt += '\n';
+  });
+  txt += `— Liv ;-)`;
+  const n = state.contacts.scripte || state.contacts.prod || '';
+  if (n) {
+    const clean = n.replace(/\s/g, '').replace(/^00/, '+');
+    window.open(`https://wa.me/${clean}?text=${encodeURIComponent(txt)}`);
+  } else {
+    navigator.clipboard.writeText(txt)
+      .then(() => alert('Planning parents copié ! Collez-le dans WhatsApp.'))
+      .catch(() => alert(txt));
   }
 }
-function remplirSelectCours() {
-  var today = todayStr();
-  var datesCours = [...new Set((state.coursJour||[]).map(function(c){ return c.date||today; }))];
-  var datesLogs = [...new Set((state.logs||[]).filter(function(l){ return l.filmId===state.activeFilmId; }).map(function(l){ return l.date; }))];
-  var allDates = [...new Set([...datesCours, ...datesLogs, today])].sort().reverse();
-  var btnTous = '<button onclick="changerDateCours(null)" style="padding:6px 10px;margin:2px;border-radius:8px;border:1.5px solid ' + (coursDateFiltre===null?'var(--blue)':'var(--border)') + ';background:' + (coursDateFiltre===null?'var(--blue)':'var(--surface)') + ';color:' + (coursDateFiltre===null?'#fff':'var(--text)') + ';font-size:11px;font-weight:600;cursor:pointer">Tous</button>';
-  makeDateButtons('cours-dates-container', allDates, coursDateFiltre, 'changerDateCours', btnTous);
+function partagerCalendrier() {
+  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const film = activeFilm();
+  const events = getCalEvents().filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
+  }).sort((a,b) => a.date.localeCompare(b.date));
+  if (!events.length) { alert('Aucun événement ce mois-ci.'); return; }
+  const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  let txt = `${film ? film.nom.toUpperCase() : 'PLANNING'} - ${months[calMonth]} ${calYear}\n\n`;
+  events.forEach(e => {
+    const d = new Date(e.date);
+    const enf = state.enfants.find(en => en.id === e.enfantId);
+    const typeLabel = e.type === 't' ? '[Tournage]' : '[Famille]';
+    txt += `${jours[d.getDay()]} ${d.getDate()} - ${e.titre} ${typeLabel}`;
+    if (e.debut) txt += ` ${e.debut}${e.fin ? ' - ' + e.fin : ''}`;
+    if (e.lieu) txt += ' - ' + e.lieu;
+    if (e.repasDebut) txt += ' - Repas ' + e.repasDebut + (e.repasFin ? '-' + e.repasFin : '');
+    if (e.scenes) txt += ' [' + e.scenes + ']';
+    if (enf) txt += ' (' + enf.nom.split(' ')[0] + ')';
+    txt += '\n';
+  });
+  const n = state.contacts.scripte || state.contacts.prod || '';
+  if (n) {
+    const clean = n.replace(/\s/g, '').replace(/^00/, '+');
+    window.open(`https://wa.me/${clean}?text=${encodeURIComponent(txt)}`);
+  } else {
+    navigator.clipboard.writeText(txt).then(() => alert('Planning copié ! Collez-le dans WhatsApp.')).catch(() => alert(txt));
+  }
 }
-function changerDateCours(date) {
-  coursDateFiltre = (date === null || date === '') ? null : date;
-  remplirSelectCours();
-  renderCoursList();
-}
-// FONCTIONS MANQUANTES - à insérer avant initApp
-function changerDateResume(date) {
-  resumeDate = date;
-  remplirSelectResume();
-  renderResume();
-}
-function remplirSelectBilan() {
-  var sel = document.getElementById('bilan-film-select');
-  if (!sel) return;
-  sel.innerHTML = state.films.map(function(f) {
-    var actif = f.id === state.activeFilmId ? ' (en cours)' : '';
-    return '<option value="' + f.id + '"' + (f.id === (bilanFilmId||state.activeFilmId) ? ' selected' : '') + '>' + f.nom + actif + '</option>';
-  }).join('');
-  var btn = document.getElementById('btn-revenir-actif');
-  if (btn) btn.style.display = (bilanFilmId && bilanFilmId !== state.activeFilmId) ? 'block' : 'none';
-}
-function changerFilmBilan(filmId) {
-  bilanFilmId = parseInt(filmId);
-  var film = state.films.find(function(f){ return f.id === bilanFilmId; });
-  var el = document.getElementById('bilan-film-name');
-  if (el && film) el.textContent = film.nom;
-  var btn = document.getElementById('btn-revenir-actif');
-  if (btn) btn.style.display = bilanFilmId !== state.activeFilmId ? 'block' : 'none';
+// ─── BILAN FILM ──────────────────────────────────────────────────
+function supprimerJour(date) {
+  if (!confirm('Supprimer toute la journee du ' + date + ' ?')) return;
+  state.logs = state.logs.filter(l => !(l.filmId === state.activeFilmId && l.date === date));
+  delete state['comment_' + date];
+  save();
   renderBilan();
 }
-function revenirFilmActif() {
-  bilanFilmId = state.activeFilmId;
-  remplirSelectBilan();
-  renderBilan();
-  var btn = document.getElementById('btn-revenir-actif');
-  if (btn) btn.style.display = 'none';
+function saveNoteJour(date, note) {
+  state['comment_' + date] = note;
+  save();
+}
+function getStatsByDate(date) {
+  const dayLogs = state.logs.filter(l => l.filmId === state.activeFilmId && l.date === date);
+  const enfs = activeEnfants();
+  return enfs.map(enf => {
+    const evs = dayLogs.filter(l => l.enfantId === enf.id).sort((a,b) => a.heure.localeCompare(b.heure));
+    if (!evs.length) return null;
+    const dur = {};
+    Object.keys(TYPE_LABEL).forEach(t => dur[t] = 0);
+    evs.forEach(l => {
+      if (l.fin) dur[l.type] = (dur[l.type] || 0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
+    });
+    const hArrivee = evs.find(l => l.type === 'arrivee');
+    const hFin = [...evs].reverse().find(l => l.type === 'fin');
+    const hRepas = evs.find(l => l.type === 'repas');
+    const travail = WORK_TYPES.reduce((s,t) => s + (dur[t]||0), 0);
+    const lim = LIMITES[enf.age];
+    const pct = Math.round(travail/lim*100);
+    return { enf, dur, hArrivee, hFin, hRepas, travail, lim, pct, hasCascade: dur.cascade > 0, hasSante: dur.sante > 0 };
+  }).filter(Boolean);
+}
+function getAllDates() {
+  const dates = [...new Set(
+    state.logs.filter(l => l.filmId === state.activeFilmId).map(l => l.date)
+  )].sort();
+  return dates;
+}
+function renderBilan() {
+  const el = document.getElementById('bilan-content');
+  if (!el) return;
+  const dates = getAllDates();
+  if (!dates.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon"></div>Aucune journee enregistree pour ce film.</div>';
+    return;
+  }
+  const months = ['Jan','Fev','Mar','Avr','Mai','Jun','Jul','Aou','Sep','Oct','Nov','Dec'];
+  const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  
+  let html = '';
+  dates.forEach(date => {
+    const d = new Date(date);
+    const dayLabel = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+    const stats = getStatsByDate(date);
+    if (!stats.length) return;
+    
+    const comment = state['comment_' + date] || '';
+    
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden">';
+    html += '<div style="background:#1a1a2e;color:#fff;padding:8px 14px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">';
+    html += '<span>' + dayLabel + '</span>';
+    html += '<button onclick="supprimerJour(' + "'" + date + "'" + ')" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:3px 10px;border-radius:6px;font-size:11px;cursor:pointer"> Supprimer</button>';
+    html += '</div>';
+    html += '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px">';
+    html += '<thead><tr style="background:var(--gray-light)">';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Enfant</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Arrivee</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">HMC</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Tournage</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Pause</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Repas</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Hors plateau</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Cascade</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Sante</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Cours</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Fin</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Plateau</th>';
+    html += '</tr></thead><tbody>';
+    
+    stats.forEach(s => {
+      const col = s.pct >= 100 ? '#fee2e2' : s.pct >= 80 ? '#fef3c7' : '';
+      html += '<tr style="border-bottom:1px solid var(--border);' + (col ? 'background:' + col : '') + '">';
+      html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '<br><span style="font-size:10px;font-weight:400;color:var(--text-muted)">' + statutLabel(s.enf.statut || 'role', s.enf.genre) + '</span></td>';
+      html += '<td style="padding:6px 8px">' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
+      html += '<td style="padding:6px 8px;font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.dur.pause ? fmt(s.dur.pause) : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin ? '-' + s.hRepas.fin : '') : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
+      html += '<td style="padding:6px 8px;color:' + (s.hasCascade ? '#991b1b' : 'var(--text-muted)') + '">' + (s.hasCascade ? fmt(s.dur.cascade) : '-') + '</td>';
+      html += '<td style="padding:6px 8px;color:' + (s.hasSante ? '#9d174d' : 'var(--text-muted)') + '">' + (s.hasSante ? '⚠' : '-') + '</td>';
+      const cBilan = (state.coursJour||[]).filter(c => c.date===date && c.enfantId===s.enf.id);
+      const cStr = cBilan.length ? cBilan.map(c => c.matiere+' '+c.debut+(c.fin?'-'+c.fin:'')).join(', ') : '-';
+      html += '<td style="padding:6px 8px;color:#5b21b6;font-size:10px">' + cStr + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure : '-') + '</td>';
+      html += '<td style="padding:6px 8px;font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+    const noteId = 'note_bilan_' + date;
+    html += '<div style="padding:8px 12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px">';
+    html += '<span style="font-size:18px"></span>';
+    html += '<input type="text" id="' + noteId + '"';
+    html += ' value="' + (comment || '').replace(/"/g, '&quot;') + '"';
+    html += ' placeholder="Ajouter une note pour cette journee..."';
+    html += ' onchange="saveNoteJour(' + "'" + date + "'" + ', this.value)"';
+    html += ' style="flex:1;font-size:13px;border:1px solid var(--border);border-radius:8px;padding:6px 10px;background:var(--bg);color:var(--text)">';
+    html += '</div>';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+}
+function genererPDFBilan() {
+  const film = activeFilm();
+  const dates = getAllDates();
+  if (!dates.length) { alert('Aucune journee enregistree.'); return; }
+  const months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  
+  let rows = '';
+  dates.forEach(date => {
+    const d = new Date(date);
+    const dayLabel = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
+    const stats = getStatsByDate(date);
+    stats.forEach((s, idx) => {
+      rows += '<tr>';
+      rows += '<td style="background:#f8fafc;font-weight:600;white-space:nowrap">' + (idx===0 ? dayLabel : '') + '</td>';
+      rows += '<td style="font-weight:600">' + s.enf.nom.split(' ')[0] + '</td>';
+      rows += '<td>' + (s.hArrivee ? s.hArrivee.heure : '-') + '</td>';
+      rows += '<td>' + (s.dur.hmc ? fmt(s.dur.hmc) : '-') + '</td>';
+      rows += '<td style="font-weight:600">' + (s.dur.tournage ? fmt(s.dur.tournage) : '-') + '</td>';
+      rows += '<td>' + (s.dur.pause ? fmt(s.dur.pause) : '-') + '</td>';
+      rows += '<td>' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin ? '-'+s.hRepas.fin : '') : '-') + '</td>';
+      rows += '<td>' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
+      rows += '<td style="color:#991b1b">' + (s.hasCascade ? fmt(s.dur.cascade) : '-') + '</td>';
+      rows += '<td style="color:#9d174d">' + (s.hasSante ? 'Oui' : '-') + '</td>';
+      var cPdf = (state.coursJour||[]).filter(function(c){ return c.date===date && c.enfantId===s.enf.id; });
+      rows += '<td style="color:#5b21b6;font-size:10px">' + (cPdf.length?cPdf.map(function(c){return c.matiere;}).join(', '):'-') + '</td>';
+      rows += '<td style="font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
+      rows += '</tr>';
+    });
+  });
+  const titre = film ? 'Bilan ' + film.nom : 'Bilan Film';
+  const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' +
+    'body{font-family:Arial,sans-serif;padding:15px;color:#1e293b;font-size:12px}' +
+    'h1{font-size:16px;margin-bottom:4px;color:#1a1a2e}' +
+    '.sub{font-size:11px;color:#64748b;margin-bottom:14px}' +
+    'table{width:100%;border-collapse:collapse}' +
+    'th{background:#1a1a2e;color:#fff;padding:6px 7px;text-align:left;font-size:10px;white-space:nowrap}' +
+    'td{padding:5px 7px;border-bottom:1px solid #e2e8f0;vertical-align:middle}' +
+    'tr:nth-child(even) td{background:#f8fafc}' +
+    '.footer{margin-top:14px;font-size:10px;color:#94a3b8;text-align:right}' +
+    '@media print{body{padding:8px}}' +
+    '</style></head><body>' +
+    '<h1>' + titre + '</h1>' +
+    '<div class="sub">Bilan complet — Liv · RESPONSABLE ENFANTS (ARECA)</div>' +
+    '<table><thead><tr>' +
+    '<th>Date</th><th>Enfant</th><th>Arrivee</th><th>HMC</th><th>Tournage</th>' +
+    '<th>Pause</th><th>Repas</th><th>Hors plateau</th><th>Cascade</th><th>Sante</th><th>Plateau</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div class="footer">- Liv ;-) - ' + new Date().toLocaleDateString('fr-FR') + '</div>' +
+    '</body></html>';
+  const blob = new Blob([html], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url, '_blank');
+  if (win) { win.onload = () => { setTimeout(() => { win.print(); }, 500); }; }
+}
+// ─── INIT ─────────────────────────────────────────────────────────
+function ouvrirEditLog(id) {
+  var log = state.logs.find(function(l){ return l.id === id; });
+  if (!log) return;
+  document.getElementById('edit-log-id').value = id;
+  document.getElementById('edit-log-type').value = log.type;
+  document.getElementById('edit-log-heure').value = log.heure;
+  document.getElementById('edit-log-fin').value = log.fin || '';
+  openModal('modal-edit-log');
 }
 function sauvegarderLog() {
   var id = parseInt(document.getElementById('edit-log-id').value);
@@ -1831,89 +2545,6 @@ function sauvegarderLog() {
   log.fin = document.getElementById('edit-log-fin').value || null;
   save(); closeModal('modal-edit-log');
   renderLog(); renderStatusBar(); renderProgressBars();
-}
-function getContactsExtra() { return state.contactsExtra || []; }
-function ajouterContactExtra() {
-  var nom = document.getElementById('new-contact-nom').value.trim();
-  var tel = document.getElementById('new-contact-tel').value.trim();
-  if (!nom || !tel) { alert('Merci de renseigner un nom et un numero.'); return; }
-  if (!state.contactsExtra) state.contactsExtra = [];
-  state.contactsExtra.push({ id: nextId++, nom: nom, tel: tel });
-  document.getElementById('new-contact-nom').value = '';
-  document.getElementById('new-contact-tel').value = '';
-  closeModal('modal-contact');
-  save();
-  renderContactsExtra();
-  renderExtraContactsBtns();
-}
-function supprimerContactExtra(id) {
-  state.contactsExtra = (state.contactsExtra || []).filter(function(c){ return c.id !== id; });
-  save();
-  renderContactsExtra();
-  renderExtraContactsBtns();
-}
-function renderContactsExtra() {
-  var el = document.getElementById('contacts-extra-list');
-  if (!el) return;
-  var contacts = getContactsExtra();
-  if (!contacts.length) { el.innerHTML = ''; return; }
-  el.innerHTML = contacts.map(function(c) {
-    return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border)">' +
-      '<div style="flex:1"><div style="font-size:13px;font-weight:600">' + c.nom + '</div>' +
-      '<div style="font-size:11px;color:var(--text-muted)">' + c.tel + '</div></div>' +
-      '<button onclick="sendWhatsAppExtra(' + c.id + ')" style="padding:5px 10px;border-radius:8px;border:none;background:#25D366;color:#fff;font-size:11px;font-weight:600;cursor:pointer">WA</button>' +
-      '<button onclick="supprimerContactExtra(' + c.id + ')" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--text-muted)">X</button></div>';
-  }).join('');
-}
-function renderExtraContactsBtns() {
-  var el = document.getElementById('extra-contacts-btns');
-  if (!el) return;
-  var contacts = getContactsExtra();
-  if (!contacts.length) { el.innerHTML = ''; return; }
-  el.innerHTML = contacts.map(function(c) {
-    return '<button class="send-btn btn-wa" onclick="sendWhatsAppExtra(' + c.id + ')" style="background:#1a9e5a">' +
-      '<span style="font-size:16px">&#128172;</span>' + c.nom + '<span style="font-size:10px;opacity:.8">WhatsApp</span></button>';
-  }).join('');
-}
-function sendWhatsAppExtra(id) {
-  var c = getContactsExtra().find(function(x){ return x.id === id; });
-  if (!c) return;
-  var clean = c.tel.replace(/\s/g,'').replace(/^00/,'+');
-  var msg = encodeURIComponent(buildSummary());
-  window.open('https://wa.me/' + clean + '?text=' + msg);
-}
-function getNumber(role) {
-  var fromResume = document.getElementById('wa-' + role) ? document.getElementById('wa-' + role).value : '';
-  var fromContacts = state.contacts[role] || '';
-  var n = fromResume || fromContacts || '';
-  if (!n) { alert('Entrez le numero ' + (role === 'scripte' ? 'de la scripte' : 'de la production') + '.'); }
-  if (n) { state.contacts[role] = n; save(); }
-  return n;
-}
-function sendWhatsApp(role) {
-  var n = getNumber(role);
-  if (!n) return;
-  var clean = n.replace(/\s/g,'').replace(/^00/,'+');
-  var msg = encodeURIComponent(buildSummary());
-  window.open('https://wa.me/' + clean + '?text=' + msg);
-}
-function sendSMS(role) {
-  var n = getNumber(role);
-  if (!n) return;
-  var msg = encodeURIComponent(buildSummary());
-  var sep = /iPhone|iPad|iPod/.test(navigator.userAgent) ? '&' : '?';
-  window.open('sms:' + n + sep + 'body=' + msg);
-}
-function copyResume() {
-  var txt = buildSummary();
-  navigator.clipboard.writeText(txt)
-    .then(function(){ alert('Resume copie!'); })
-    .catch(function(){
-      var ta = document.createElement('textarea');
-      ta.value = txt; document.body.appendChild(ta); ta.select();
-      document.execCommand('copy'); document.body.removeChild(ta);
-      alert('Resume copie!');
-    });
 }
 function ouvrirModalCours() {
   var enfs = activeEnfants();
@@ -1931,34 +2562,26 @@ function ajouterCours() {
   var mc = document.getElementById('cours-matiere-custom').value.trim();
   var matiere = mc || document.getElementById('cours-matiere').value;
   var debut = document.getElementById('cours-debut').value;
-  var dateCours = document.getElementById('cours-date') ? document.getElementById('cours-date').value : todayStr();
   if (!debut) { alert('Heure de debut requise.'); return; }
   if (!state.coursJour) state.coursJour = [];
   state.coursJour.push({ id: nextId++, enfantId: enfId, matiere: matiere, debut: debut,
     fin: document.getElementById('cours-fin').value,
-    prof: document.getElementById('cours-prof').value.trim(), date: dateCours || todayStr() });
+    prof: document.getElementById('cours-prof').value.trim(), date: (document.getElementById('cours-date')?document.getElementById('cours-date').value:null)||todayStr() });
   ['cours-matiere-custom','cours-debut','cours-fin','cours-prof'].forEach(function(xid) {
     var el2 = document.getElementById(xid); if(el2) el2.value='';
   });
-  save(); closeModal('modal-cours');
-  remplirSelectCours();
-  renderCoursList();
+  save(); closeModal('modal-cours'); renderCoursList();
 }
 function supprimerCours(id) {
   state.coursJour = (state.coursJour||[]).filter(function(c){ return c.id!==id; });
-  save(); remplirSelectCours(); renderCoursList();
+  save(); renderCoursList();
 }
 function renderCoursList() {
-  remplirSelectCours();
   var el = document.getElementById('cours-list');
   if (!el) return;
   var allCours = (state.coursJour||[]).slice().sort(function(a,b){
     return ((a.date||'').localeCompare(b.date||'')) || a.debut.localeCompare(b.debut);
   });
-  // Filtrer par date si filtre actif
-  if (coursDateFiltre) {
-    allCours = allCours.filter(function(c){ return c.date === coursDateFiltre; });
-  }
   if (!allCours.length) {
     el.innerHTML = '<div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div>';
     return;
@@ -1967,10 +2590,10 @@ function renderCoursList() {
   var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
   var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
   var byDate = {};
-  allCours.forEach(function(c){ var d=c.date||todayStr(); if(!byDate[d]) byDate[d]=[]; byDate[d].push(c); });
+  allCours.forEach(function(c) { var d=c.date||todayStr(); if(!byDate[d]) byDate[d]=[]; byDate[d].push(c); });
   var html = '';
   Object.keys(byDate).sort().forEach(function(date) {
-    var d = new Date(date + 'T12:00:00');
+    var d = new Date(date);
     html += '<div style="font-size:11px;font-weight:700;color:var(--text-muted);padding:8px 0 4px;border-bottom:2px solid var(--border)">' +
       jrs[d.getDay()] + ' ' + d.getDate() + ' ' + mts[d.getMonth()] + '</div>';
     byDate[date].forEach(function(c) {
@@ -1982,7 +2605,7 @@ function renderCoursList() {
         ';font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">'+(enf?initials(enf.nom):'?')+'</div>' +
         '<div style="flex:1"><div style="font-size:13px;font-weight:700">'+(enf?enf.nom:'?')+'</div>' +
         '<div style="font-size:12px;font-weight:600;color:var(--purple-dark)">'+c.matiere+'</div>' +
-        '<div style="font-size:11px;color:var(--text-muted)">'+c.debut+(c.fin?' - '+c.fin:'')+(c.prof?' - '+c.prof:'')+'</div></div>' +
+        '<div style="font-size:11px;color:var(--text-muted)">'+c.debut+(c.fin?' - '+c.fin:'')+(c.prof?' · '+c.prof:'')+'</div></div>' +
         '<button onclick="supprimerCours('+c.id+')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)">X</button></div>';
     });
   });
@@ -1990,29 +2613,19 @@ function renderCoursList() {
 }
 function buildCoursMessage() {
   var film = activeFilm();
-  var allCours = (state.coursJour||[]).filter(function(c){
-    if (coursDateFiltre) return c.date === coursDateFiltre;
-    return true;
-  }).slice().sort(function(a,b){
-    return ((a.date||'').localeCompare(b.date||'')) || a.debut.localeCompare(b.debut);
-  });
-  if (!allCours.length) return null;
+  var cours = (state.coursJour||[]).filter(function(c){ return c.date===todayStr(); })
+    .sort(function(a,b){ return a.debut.localeCompare(b.debut); });
+  if (!cours.length) return null;
   var enfs = activeEnfants();
-  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var today = new Date();
+  var days = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
   var mths = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
-  var txt = 'Planning cours';
-  if (film) txt += ' - ' + film.nom;
-  txt += '\n\n';
-  var byDate = {};
-  allCours.forEach(function(c){ var d=c.date||todayStr(); if(!byDate[d]) byDate[d]=[]; byDate[d].push(c); });
-  Object.keys(byDate).sort().forEach(function(date) {
-    var d = new Date(date + 'T12:00:00');
-    txt += jrs[d.getDay()] + ' ' + d.getDate() + ' ' + mths[d.getMonth()] + '\n';
-    byDate[date].forEach(function(c) {
-      var enf = enfs.find(function(e){ return e.id===c.enfantId; });
-      txt += '  ' + (enf?enf.nom:'?') + ' - ' + c.matiere + ' ' + c.debut + (c.fin?' -> '+c.fin:'') + (c.prof?' ('+c.prof+')':'') + '\n';
-    });
-    txt += '\n';
+  var txt = 'Cours ' + days[today.getDay()] + ' ' + today.getDate() + ' ' + mths[today.getMonth()] + '\n';
+  if (film) txt += film.nom + '\n';
+  txt += '\n';
+  cours.forEach(function(c) {
+    var enf = enfs.find(function(e){ return e.id===c.enfantId; });
+    txt += (enf?enf.nom:'?') + ' - ' + c.matiere + ' ' + c.debut + (c.fin?' - '+c.fin:'') + '\n';
   });
   txt += '- Liv ;-)';
   return txt;
@@ -2022,9 +2635,7 @@ function envoyerCoursWA(dest) {
   if (!txt) { alert('Aucun cours planifie.'); return; }
   if (dest === 'prod') {
     var n = (state.contacts||{}).prod || '';
-    if (!n) { var wp = document.getElementById('wa-prod'); if (wp) n = wp.value; }
-    if (!n) { var cp = document.getElementById('contact-prod'); if (cp) n = cp.value; }
-    if (!n) { alert('Numero prod manquant. Ajoutez-le dans Films > Contacts.'); return; }
+    if (!n) { alert('Numero prod manquant dans Films.'); return; }
     window.open('https://wa.me/' + n.replace(/ /g,'').replace(/^00/,'+') + '?text=' + encodeURIComponent(txt));
   } else {
     var enfs2 = activeEnfants().filter(function(e){ return e.tel; });
@@ -2042,556 +2653,103 @@ function copierCours() {
   if (!txt) { alert('Aucun cours.'); return; }
   navigator.clipboard.writeText(txt).then(function(){ alert('Copie!'); }).catch(function(){ alert(txt); });
 }
-function ouvrirChecklistHMC() { logAction('hmc'); }
-function hmcCocher(poste) {
-  var cb = document.getElementById('hmc-'+poste);
-  var hd = document.getElementById('hmc-'+poste+'-debut');
-  if (!cb || !hd) return;
-  if (cb.checked && !hd.value) hd.value = nowHM();
+function ouvrirChecklistHMC() {
+  // Enregistrer l'heure dès le clic
+  if (!window._hmcHeureDebut) window._hmcHeureDebut = nowHM();
+  // Reset les cases
+  ['hmc-habillage','hmc-maquillage','hmc-coiffure','hmc-son','hmc-coaching'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.checked = false;
+  });
+  openModal('modal-hmc');
 }
 function validerHMC() {
-  var postes = ['habillage','maquillage','coiffure','son','coaching'];
-  var labels = { 'habillage': 'Habillage', 'maquillage': 'Maquillage', 'coiffure': 'Coiffure', 'son': 'Son', 'coaching': 'Coaching' };
-  var details = [];
-  postes.forEach(function(p) {
-    var cb = document.getElementById('hmc-'+p);
-    var hd = document.getElementById('hmc-'+p+'-debut');
-    var hf = document.getElementById('hmc-'+p+'-fin');
-    if (cb && cb.checked && hd && hd.value) {
-      details.push({ poste: labels[p], debut: hd.value, fin: hf ? hf.value : '' });
-    }
+  var checked = [];
+  var labels = { 'hmc-habillage': 'Habillage', 'hmc-maquillage': 'Maquillage', 'hmc-coiffure': 'Coiffure', 'hmc-son': 'Son', 'hmc-coaching': 'Coaching' };
+  Object.keys(labels).forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && el.checked) checked.push(labels[id]);
   });
-  if (!details.length) { logAction('hmc'); closeModal('modal-hmc'); save(); return; }
+  // Enregistrer l'action HMC avec le détail
   logAction('hmc');
-  var logs2 = todayLogs().filter(function(l){ return l.type === 'hmc'; });
-  if (logs2.length) {
-    logs2[logs2.length-1].detail = details.map(function(d){ return d.poste+(d.fin&&d.debut?' ('+d.debut+'-'+d.fin+')':d.debut?' ('+d.debut+')':''); }).join(', ');
+  // Mettre à jour la note dans le dernier log HMC
+  var logs = todayLogs().filter(function(l){ return l.type === 'hmc'; });
+  if (logs.length && checked.length) {
+    logs[logs.length-1].detail = checked.join(', ');
   }
+  window._hmcHeureDebut = null;
   closeModal('modal-hmc');
   save();
 }
-function renderResume() {
-  if (!resumeDate) resumeDate = todayStr();
+
+function remplirSelectResume() {
+  var today = todayStr();
+  var dates = [...new Set((state.logs||[]).filter(function(l){ return !state.activeFilmId||l.filmId===state.activeFilmId; }).map(function(l){ return l.date; }))].sort().reverse();
+  if (!dates.includes(today)) dates.unshift(today);
+  if (!resumeDate || !dates.includes(resumeDate)) resumeDate = today;
+  var container = document.getElementById('resume-dates-container');
+  if (!container) return;
+  var jrs=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var mts=['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+  container.innerHTML = '';
+  dates.forEach(function(d) {
+    var dt = new Date(d+'T12:00:00');
+    var label = (d===today?'Auj. ':'')+jrs[dt.getDay()]+' '+dt.getDate()+' '+mts[dt.getMonth()];
+    var btn = document.createElement('button');
+    btn.textContent = label;
+    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid '+(d===resumeDate?'#3b82f6':'#e2e8f0')+';background:'+(d===resumeDate?'#3b82f6':'#fff')+';color:'+(d===resumeDate?'#fff':'#0f172a')+';font-size:12px;font-weight:600;cursor:pointer';
+    btn.onclick = (function(date){return function(){changerDateResume(date);};})(d);
+    container.appendChild(btn);
+  });
+}
+function changerDateResume(date) {
+  resumeDate = date;
   remplirSelectResume();
-  var sp = document.getElementById('summary-txt');
-  if (sp) {
-    sp.textContent = buildSummary() || '(Aucune donnée)';
-  }
-  var bilanDiv = document.getElementById('resume-bilan-haut');
-  if (bilanDiv) {
-    var stats = calcFinMax();
-    if (stats.length) {
-      var html = '';
-      stats.forEach(function(s) {
-        var pct = Math.round(s.presence / s.lim * 100);
-        var barColor = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
-        var alertStyle = s.enAlerte ? 'background:#fee2e2;border:1px solid #ef4444;' : 'background:var(--gray-light);';
-        html += '<div style="' + alertStyle + 'border-radius:10px;padding:10px 12px;margin-bottom:8px">';
-        html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">';
-        html += '<div style="font-size:13px;font-weight:700">' + s.enf.nom.split(' ')[0] + '</div>';
-        if (s.enAlerte) html += '<div style="font-size:11px;font-weight:700;color:#991b1b">ALERTER MISE EN SCENE</div>';
-        html += '</div>';
-        var logsEnf = todayLogs().filter(function(l){ return l.enfantId === s.enf.id; }).sort(function(a,b){ return a.heure.localeCompare(b.heure); });
-        var debutEvR = logsEnf.find(function(l){ return l.type === 'hmc'; }) || logsEnf.find(function(l){ return l.type === 'arrivee'; });
-        var debutH = debutEvR ? debutEvR.heure : '-';
-        html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Debut</div><div style="font-size:14px;font-weight:600">' + debutH + '</div></div>';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.hmc||0) + '</div></div>';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Tournage</div><div style="font-size:14px;font-weight:600;color:#065f46">' + fmt(s.dur.tournage||0) + '</div></div>';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Pause</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.pause||0) + '</div></div>';
-        html += '</div>';
-        html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:6px">';
-        html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,pct) + '%"></div></div>';
-        var depasse = s.presence - s.lim;
-        var presLabel = (pct >= 100 ? 'DEPASSE : ' : 'Presence : ') + fmt(s.presence) + ' / ' + fmt(s.lim) + ' (' + pct + '%)';
-        html += '<div style="display:flex;justify-content:space-between;font-size:11px">';
-        html += '<span style="color:' + (pct>=100?'#991b1b':'var(--text-muted)') + ';font-weight:' + (pct>=100?'700':'400') + '">' + presLabel;
-        if (depasse > 0) html += ' <span style="color:#ef4444;font-weight:700"> · +' + fmt(depasse) + '</span>';
-        html += '</span>';
-        if (s.finMax) html += '<span style="font-weight:600">Fin max: ' + s.finMax + (s.alerteH?(' · Alerte '+s.alerteH):'') + '</span>';
-        html += '</div></div>';
-      });
-      bilanDiv.innerHTML = html;
-    }
-  }
-  var ws = document.getElementById('wa-scripte');
-  var wp = document.getElementById('wa-prod');
-  if (ws && state.contacts.scripte) ws.value = state.contacts.scripte;
-  if (wp && state.contacts.prod) wp.value = state.contacts.prod;
-  var enfs = activeEnfants();
-  var logs = todayLogs();
-  var alertDiv = document.getElementById('resume-alerts');
-  var metrics = document.getElementById('resume-metrics');
-  var alerts = '';
-  var totTournage = 0;
-  var present = new Set();
-  logs.forEach(function(l) {
-    if (l.type === 'tournage' && l.fin) { totTournage += Math.max(0, toMin(l.fin) - toMin(l.heure)); present.add(l.enfantId); }
+  renderResume();
+}
+function remplirSelectCours() {
+  var today = todayStr();
+  var dates = [];
+  var seen = {};
+  (state.coursJour||[]).forEach(function(c){ var d=c.date||today; if(!seen[d]){seen[d]=true;dates.push(d);} });
+  (state.logs||[]).forEach(function(l){ if(l.filmId===state.activeFilmId&&!seen[l.date]){seen[l.date]=true;dates.push(l.date);} });
+  if (!seen[today]) dates.push(today);
+  dates.sort().reverse();
+  var container = document.getElementById('cours-dates-container');
+  if (!container) return;
+  var jrs=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var mts=['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+  container.innerHTML = '';
+  var btnTous = document.createElement('button');
+  btnTous.textContent = 'Tous';
+  btnTous.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid '+(coursDateFiltre===null?'#3b82f6':'#e2e8f0')+';background:'+(coursDateFiltre===null?'#3b82f6':'#fff')+';color:'+(coursDateFiltre===null?'#fff':'#0f172a')+';font-size:12px;font-weight:600;cursor:pointer';
+  btnTous.onclick = function(){ changerDateCours(null); };
+  container.appendChild(btnTous);
+  dates.forEach(function(d) {
+    var dt = new Date(d+'T12:00:00');
+    var label = (d===today?'Auj. ':'')+jrs[dt.getDay()]+' '+dt.getDate()+' '+mts[dt.getMonth()];
+    var btn = document.createElement('button');
+    btn.textContent = label;
+    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid '+(d===coursDateFiltre?'#3b82f6':'#e2e8f0')+';background:'+(d===coursDateFiltre?'#3b82f6':'#fff')+';color:'+(d===coursDateFiltre?'#fff':'#0f172a')+';font-size:12px;font-weight:600;cursor:pointer';
+    btn.onclick = (function(date){return function(){changerDateCours(date);};})(d);
+    container.appendChild(btn);
   });
-  if (metrics) metrics.innerHTML = '<div class="metric"><div class="metric-val">' + present.size + '</div><div class="metric-lbl">Presents</div></div>' +
-    '<div class="metric"><div class="metric-val">' + (fmt(totTournage)||'-') + '</div><div class="metric-lbl">Tournage</div></div>' +
-    '<div class="metric"><div class="metric-val">' + logs.length + '</div><div class="metric-lbl">Entrees</div></div>';
-  enfs.forEach(function(e) {
-    var lim = LIMITES[e.age];
-    var travail = logs.filter(function(l){ return l.enfantId === e.id && WORK_TYPES.includes(l.type) && l.fin; })
-      .reduce(function(s,l){ return s + Math.max(0, toMin(l.fin) - toMin(l.heure)); }, 0);
-    var pct = Math.round(travail / lim * 100);
-    if (pct >= 100) alerts += '<div class="alert alert-danger">DEPASSE : ' + e.nom + ' (' + fmt(travail) + ' / ' + fmt(lim) + ')</div>';
-    else if (pct >= 80) alerts += '<div class="alert alert-warn">' + e.nom + ' proche de la limite (' + pct + '%)</div>';
-  });
-  if (!alerts && logs.length) alerts = '<div class="alert alert-ok">Tous les enfants respectent les limites legales</div>';
-  if (alertDiv) alertDiv.innerHTML = alerts;
-  renderExtraContactsBtns();
 }
-function getAllDates() {
-  var fid = bilanFilmId || state.activeFilmId;
-  var dates = [...new Set(state.logs.filter(function(l){ return l.filmId === fid; }).map(function(l){ return l.date; }))].sort();
-  return dates;
+function changerDateCours(date) {
+  coursDateFiltre = date;
+  remplirSelectCours();
+  renderCoursList();
 }
-function getStatsByDate(date) {
-  var fid = bilanFilmId || state.activeFilmId;
-  var dayLogs = state.logs.filter(function(l){ return l.filmId === fid && l.date === date; });
-  var enfs = state.enfants.filter(function(e){ return e.filmId === fid; });
-  return enfs.map(function(enf) {
-    var evs = dayLogs.filter(function(l){ return l.enfantId === enf.id; }).sort(function(a,b){ return a.heure.localeCompare(b.heure); });
-    if (!evs.length) return null;
-    var dur = {};
-    Object.keys(TYPE_LABEL).forEach(function(t){ dur[t] = 0; });
-    evs.forEach(function(l){ if (l.fin) dur[l.type] = (dur[l.type]||0) + Math.max(0, toMin(l.fin) - toMin(l.heure)); });
-    var hArrivee = evs.find(function(l){ return l.type === 'arrivee'; });
-    var hFin = evs.slice().reverse().find(function(l){ return l.type === 'fin'; });
-    var hRepas = evs.find(function(l){ return l.type === 'repas'; });
-    var travail = WORK_TYPES.reduce(function(s,t){ return s+(dur[t]||0); }, 0);
-    var lim = LIMITES[enf.age];
-    var pct = Math.round(travail/lim*100);
-    return { enf:enf, dur:dur, hArrivee:hArrivee, hFin:hFin, hRepas:hRepas, travail:travail, lim:lim, pct:pct, hasCascade:dur.cascade>0, hasSante:dur.sante>0 };
-  }).filter(Boolean);
-}
-function supprimerJour(date) {
-  if (!confirm('Supprimer la journee du ' + date + ' ?')) return;
-  var fid = bilanFilmId || state.activeFilmId;
-  state.logs = state.logs.filter(function(l){ return !(l.filmId === fid && l.date === date); });
-  save(); renderBilan();
-}
-function saveNoteJour(date, note) {
-  state['comment_' + date] = note;
-  save();
-}
-function renderBilan() {
-  var el = document.getElementById('bilan-content');
-  if (!el) return;
-  var dates = getAllDates();
-  if (!dates.length) {
-    el.innerHTML = '<div class="empty"><div class="empty-icon"></div>Aucune journee enregistree.</div>';
-    return;
-  }
-  var months = ['Jan','Fev','Mar','Avr','Mai','Jun','Jul','Aou','Sep','Oct','Nov','Dec'];
-  var jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  var html = '';
-  dates.forEach(function(date) {
-    var d = new Date(date + 'T12:00:00');
-    var dayLabel = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-    var stats = getStatsByDate(date);
-    if (!stats.length) return;
-    var comment = state['comment_' + date] || '';
-    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden">';
-    html += '<div style="background:#1a1a2e;color:#fff;padding:8px 14px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">';
-    html += '<span>' + dayLabel + '</span>';
-    html += '<button onclick="supprimerJour(\'' + date + '\')" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:3px 10px;border-radius:6px;font-size:11px;cursor:pointer">Supprimer</button>';
-    html += '</div>';
-    html += '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px">';
-    html += '<thead><tr style="background:var(--gray-light)">';
-    ['Enfant','Arrivee','HMC','Tournage','Pause','Repas','H.plateau','Cascade','Sante','Cours','Fin','Plateau'].forEach(function(h){
-      html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">' + h + '</th>';
-    });
-    html += '</tr></thead><tbody>';
-    stats.forEach(function(s) {
-      var col = s.pct >= 100 ? '#fee2e2' : s.pct >= 80 ? '#fef3c7' : '';
-      html += '<tr style="border-bottom:1px solid var(--border);' + (col?'background:'+col:'') + '">';
-      html += '<td style="padding:6px 8px;font-weight:600">' + s.enf.nom.split(' ')[0] + '<br><span style="font-size:10px;font-weight:400;color:var(--text-muted)">' + statutLabel(s.enf.statut||'role', s.enf.genre) + '</span></td>';
-      var logArrivee = state.logs.filter(function(l){ return l.filmId===state.activeFilmId && l.date===date && l.enfantId===s.enf.id && l.type==='arrivee'; })[0];
-      var logHmc = state.logs.filter(function(l){ return l.filmId===state.activeFilmId && l.date===date && l.enfantId===s.enf.id && l.type==='hmc'; })[0];
-      var logTournage = state.logs.filter(function(l){ return l.filmId===state.activeFilmId && l.date===date && l.enfantId===s.enf.id && l.type==='tournage'; })[0];
-      var logPause = state.logs.filter(function(l){ return l.filmId===state.activeFilmId && l.date===date && l.enfantId===s.enf.id && l.type==='pause'; })[0];
-      var logRepas = state.logs.filter(function(l){ return l.filmId===state.activeFilmId && l.date===date && l.enfantId===s.enf.id && l.type==='repas'; })[0];
-      var logFin = state.logs.filter(function(l){ return l.filmId===state.activeFilmId && l.date===date && l.enfantId===s.enf.id && l.type==='fin'; }).slice(-1)[0];
-      function cellEdit(logItem, valTxt) {
-        var btn = logItem ? ' <button onclick="ouvrirEditLog('+logItem.id+')" style="background:none;border:none;color:#3b82f6;cursor:pointer;font-size:14px;padding:0">&#9998;</button>' : '';
-        return '<td style="padding:6px 8px;white-space:nowrap">' + valTxt + btn + '</td>';
-      }
-      html += cellEdit(logArrivee, s.hArrivee ? s.hArrivee.heure : '-');
-      html += cellEdit(logHmc, s.dur.hmc ? fmt(s.dur.hmc) : '-');
-      html += cellEdit(logTournage, s.dur.tournage ? '<strong>'+fmt(s.dur.tournage)+'</strong>' : '-');
-      html += cellEdit(logPause, s.dur.pause ? fmt(s.dur.pause) : '-');
-      html += cellEdit(logRepas, s.hRepas ? s.hRepas.heure + (s.hRepas.fin?'-'+s.hRepas.fin:'') : '-');
-      html += '<td style="padding:6px 8px">' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
-      html += '<td style="padding:6px 8px;color:' + (s.hasCascade?'#991b1b':'var(--text-muted)') + '">' + (s.hasCascade?fmt(s.dur.cascade):'-') + '</td>';
-      html += '<td style="padding:6px 8px;color:' + (s.hasSante?'#9d174d':'var(--text-muted)') + '">' + (s.hasSante?'!':'-') + '</td>';
-      var cBilan = (state.coursJour||[]).filter(function(c){ return c.date===date && c.enfantId===s.enf.id; });
-      html += '<td style="padding:6px 8px;color:#5b21b6;font-size:10px">' + (cBilan.length?cBilan.map(function(c){ return c.matiere+' '+c.debut+(c.fin?'-'+c.fin:''); }).join(', '):'-') + '</td>';
-      html += cellEdit(logFin, s.hFin ? s.hFin.heure : '-');
-      html += '<td style="padding:6px 8px;font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
-      html += '</tr>';
-    });
-    html += '</tbody></table></div>';
-    html += '<div style="padding:8px 12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px">';
-    html += '<input type="text" id="note_bilan_' + date + '" value="' + (comment||'').replace(/"/g,'&quot;') + '" placeholder="Note..." onchange="saveNoteJour(\'' + date + '\',this.value)" style="flex:1;font-size:13px;border:1px solid var(--border);border-radius:8px;padding:6px 10px;background:var(--bg);color:var(--text)">';
-    html += '</div></div>';
-  });
-  el.innerHTML = html;
-}
-function genererPDFBilan() {
-  var film = state.films.find(function(f){ return f.id === (bilanFilmId||state.activeFilmId); });
-  var dates = getAllDates();
-  if (!dates.length) { alert('Aucune journee enregistree.'); return; }
-  var months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
-  var jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-  var rows = '';
-  dates.forEach(function(date) {
-    var d = new Date(date + 'T12:00:00');
-    var dayLabel = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
-    var stats = getStatsByDate(date);
-    stats.forEach(function(s, idx) {
-      rows += '<tr>';
-      rows += '<td style="background:#f8fafc;font-weight:600;white-space:nowrap">' + (idx===0?dayLabel:'') + '</td>';
-      rows += '<td style="font-weight:600">' + s.enf.nom.split(' ')[0] + '</td>';
-      rows += '<td>' + (s.hArrivee?s.hArrivee.heure:'-') + '</td>';
-      rows += '<td>' + (s.dur.hmc?fmt(s.dur.hmc):'-') + '</td>';
-      rows += '<td style="font-weight:600">' + (s.dur.tournage?fmt(s.dur.tournage):'-') + '</td>';
-      rows += '<td>' + (s.dur.pause?fmt(s.dur.pause):'-') + '</td>';
-      rows += '<td>' + (s.hRepas?s.hRepas.heure+(s.hRepas.fin?'-'+s.hRepas.fin:''):'-') + '</td>';
-      rows += '<td>' + (s.dur.attente?fmt(s.dur.attente):'-') + '</td>';
-      rows += '<td style="color:#991b1b">' + (s.hasCascade?fmt(s.dur.cascade):'-') + '</td>';
-      rows += '<td style="color:#9d174d">' + (s.hasSante?'Oui':'-') + '</td>';
-      var cPdf = (state.coursJour||[]).filter(function(c){ return c.date===date && c.enfantId===s.enf.id; });
-      rows += '<td style="color:#5b21b6;font-size:10px">' + (cPdf.length?cPdf.map(function(c){ return c.matiere; }).join(', '):'-') + '</td>';
-      rows += '<td style="font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
-      rows += '</tr>';
-    });
-  });
-  var titre = film ? 'Bilan ' + film.nom : 'Bilan Film';
-  var htmlPdf = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;padding:15px;color:#1e293b;font-size:12px}h1{font-size:16px;margin-bottom:4px;color:#1a1a2e}.sub{font-size:11px;color:#64748b;margin-bottom:14px}table{width:100%;border-collapse:collapse}th{background:#1a1a2e;color:#fff;padding:6px 7px;text-align:left;font-size:10px;white-space:nowrap}td{padding:5px 7px;border-bottom:1px solid #e2e8f0;vertical-align:middle}tr:nth-child(even) td{background:#f8fafc}.footer{margin-top:14px;font-size:10px;color:#94a3b8;text-align:right}@media print{body{padding:8px}}</style></head><body>' +
-    '<h1>' + titre + '</h1><div class="sub">Bilan complet - Liv - RESPONSABLE ENFANTS (ARECA)</div>' +
-    '<table><thead><tr><th>Date</th><th>Enfant</th><th>Arrivee</th><th>HMC</th><th>Tournage</th><th>Pause</th><th>Repas</th><th>H.plateau</th><th>Cascade</th><th>Sante</th><th>Cours</th><th>Plateau</th></tr></thead><tbody>' + rows + '</tbody></table>' +
-    '<div class="footer">- Liv ;-) - ' + new Date().toLocaleDateString('fr-FR') + '</div></body></html>';
-  var blob = new Blob([htmlPdf], {type:'text/html'});
-  var url = URL.createObjectURL(blob);
-  var win = window.open(url, '_blank');
-  if (win) { win.onload = function(){ setTimeout(function(){ win.print(); }, 500); }; }
-}
-// CALENDRIER
-var calYear = new Date().getFullYear();
-var calMonth = new Date().getMonth();
-var calSelectedEnfants = [];
-function getCalEvents() { return state.calEvents || []; }
-function calPrev() { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCal(); }
-function calNext() { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCal(); }
-function renderCal() {
-  var months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
-  var lbl = document.getElementById('cal-month-label');
-  if (lbl) lbl.textContent = months[calMonth] + ' ' + calYear;
-  var film = activeFilm();
-  var fn = document.getElementById('cal-film-name');
-  if (fn) fn.textContent = film ? film.nom : 'Planning du film';
-  var grid = document.getElementById('cal-grid');
-  if (!grid) return;
-  var firstDay = new Date(calYear, calMonth, 1).getDay();
-  var daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-  var today = new Date();
-  var events = getCalEvents().filter(function(e) {
-    var d = new Date(e.date);
-    return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
-  });
-  var jours = ['Lu','Ma','Me','Je','Ve','Sa','Di'];
-  var html = jours.map(function(j){ return '<div class="cal-day-name">'+j+'</div>'; }).join('');
-  var startOffset = (firstDay + 6) % 7;
-  for (var i = 0; i < startOffset; i++) html += '<div class="cal-day empty"></div>';
-  for (var day = 1; day <= daysInMonth; day++) {
-    var dateStr = calYear + '-' + String(calMonth+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
-    var dayEvs = events.filter(function(e){ return e.date === dateStr; });
-    var isToday = today.getFullYear()===calYear && today.getMonth()===calMonth && today.getDate()===day;
-    var evHtml = dayEvs.slice(0,3).map(function(e){ return '<div class="cal-ev '+e.type+'">'+e.titre+'</div>'; }).join('');
-    html += '<div class="cal-day ' + (isToday?'today':'') + '" onclick="openAddEvent(\'' + dateStr + '\')">' +
-      '<div class="cal-day-num">' + day + '</div>' + evHtml + '</div>';
-  }
-  grid.innerHTML = html;
-  var list = document.getElementById('cal-events-list');
-  var title = document.getElementById('cal-events-title');
-  if (title) title.textContent = 'Evenements - ' + months[calMonth] + ' ' + calYear;
-  var monthEvs = events.sort(function(a,b){ return a.date.localeCompare(b.date); });
-  if (!monthEvs.length) {
-    if (list) list.innerHTML = '<div class="empty"><div class="empty-icon"></div>Appuyez sur un jour pour ajouter</div>';
-    return;
-  }
-  var jrs2 = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  if (list) list.innerHTML = monthEvs.map(function(e) {
-    var col = e.type === 't' ? '#3b82f6' : '#f59e0b';
-    var d = new Date(e.date + 'T12:00:00');
-    var dateLabel = jrs2[d.getDay()] + ' ' + d.getDate();
-    var enf = state.enfants.find(function(en){ return en.id === e.enfantId; });
-    var sendBtns = '';
-    if (e.enfantId) {
-      var enfEv = state.enfants.find(function(en){ return en.id === e.enfantId; });
-      if (enfEv && enfEv.tel) sendBtns += '<button onclick="envoyerEvenementParent('+e.id+')" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer;margin-right:4px">'+enfEv.nom.split(' ')[0]+'</button>';
-    } else {
-      activeEnfants().filter(function(en){ return en.tel; }).forEach(function(en) {
-        sendBtns += '<button onclick="envoyerEvenementParent('+e.id+','+en.id+')" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer;margin-right:4px">'+en.nom.split(' ')[0]+'</button>';
-      });
-    }
-    return '<div class="ev-item"><div class="ev-dot" style="background:'+col+'"></div>' +
-      '<div class="ev-info"><div class="ev-title">'+e.titre+'</div>' +
-      '<div class="ev-sub">'+dateLabel+(e.debut?' - '+e.debut+(e.fin?' > '+e.fin:''):'')+(e.lieu?' | '+e.lieu:'')+(enf?' | '+enf.nom.split(' ')[0]:' | Tous')+'</div>' +
-      (sendBtns?'<div style="margin-top:5px">'+sendBtns+'</div>':'') + '</div>' +
-      '<button class="ev-del" onclick="delCalEvent('+e.id+')">X</button></div>';
-  }).join('');
-}
-function delCalEvent(id) {
-  state.calEvents = (state.calEvents||[]).filter(function(e){ return e.id !== id; });
-  save(); renderCal();
-}
-function openAddEvent(dateStr) {
-  var d = new Date(dateStr + 'T12:00:00');
-  var jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-  var months = ['janvier','fevrier','mars','avril','mai','juin','juillet','aout','septembre','octobre','novembre','decembre'];
-  calSelectedEnfants = [];
-  var t = document.getElementById('modal-cal-title');
-  if (t) t.textContent = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
-  ['cal-ev-titre','cal-ev-debut','cal-ev-fin','cal-ev-lieu','cal-ev-scenes','cal-ev-retour','cal-ev-repas-debut','cal-ev-repas-fin'].forEach(function(id) {
-    var el = document.getElementById(id); if (el) el.value = '';
-  });
-  var dt = document.getElementById('cal-ev-date'); if (dt) dt.value = dateStr;
-  var tp = document.getElementById('cal-ev-type'); if (tp) tp.value = 't';
-  renderCalChips();
-  openModal('modal-cal');
-}
-function renderCalChips() {
-  var enfs = activeEnfants();
-  var el = document.getElementById('cal-enfants-chips');
-  if (!el) return;
-  var allSel = calSelectedEnfants.length === 0;
-  var html = '<div onclick="calSelectEnfant(\'all\')" style="padding:7px 14px;border-radius:20px;border:1.5px solid '+(allSel?'var(--blue)':'var(--border)')+';background:'+(allSel?'var(--blue-light)':'var(--surface)')+';color:'+(allSel?'var(--blue-dark)':'var(--text-muted)')+';font-size:13px;font-weight:600;cursor:pointer">Tous</div>';
-  enfs.forEach(function(e) {
-    var sel = calSelectedEnfants.includes(e.id);
-    html += '<div onclick="calSelectEnfant('+e.id+')" style="padding:7px 14px;border-radius:20px;border:1.5px solid '+(sel?e.couleur:'var(--border)')+';background:'+(sel?e.couleur:'var(--surface)')+';color:'+(sel?'#fff':'var(--text-muted)')+';font-size:13px;font-weight:600;cursor:pointer">'+e.nom.split(' ')[0]+'</div>';
-  });
-  el.innerHTML = html;
-}
-function calSelectEnfant(id) {
-  if (id === 'all') { calSelectedEnfants = []; }
-  else {
-    if (calSelectedEnfants.includes(id)) calSelectedEnfants = calSelectedEnfants.filter(function(x){ return x !== id; });
-    else calSelectedEnfants.push(id);
-  }
-  renderCalChips();
-}
-function validerCalEvent() {
-  var titre = document.getElementById('cal-ev-titre') ? document.getElementById('cal-ev-titre').value.trim() : '';
-  if (!titre) { alert('Entrez un titre.'); return; }
-  var date = document.getElementById('cal-ev-date') ? document.getElementById('cal-ev-date').value : '';
-  var targets = calSelectedEnfants.length > 0 ? calSelectedEnfants : [null];
-  targets.forEach(function(eid) {
-    var ev = {
-      id: nextId++, filmId: state.activeFilmId, enfantId: eid, date: date, titre: titre,
-      type: document.getElementById('cal-ev-type') ? document.getElementById('cal-ev-type').value : 't',
-      debut: document.getElementById('cal-ev-debut') ? document.getElementById('cal-ev-debut').value : '',
-      fin: document.getElementById('cal-ev-fin') ? document.getElementById('cal-ev-fin').value : '',
-      lieu: document.getElementById('cal-ev-lieu') ? document.getElementById('cal-ev-lieu').value.trim() : '',
-      scenes: document.getElementById('cal-ev-scenes') ? document.getElementById('cal-ev-scenes').value.trim() : '',
-      retour: document.getElementById('cal-ev-retour') ? document.getElementById('cal-ev-retour').value : '',
-      repasDebut: document.getElementById('cal-ev-repas-debut') ? document.getElementById('cal-ev-repas-debut').value : '',
-      repasFin: document.getElementById('cal-ev-repas-fin') ? document.getElementById('cal-ev-repas-fin').value : ''
-    };
-    if (!state.calEvents) state.calEvents = [];
-    state.calEvents.push(ev);
-  });
-  save(); renderCal(); closeModal('modal-cal');
-}
-function buildMsgEvenement(ev, enfId) {
-  var months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
-  var jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  var film = activeFilm();
-  var enf = state.enfants.find(function(e){ return e.id === enfId; });
-  var d = new Date(ev.date + 'T12:00:00');
-  var txt = '';
-  if (film) txt += film.nom + '\n';
-  txt += jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + '\n\n';
-  txt += ev.titre + '\n';
-  if (ev.debut) txt += 'Horaire : ' + ev.debut + (ev.fin?' - '+ev.fin:'') + '\n';
-  if (ev.lieu) txt += 'Lieu : ' + ev.lieu + '\n';
-  if (ev.scenes) txt += 'Scenes : ' + ev.scenes + '\n';
-  if (ev.repasDebut) txt += 'Repas : ' + ev.repasDebut + (ev.repasFin?'-'+ev.repasFin:'') + '\n';
-  if (ev.retour) txt += 'Retour estime : ' + ev.retour + '\n';
-  if (enf) txt += '\nPour : ' + enf.nom;
-  txt += '\n\n- Liv ;-)';
-  return txt;
-}
-function envoyerEvenementParent(evId, enfId) {
-  var ev = (state.calEvents||[]).find(function(e){ return e.id === evId; });
-  if (!ev) return;
-  var targetId = enfId || ev.enfantId;
-  var enf = state.enfants.find(function(e){ return e.id === targetId; });
-  if (!enf || !enf.tel) { alert('Pas de numero pour ' + (enf?enf.nom:'cet enfant')); return; }
-  var txt = buildMsgEvenement(ev, targetId);
-  var clean = enf.tel.replace(/\s/g,'').replace(/^00/,'+');
-  window.open('https://wa.me/' + clean + '?text=' + encodeURIComponent(txt));
-}
-function buildParentsMessage() {
-  var months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
-  var film = activeFilm();
-  var events = getCalEvents().filter(function(e) {
-    var d = new Date(e.date);
-    return d.getFullYear()===calYear && d.getMonth()===calMonth && (!e.filmId||e.filmId===state.activeFilmId);
-  }).sort(function(a,b){ return a.date.localeCompare(b.date); });
-  if (!events.length) { alert('Aucun evenement ce mois-ci.'); return null; }
-  var jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-  var txt = 'Planning ' + months[calMonth] + ' ' + calYear;
-  if (film) txt += ' - ' + film.nom;
-  txt += '\n\n';
-  var byDate = {};
-  events.forEach(function(e){ if(!byDate[e.date]) byDate[e.date]=[]; byDate[e.date].push(e); });
-  Object.keys(byDate).sort().forEach(function(date) {
-    var d = new Date(date + 'T12:00:00');
-    txt += jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + '\n';
-    byDate[date].forEach(function(e) {
-      var enf = state.enfants.find(function(en){ return en.id === e.enfantId; });
-      txt += '  - ' + e.titre;
-      if (e.debut) txt += ' ' + e.debut + (e.fin?' - '+e.fin:'');
-      if (e.lieu) txt += ' | ' + e.lieu;
-      if (enf) txt += ' (' + enf.nom + ')';
-      txt += '\n';
-    });
-    txt += '\n';
-  });
-  txt += '- Liv ;-)';
-  return txt;
-}
-function copierParents() {
-  var txt = buildParentsMessage();
-  if (!txt) return;
-  navigator.clipboard.writeText(txt).then(function(){ alert('Message copie!'); }).catch(function(){ alert(txt); });
-}
-function partagerParents() {
-  var txt = buildParentsMessage();
-  if (!txt) return;
-  var n = state.contacts.scripte || state.contacts.prod || '';
-  if (n) {
-    var clean = n.replace(/\s/g,'').replace(/^00/,'+');
-    window.open('https://wa.me/' + clean + '?text=' + encodeURIComponent(txt));
-  } else {
-    navigator.clipboard.writeText(txt).then(function(){ alert('Planning copie!'); }).catch(function(){ alert(txt); });
-  }
-}
-function partagerCalendrier() {
-  var months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
-  var film = activeFilm();
-  var events = getCalEvents().filter(function(e) {
-    var d = new Date(e.date);
-    return d.getFullYear()===calYear && d.getMonth()===calMonth && (!e.filmId||e.filmId===state.activeFilmId);
-  }).sort(function(a,b){ return a.date.localeCompare(b.date); });
-  if (!events.length) { alert('Aucun evenement ce mois-ci.'); return; }
-  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  var txt = (film?film.nom.toUpperCase():'PLANNING') + ' - ' + months[calMonth] + ' ' + calYear + '\n\n';
-  events.forEach(function(e) {
-    var d = new Date(e.date + 'T12:00:00');
-    var enf = state.enfants.find(function(en){ return en.id === e.enfantId; });
-    txt += jrs[d.getDay()] + ' ' + d.getDate() + ' - ' + e.titre;
-    if (e.debut) txt += ' ' + e.debut + (e.fin?' - '+e.fin:'');
-    if (e.lieu) txt += ' - ' + e.lieu;
-    if (enf) txt += ' (' + enf.nom.split(' ')[0] + ')';
-    txt += '\n';
-  });
-  txt += '\n- Liv ;-)';
-  var n = state.contacts.scripte || state.contacts.prod || '';
-  if (n) {
-    window.open('https://wa.me/' + n.replace(/\s/g,'').replace(/^00/,'+') + '?text=' + encodeURIComponent(txt));
-  } else {
-    navigator.clipboard.writeText(txt).then(function(){ alert('Planning copie!'); }).catch(function(){ alert(txt); });
-  }
-}
-function ouvrirModalPDF() {
-  var months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
-  var jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  var events = (state.calEvents||[]).filter(function(e) {
-    var d = new Date(e.date);
-    return d.getFullYear()===calYear && d.getMonth()===calMonth && (!e.filmId||e.filmId===state.activeFilmId);
-  });
-  var dates = [...new Set(events.map(function(e){ return e.date; }))].sort();
-  var daysEl = document.getElementById('pdf-days-list');
-  if (!daysEl) return;
-  if (!dates.length) { alert('Aucun evenement ce mois-ci.'); return; }
-  daysEl.innerHTML = dates.map(function(date) {
-    var d = new Date(date + 'T12:00:00');
-    var label = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
-    return '<label style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer">' +
-      '<input type="checkbox" class="pdf-day-cb" value="' + date + '" checked style="width:16px;height:16px;cursor:pointer">' +
-      '<span style="font-size:13px;font-weight:500">' + label + '</span></label>';
-  }).join('');
-  var enfsEl = document.getElementById('pdf-enfs-list');
-  var enfs = activeEnfants();
-  if (enfsEl) enfsEl.innerHTML = '<label style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer">' +
-    '<input type="checkbox" class="pdf-enf-cb" value="all" checked style="width:16px;height:16px;cursor:pointer">' +
-    '<span style="font-size:13px;font-weight:500">Tous les enfants</span></label>' +
-    enfs.map(function(e){ return '<label style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer">' +
-      '<input type="checkbox" class="pdf-enf-cb" value="' + e.id + '" style="width:16px;height:16px;cursor:pointer">' +
-      '<span style="font-size:13px">' + e.nom + '</span></label>'; }).join('');
-  openModal('modal-pdf');
-}
-function genererPDF() {
-  var months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
-  var jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-  var film = activeFilm();
-  var selDays = [...document.querySelectorAll('.pdf-day-cb:checked')].map(function(cb){ return cb.value; });
-  if (!selDays.length) { alert('Selectionnez au moins un jour.'); return; }
-  var allEnfs = document.querySelector('.pdf-enf-cb[value="all"]:checked');
-  var selEnfIds = allEnfs ? null : [...document.querySelectorAll('.pdf-enf-cb:checked')].map(function(cb){ return parseInt(cb.value); });
-  var events = (state.calEvents||[]).filter(function(e) {
-    return (!e.filmId||e.filmId===state.activeFilmId) && selDays.includes(e.date) && (selEnfIds===null||!e.enfantId||selEnfIds.includes(e.enfantId));
-  }).sort(function(a,b){ return a.date.localeCompare(b.date); });
-  if (!events.length) { alert('Aucun evenement pour cette selection.'); return; }
-  var byDate = {};
-  events.forEach(function(e){ if(!byDate[e.date]) byDate[e.date]=[]; byDate[e.date].push(e); });
-  var rows = '';
-  Object.keys(byDate).sort().forEach(function(date) {
-    var d = new Date(date + 'T12:00:00');
-    var dayLabel = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
-    byDate[date].forEach(function(e, idx) {
-      var enf = state.enfants.find(function(en){ return en.id === e.enfantId; });
-      var typeColor = e.type==='t' ? '#dbeafe' : '#fef3c7';
-      rows += '<tr><td style="background:#f8fafc;font-weight:600;white-space:nowrap">' + (idx===0?dayLabel:'') + '</td>' +
-        '<td style="background:'+typeColor+';font-size:11px">' + (e.type==='t'?'Tournage':'Famille') + '</td>' +
-        '<td style="font-weight:600">' + e.titre + '</td>' +
-        '<td style="white-space:nowrap">' + (e.debut?e.debut+(e.fin?' - '+e.fin:''):'-') + '</td>' +
-        '<td style="white-space:nowrap">' + (e.repasDebut?e.repasDebut+(e.repasFin?'-'+e.repasFin:''):'-') + '</td>' +
-        '<td>' + (e.lieu||'-') + '</td><td>' + (e.scenes||'-') + '</td>' +
-        '<td style="color:#10b981;font-weight:600">' + (e.retour||'-') + '</td>' +
-        '<td>' + (enf?enf.nom.split(' ')[0]:'Tous') + '</td></tr>';
-    });
-  });
-  var titre = (film?film.nom+' - ':'') + months[calMonth] + ' ' + calYear;
-  var htmlPdf = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;padding:20px;color:#1e293b;font-size:13px}h1{font-size:18px;margin-bottom:4px;color:#1a1a2e}.sub{font-size:12px;color:#64748b;margin-bottom:16px}table{width:100%;border-collapse:collapse}th{background:#1a1a2e;color:#fff;padding:7px 8px;text-align:left;font-size:11px}td{padding:6px 8px;border-bottom:1px solid #e2e8f0;vertical-align:top}tr:nth-child(even) td{background:#f8fafc}.footer{margin-top:16px;font-size:11px;color:#94a3b8;text-align:right}@media print{body{padding:10px}}</style></head><body>' +
-    '<h1>' + titre + '</h1><div class="sub">Planning - Liv - RESPONSABLE ENFANTS (ARECA)</div>' +
-    '<table><thead><tr><th>Date</th><th>Type</th><th>Evenement</th><th>Horaires</th><th>Repas</th><th>Lieu</th><th>Scenes</th><th>Retour</th><th>Enfant</th></tr></thead><tbody>' + rows + '</tbody></table>' +
-    '<div class="footer">- Liv ;-) - ' + new Date().toLocaleDateString('fr-FR') + '</div></body></html>';
-  var blob = new Blob([htmlPdf], {type:'text/html'});
-  var url = URL.createObjectURL(blob);
-  var win = window.open(url, '_blank');
-  if (win) { win.onload = function(){ setTimeout(function(){ win.print(); }, 500); }; }
-  closeModal('modal-pdf');
-}
-function envoyerAgendaParent(enfantId) {
-  var enf = state.enfants.find(function(e){ return e.id === enfantId; });
-  if (!enf || !enf.tel) { alert('Aucun numero pour cet enfant.'); return; }
-  var txt = buildParentsMessage();
-  if (!txt) return;
-  var clean = enf.tel.replace(/\s/g,'').replace(/^00/,'+');
-  window.open('https://wa.me/' + clean + '?text=' + encodeURIComponent(txt));
-}
+
 async function initApp() {
   await load();
+  // Mode vacances : auto par défaut
   const savedMode = localStorage.getItem('modeVacancesForce');
   if (savedMode === 'scolaire') modeVacancesForce = 'scolaire';
   else if (savedMode === 'vacances') modeVacancesForce = 'vacances';
   else if (savedMode === 'ferie') modeVacancesForce = 'ferie';
+  else if (savedMode === '1') modeVacancesForce = 'vacances';
+  else if (savedMode === '0') modeVacancesForce = 'scolaire';
   else modeVacancesForce = null;
   modeVacances = estEnVacances();
   try {
@@ -2605,12 +2763,9 @@ async function initApp() {
     updatePeriodeLabel();
     remplirSelectResume();
     remplirSelectCours();
-    resumeDate = todayStr();
-    // Rafraîchir la page résumé si active
-    var pageResume = document.getElementById('page-resume');
-    if (pageResume && pageResume.classList.contains('active')) renderResume();
   } catch(e) { console.error('Init error:', e); }
 }
+// Vérifier si token existant
 (async () => {
   const token = localStorage.getItem('sb_token');
   if (token) {
@@ -2623,27 +2778,144 @@ async function initApp() {
     }
   }
   showLoginScreen();
-})();function ouvrirEditLog(id) {
-  var log = state.logs.find(function(l){ return l.id === id; });
-  if (!log) return;
-  document.getElementById('edit-log-id').value = id;
-  document.getElementById('edit-log-type').value = log.type;
-  document.getElementById('edit-log-heure').value = log.heure;
-  document.getElementById('edit-log-fin').value = log.fin || '';
-  var typesSansFin = ['arrivee', 'fin', 'sante'];
-  var finRow = document.getElementById('edit-log-fin-row');
-  if (finRow) finRow.style.display = typesSansFin.indexOf(log.type) !== -1 ? 'none' : 'block';
-  var label = document.getElementById('edit-log-heure-label');
-  if (label) label.textContent = log.type === 'fin' ? 'Heure de fin' : 'Heure debut';
-  openModal('modal-edit-log');
-}
+})();
+// Splash screen - se ferme toujours même en cas d'erreur
 function closeSplash() {
-  var splash = document.getElementById('splash');
-  if (splash) { splash.style.opacity = '0'; setTimeout(function(){ try { splash.remove(); } catch(e) {} }, 600); }
+  const splash = document.getElementById('splash');
+  if (splash) { splash.style.opacity = '0'; setTimeout(() => { try { splash.remove(); } catch(e) {} }, 600); }
 }
-setTimeout(function(){ var bar = document.getElementById('splash-bar'); if (bar) bar.style.width = '100%'; }, 100);
+setTimeout(() => { const bar = document.getElementById('splash-bar'); if (bar) bar.style.width = '100%'; }, 100);
 setTimeout(closeSplash, 1800);
+// Sécurité : ferme dans tous les cas après 3s
 setTimeout(closeSplash, 3000);
+// refresh planning + status every minute
+setInterval(() => {
+  const activePage = document.querySelector('.page.active');
+  if (activePage && activePage.id === 'page-planning') 
+  renderStatusBar();
+}, 60000);
+// Désactiver et supprimer tous les service workers
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+}
+// ─── INIT ─────────────────────────────────────────────────────────
+
+function remplirSelectResume() {
+  var today = todayStr();
+  var dates = [...new Set((state.logs||[]).filter(function(l){ return !state.activeFilmId||l.filmId===state.activeFilmId; }).map(function(l){ return l.date; }))].sort().reverse();
+  if (!dates.includes(today)) dates.unshift(today);
+  if (!resumeDate || !dates.includes(resumeDate)) resumeDate = today;
+  var container = document.getElementById('resume-dates-container');
+  if (!container) return;
+  var jrs=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var mts=['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+  container.innerHTML = '';
+  dates.forEach(function(d) {
+    var dt = new Date(d+'T12:00:00');
+    var label = (d===today?'Auj. ':'')+jrs[dt.getDay()]+' '+dt.getDate()+' '+mts[dt.getMonth()];
+    var btn = document.createElement('button');
+    btn.textContent = label;
+    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid '+(d===resumeDate?'#3b82f6':'#e2e8f0')+';background:'+(d===resumeDate?'#3b82f6':'#fff')+';color:'+(d===resumeDate?'#fff':'#0f172a')+';font-size:12px;font-weight:600;cursor:pointer';
+    btn.onclick = (function(date){return function(){changerDateResume(date);};})(d);
+    container.appendChild(btn);
+  });
+}
+function changerDateResume(date) {
+  resumeDate = date;
+  remplirSelectResume();
+  renderResume();
+}
+function remplirSelectCours() {
+  var today = todayStr();
+  var dates = [];
+  var seen = {};
+  (state.coursJour||[]).forEach(function(c){ var d=c.date||today; if(!seen[d]){seen[d]=true;dates.push(d);} });
+  (state.logs||[]).forEach(function(l){ if(l.filmId===state.activeFilmId&&!seen[l.date]){seen[l.date]=true;dates.push(l.date);} });
+  if (!seen[today]) dates.push(today);
+  dates.sort().reverse();
+  var container = document.getElementById('cours-dates-container');
+  if (!container) return;
+  var jrs=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var mts=['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+  container.innerHTML = '';
+  var btnTous = document.createElement('button');
+  btnTous.textContent = 'Tous';
+  btnTous.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid '+(coursDateFiltre===null?'#3b82f6':'#e2e8f0')+';background:'+(coursDateFiltre===null?'#3b82f6':'#fff')+';color:'+(coursDateFiltre===null?'#fff':'#0f172a')+';font-size:12px;font-weight:600;cursor:pointer';
+  btnTous.onclick = function(){ changerDateCours(null); };
+  container.appendChild(btnTous);
+  dates.forEach(function(d) {
+    var dt = new Date(d+'T12:00:00');
+    var label = (d===today?'Auj. ':'')+jrs[dt.getDay()]+' '+dt.getDate()+' '+mts[dt.getMonth()];
+    var btn = document.createElement('button');
+    btn.textContent = label;
+    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid '+(d===coursDateFiltre?'#3b82f6':'#e2e8f0')+';background:'+(d===coursDateFiltre?'#3b82f6':'#fff')+';color:'+(d===coursDateFiltre?'#fff':'#0f172a')+';font-size:12px;font-weight:600;cursor:pointer';
+    btn.onclick = (function(date){return function(){changerDateCours(date);};})(d);
+    container.appendChild(btn);
+  });
+}
+function changerDateCours(date) {
+  coursDateFiltre = date;
+  remplirSelectCours();
+  renderCoursList();
+}
+
+async function initApp() {
+  await load();
+  // Mode vacances : auto par défaut
+  const savedMode = localStorage.getItem('modeVacancesForce');
+  if (savedMode === 'scolaire') modeVacancesForce = 'scolaire';
+  else if (savedMode === 'vacances') modeVacancesForce = 'vacances';
+  else if (savedMode === 'ferie') modeVacancesForce = 'ferie';
+  else if (savedMode === '1') modeVacancesForce = 'vacances';
+  else if (savedMode === '0') modeVacancesForce = 'scolaire';
+  else modeVacancesForce = null;
+  modeVacances = estEnVacances();
+  try {
+    renderChips();
+    renderLog();
+    renderStatusBar();
+    renderProgressBars();
+    updateFilmDisplay();
+    renderContactsExtra();
+    renderExtraContactsBtns();
+    updatePeriodeLabel();
+    remplirSelectResume();
+    remplirSelectCours();
+  } catch(e) { console.error('Init error:', e); }
+}
+// Vérifier si token existant
+(async () => {
+  const token = localStorage.getItem('sb_token');
+  if (token) {
+    accessToken = token;
+    const refreshed = await sbRefreshToken();
+    if (refreshed) {
+      hideLoginScreen();
+      await initApp();
+      return;
+    }
+  }
+  showLoginScreen();
+})();
+// Splash screen - se ferme toujours même en cas d'erreur
+function closeSplash() {
+  const splash = document.getElementById('splash');
+  if (splash) { splash.style.opacity = '0'; setTimeout(() => { try { splash.remove(); } catch(e) {} }, 600); }
+}
+setTimeout(() => { const bar = document.getElementById('splash-bar'); if (bar) bar.style.width = '100%'; }, 100);
+setTimeout(closeSplash, 1800);
+// Sécurité : ferme dans tous les cas après 3s
+setTimeout(closeSplash, 3000);
+// refresh planning + status every minute
+setInterval(() => {
+  const activePage = document.querySelector('.page.active');
+  if (activePage && activePage.id === 'page-planning') 
+  renderStatusBar();
+}, 60000);
+// Désactiver et supprimer tous les service workers
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+}
 </script>
 <div class="modal-overlay" id="modal-cal">
   <div class="modal">
