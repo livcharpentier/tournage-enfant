@@ -371,6 +371,10 @@
       <div class="metrics-grid" id="resume-metrics"></div>
     </div>
     <div class="card">
+      <div class="card-title">Journal de la journée</div>
+      <div id="resume-journal"></div>
+    </div>
+    <div class="card">
       <div class="card-title">Message WhatsApp / SMS</div>
       <div class="summary-box" id="summary-txt"></div>
       <div style="margin-bottom:10px">
@@ -1739,8 +1743,11 @@ function renderResume() {
       const pct = Math.round(presence / lim * 100);
       const barColor = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
       const alertStyle = pct >= 100 ? 'background:#fee2e2;border:1px solid #ef4444;' : 'background:var(--gray-light);';
-      const debutEv = evs.find(l => l.type==='hmc') || evs.find(l => l.type==='arrivee');
+      const hmcEv = evs.find(l => l.type==='hmc');
+      const arriveeEv = evs.find(l => l.type==='arrivee');
+      const debutEv = hmcEv || arriveeEv;
       const debutH = debutEv ? debutEv.heure : '-';
+      const hmcH = hmcEv ? hmcEv.heure : null;
       const logFin = evs.slice().reverse().find(l => l.type==='fin');
       const dernierFerme = evs.slice().reverse().find(l => l.fin && l.fin!==l.heure);
       const hFinHeure = logFin ? logFin.heure : (dernierFerme ? dernierFerme.fin : null);
@@ -1749,7 +1756,7 @@ function renderResume() {
       html += '<div style="font-size:13px;font-weight:700;margin-bottom:8px">' + enf.nom + '</div>';
       html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
       html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Début</div><div style="font-size:14px;font-weight:600">' + debutH + '</div></div>';
-      html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + (fmt(dur.hmc)||'—') + '</div></div>';
+      html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + (hmcH||'—') + '</div></div>';
       html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Tournage</div><div style="font-size:14px;font-weight:600;color:#065f46">' + (fmt(dur.tournage)||'—') + '</div></div>';
       html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Fin</div><div style="font-size:14px;font-weight:600">' + (hFinHeure||'—') + '</div></div>';
       html += '</div>';
@@ -1773,6 +1780,44 @@ function renderResume() {
     bilanDiv.innerHTML = html || '<div style="color:var(--text-muted);font-size:13px">Aucune donnée pour cette journée.</div>';
   }
 
+  // Journal détaillé de la journée sélectionnée
+  const journalDiv = document.getElementById('resume-journal');
+  if (journalDiv) {
+    const enfs = activeEnfants();
+    const logsTriés = logsRef.slice().sort((a,b) => a.heure.localeCompare(b.heure));
+    if (!logsTriés.length) {
+      journalDiv.innerHTML = '<div class="empty" style="padding:1rem">Aucune action enregistrée.</div>';
+    } else {
+      journalDiv.innerHTML = logsTriés.map(l => {
+        const enf = enfs.find(e => e.id === l.enfantId);
+        const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6','#1f2937'];
+        const PONCT = ['arrivee','fin','pickup'];
+        const heures = (PONCT.includes(l.type)||!l.fin||l.fin===l.heure) ? l.heure : l.heure+' → '+l.fin;
+        const dur = (l.fin && l.fin!==l.heure) ? fmt(toMin(l.fin)-toMin(l.heure)) : '';
+        return '<div class="log-item">' +
+          '<div class="log-time" style="font-size:12px;min-width:90px">'+heures+'</div>' +
+          '<div class="log-tag" style="background:'+bg+';color:'+tc+'">'+TYPE_LABEL[l.type]+'</div>' +
+          '<div class="log-who">'+(enf?enf.nom.split(' ')[0]:'?')+'</div>' +
+          '<div class="log-dur">'+dur+'</div>' +
+          '</div>';
+      }).join('');
+    }
+  }
+
+  // Bouton voir detail
+  var vdd = document.getElementById('resume-voir-detail');
+  if (vdd) {
+    var dr2 = resumeDate || todayStr();
+    var j2 = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+    var m2 = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+    var d2 = new Date(dr2 + 'T12:00:00');
+    var lbl2 = j2[d2.getDay()] + ' ' + d2.getDate() + ' ' + m2[d2.getMonth()];
+    var b2 = document.createElement('button');
+    b2.textContent = 'Voir le detail du ' + lbl2;
+    b2.style.cssText = 'width:100%;padding:12px;border-radius:10px;border:none;background:#1a1a2e;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px';
+    b2.onclick = (function(d){ return function(){ allerAuBilan(d); }; })(dr2);
+    vdd.innerHTML = ''; vdd.appendChild(b2);
+  }
   // contacts sync
   const ws = document.getElementById('wa-scripte');
   const wp = document.getElementById('wa-prod');
@@ -2749,6 +2794,15 @@ function changerDateCours(date) {
   renderCoursList();
 }
 
+function allerAuBilan(date) {
+  bilanDateCible = date;
+  var bilanBtn = document.querySelector('.nav-btn[onclick*="bilan"]');
+  showPage('bilan', bilanBtn);
+  setTimeout(function() {
+    var el = document.getElementById('bilan-date-' + date);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 400);
+}
 async function initApp() {
   await load();
   // Mode vacances : auto par défaut
@@ -2867,6 +2921,15 @@ function changerDateCours(date) {
   renderCoursList();
 }
 
+function allerAuBilan(date) {
+  bilanDateCible = date;
+  var bilanBtn = document.querySelector('.nav-btn[onclick*="bilan"]');
+  showPage('bilan', bilanBtn);
+  setTimeout(function() {
+    var el = document.getElementById('bilan-date-' + date);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 400);
+}
 async function initApp() {
   await load();
   // Mode vacances : auto par défaut
