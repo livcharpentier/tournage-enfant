@@ -1712,101 +1712,103 @@ function calcFinMax() {
   });
 }
 function renderResume() {
+  if (!resumeDate) resumeDate = todayStr();
+  remplirSelectResume();
   const sp = document.getElementById('summary-txt');
   if (sp) sp.textContent = buildSummary();
-  
+
+  // Logs filtrés par date sélectionnée
+  const dateRef = resumeDate || todayStr();
+  const logsRef = state.logs.filter(l => l.filmId === state.activeFilmId && l.date === dateRef);
+
   // Bloc résumé horaire en haut
   const bilanDiv = document.getElementById('resume-bilan-haut');
   if (bilanDiv) {
-    const stats = calcFinMax();
-    if (stats.length) {
-      let html = '';
-      stats.forEach(s => {
-        const pct = Math.round(s.presence / s.lim * 100);
-        const barColor = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
-        const alertClass = s.enAlerte ? 'background:#fee2e2;border:1px solid #ef4444;' : 'background:var(--gray-light);';
-        html += '<div style="' + alertClass + 'border-radius:10px;padding:10px 12px;margin-bottom:8px">';
-        html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">';
-        html += '<div style="font-size:13px;font-weight:700">' + s.enf.nom.split(' ')[0] + '</div>';
-        if (s.enAlerte) html += '<div style="font-size:11px;font-weight:700;color:#991b1b">⚠ ALERTER MISE EN SCENE</div>';
-        html += '</div>';
-        // Heure de début = HMC ou arrivée
-        const logsEnf = todayLogs().filter(l => l.enfantId === s.enf.id).sort((a,b) => a.heure.localeCompare(b.heure));
-        const debutEvR = logsEnf.find(l => l.type === 'hmc') || logsEnf.find(l => l.type === 'arrivee');
-        const debutH = debutEvR ? debutEvR.heure : '-';
-        html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Début</div><div style="font-size:14px;font-weight:600">' + debutH + '</div></div>';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.hmc||0) + '</div></div>';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Tournage</div><div style="font-size:14px;font-weight:600;color:#065f46">' + fmt(s.dur.tournage||0) + '</div></div>';
-        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Pause</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.pause||0) + '</div></div>';
-        html += '</div>';
-        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">Repas non compté : ' + fmt(s.dur.repas||0) + ' · Hors plateau non compté : ' + fmt(s.dur.attente||0) + '</div>';
-        html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:6px">';
-        html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,pct) + '%"></div>';
-        html += '</div>';
-        html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted)">';
-        const presLabel = (pct >= 100 ? '⚠ DEPASSE : ' : 'Presence : ') + fmt(s.presence) + ' / ' + fmt(s.lim) + ' (' + pct + '%)';
-        html += '<span style="color:' + (pct>=100?'#991b1b':'var(--text-muted)') + ';font-weight:' + (pct>=100?'700':'400') + '">' + presLabel + '</span>';
-        let finInfo = '';
-        if (s.finMax) finInfo += 'Fin max : ' + s.finMax;
-        if (s.finReelH) finInfo += ' · Fin réelle : ' + s.finReelH;
-        if (s.depasseMin > 0) finInfo += ' · Dépassement : ' + fmt(s.depasseMin);
-        if (s.alerteH && !s.finReelH) finInfo += ' · Alerte : ' + s.alerteH;
-        if (finInfo) html += '<span style="font-weight:600;color:' + (s.depasse?'#991b1b':s.enAlerte?'#991b1b':'var(--text)') + '">' + finInfo + '</span>';
-        html += '</div>';
-        html += '</div>';
+    const enfs = activeEnfants();
+    let html = '';
+    enfs.forEach(enf => {
+      const evs = logsRef.filter(l => l.enfantId === enf.id).sort((a,b) => a.heure.localeCompare(b.heure));
+      if (!evs.length) return;
+      const dur = {};
+      Object.keys(TYPE_LABEL).forEach(t => dur[t] = 0);
+      evs.forEach(l => {
+        if (l.fin && l.fin !== l.heure) dur[l.type] = (dur[l.type]||0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
       });
-      bilanDiv.innerHTML = html;
-    }
+      const presence = WORK_TYPES.reduce((sum,t) => sum+(dur[t]||0), 0);
+      const lim = LIMITES[enf.age];
+      const pct = Math.round(presence / lim * 100);
+      const barColor = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
+      const alertStyle = pct >= 100 ? 'background:#fee2e2;border:1px solid #ef4444;' : 'background:var(--gray-light);';
+      const debutEv = evs.find(l => l.type==='hmc') || evs.find(l => l.type==='arrivee');
+      const debutH = debutEv ? debutEv.heure : '-';
+      const logFin = evs.slice().reverse().find(l => l.type==='fin');
+      const dernierFerme = evs.slice().reverse().find(l => l.fin && l.fin!==l.heure);
+      const hFinHeure = logFin ? logFin.heure : (dernierFerme ? dernierFerme.fin : null);
+
+      html += '<div style="' + alertStyle + 'border-radius:10px;padding:10px 12px;margin-bottom:8px">';
+      html += '<div style="font-size:13px;font-weight:700;margin-bottom:8px">' + enf.nom + '</div>';
+      html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
+      html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Début</div><div style="font-size:14px;font-weight:600">' + debutH + '</div></div>';
+      html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + (fmt(dur.hmc)||'—') + '</div></div>';
+      html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Tournage</div><div style="font-size:14px;font-weight:600;color:#065f46">' + (fmt(dur.tournage)||'—') + '</div></div>';
+      html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Fin</div><div style="font-size:14px;font-weight:600">' + (hFinHeure||'—') + '</div></div>';
+      html += '</div>';
+      if (dur.pause||dur.repas||dur.attente) {
+        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">';
+        if (dur.pause) html += 'Pause : ' + fmt(dur.pause) + ' · ';
+        if (dur.repas) html += 'Repas (non compté) : ' + fmt(dur.repas) + ' · ';
+        if (dur.attente) html += 'Hors plateau (non compté) : ' + fmt(dur.attente);
+        html += '</div>';
+      }
+      html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:4px">';
+      html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,pct) + '%"></div>';
+      html += '</div>';
+      html += '<div style="display:flex;justify-content:space-between;font-size:11px">';
+      html += '<span style="color:' + (pct>=100?'#991b1b':'var(--text-muted)') + ';font-weight:' + (pct>=100?'700':'400') + '">';
+      html += (pct>=100?'⚠ DÉPASSÉ : ':'Présence : ') + fmt(presence) + ' / ' + fmt(lim) + ' (' + pct + '%)</span>';
+      if (pct >= 100) html += '<span style="font-weight:700;color:#991b1b">+' + fmt(presence-lim) + '</span>';
+      html += '</div>';
+      html += '</div>';
+    });
+    bilanDiv.innerHTML = html || '<div style="color:var(--text-muted);font-size:13px">Aucune donnée pour cette journée.</div>';
   }
+
   // contacts sync
   const ws = document.getElementById('wa-scripte');
   const wp = document.getElementById('wa-prod');
   if (ws && state.contacts.scripte) ws.value = state.contacts.scripte;
   if (wp && state.contacts.prod) wp.value = state.contacts.prod;
+
   // alerts + metrics
   const enfs = activeEnfants();
-  const logs = todayLogs();
   const alertDiv = document.getElementById('resume-alerts');
   const metrics = document.getElementById('resume-metrics');
   let alerts = '';
-  let totTournage = 0, present = new Set();
-  logs.forEach(l => {
-    if (l.type === 'tournage' && l.fin) { totTournage += Math.max(0, toMin(l.fin) - toMin(l.heure)); present.add(l.enfantId); }
+  let totTournage = 0; const present = new Set();
+  logsRef.forEach(l => {
+    if (l.type === 'tournage' && l.fin && l.fin !== l.heure) {
+      totTournage += Math.max(0, toMin(l.fin) - toMin(l.heure));
+      present.add(l.enfantId);
+    }
   });
   if (metrics) metrics.innerHTML = `
     <div class="metric"><div class="metric-val">${present.size}</div><div class="metric-lbl">Présents</div></div>
-    <div class="metric"><div class="metric-val">${fmt(totTournage) || '—'}</div><div class="metric-lbl">Tournage</div></div>
-    <div class="metric"><div class="metric-val">${logs.length}</div><div class="metric-lbl">Entrées</div></div>
+    <div class="metric"><div class="metric-val">${fmt(totTournage)||'—'}</div><div class="metric-lbl">Tournage</div></div>
+    <div class="metric"><div class="metric-val">${logsRef.length}</div><div class="metric-lbl">Entrées</div></div>
   `;
   enfs.forEach(e => {
     const lim = LIMITES[e.age];
-    const travail = logs.filter(l => l.enfantId === e.id && WORK_TYPES.includes(l.type) && l.fin)
-      .reduce((s, l) => s + Math.max(0, toMin(l.fin) - toMin(l.heure)), 0);
-    const pct = Math.round(travail / lim * 100);
-    if (pct >= 100) alerts += `<div class="alert alert-danger">⚠ ${e.nom} a dépassé la limite légale (${fmt(travail)} / ${fmt(lim)})</div>`;
+    const travail = logsRef.filter(l => l.enfantId===e.id && WORK_TYPES.includes(l.type) && l.fin && l.fin!==l.heure)
+      .reduce((s,l) => s + Math.max(0, toMin(l.fin)-toMin(l.heure)), 0);
+    const pct = Math.round(travail/lim*100);
+    if (pct >= 100) alerts += `<div class="alert alert-danger">⚠ ${e.nom} a dépassé la limite (${fmt(travail)} / ${fmt(lim)})</div>`;
     else if (pct >= 80) alerts += `<div class="alert alert-warn">⚠ ${e.nom} proche de la limite (${pct}%)</div>`;
   });
-  if (!alerts && logs.length) alerts = '<div class="alert alert-ok">✅ Tous les enfants respectent les limites légales</div>';
+  if (!alerts && logsRef.length) alerts = '<div class="alert alert-ok">✅ Tous les enfants respectent les limites légales</div>';
   if (alertDiv) alertDiv.innerHTML = alerts;
-  if (chrono) {
-    chrono.innerHTML = enfs.map(e => {
-      const evs = logs.filter(l => l.enfantId === e.id).sort((a, b) => a.heure.localeCompare(b.heure));
-      if (!evs.length) return '';
-      const items = evs.map(l => {
-        const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6', '#1f2937'];
-        return `<span class="chrono-item"><span class="chrono-item-time">${l.heure}</span> <span style="background:${bg};color:${tc};padding:1px 7px;border-radius:8px;font-size:11px;font-weight:600">${TYPE_LABEL[l.type]}</span>${l.fin ? '<span style="font-size:11px;color:var(--text-muted)">→' + l.fin + '</span>' : ''}</span>`;
-      }).join(' ');
-      return `<div class="chrono-block">
-        <div class="chrono-name">
-          <div style="width:22px;height:22px;border-radius:50%;background:${e.couleur}22;color:${e.couleur};font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">${initials(e.nom)}</div>
-          ${e.nom}
-        </div>
-        <div class="chrono-items">${items}</div>
-      </div>`;
-    }).join('') || '<div class="empty">Aucune donnée pour aujourd\'hui</div>';
-  }
+  renderExtraContactsBtns();
 }
+
 // ─── WHATSAPP / SMS ───────────────────────────────────────────────
 function getNumber(role) {
   const fromResume = document.getElementById('wa-' + role)?.value;
