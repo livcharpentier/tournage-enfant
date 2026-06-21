@@ -1792,7 +1792,7 @@ function renderResume() {
       journalDiv.innerHTML = logsTriés.map(l => {
         const enf = enfs.find(e => e.id === l.enfantId);
         const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6','#1f2937'];
-        const PONCT = ['arrivee','fin','pickup'];
+        const PONCT = ['arrivee','fin','pickup','transport'];
         const heures = (PONCT.includes(l.type)||!l.fin||l.fin===l.heure) ? l.heure : l.heure+' → '+l.fin;
         const dur = (l.fin && l.fin!==l.heure) ? fmt(toMin(l.fin)-toMin(l.heure)) : '';
         return '<div class="log-item">' +
