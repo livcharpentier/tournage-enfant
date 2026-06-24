@@ -236,7 +236,7 @@
     </div>
     <div style="margin-bottom:20px">
       <label style="font-size:12px;color:rgba(255,255,255,.6);display:block;margin-bottom:4px">Mot de passe</label>
-      <input id="login-password" type="password" placeholder="••••••••" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;font-size:14px;box-sizing:border-box" onkeydown="if(event.key==='Enter')handleLogin()">
+      <input id="login-password" type="password" placeholder="20222022202220222022202220222022" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;font-size:14px;box-sizing:border-box" onkeydown="if(event.key==='Enter')handleLogin()">
     </div>
     <div id="login-error" style="color:#f87171;font-size:12px;margin-bottom:12px;text-align:center;min-height:16px"></div>
     <button id="login-btn" onclick="handleLogin()" style="width:100%;padding:12px;border-radius:8px;border:none;background:#3b82f6;color:#fff;font-size:15px;font-weight:700;cursor:pointer">Se connecter</button>
@@ -255,12 +255,12 @@
   <div style="background:#1a1a2e;color:#fff;padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10">
     <div>
       <div style="font-size:11px;opacity:.6;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Plateau Live</div>
-      <div id="film-name-live" style="font-size:15px;font-weight:700;margin-top:1px">Aucun film sélectionné</div>
+      <div id="film-name-live" style="font-size:15px;font-weight:700;margin-top:1px">Aucun film s00e9lectionn00e9</div>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
       <div style="font-size:18px;font-family:'Fredoka One',cursive;opacity:.9;letter-spacing:.1em">Liv</div>
       <div id="live-date-top" style="font-size:12px;opacity:.6;text-align:right"></div>
-      <button onclick="if(confirm('Se déconnecter ?'))sbLogout()" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.5);font-size:12px;padding:5px 8px;border-radius:6px;cursor:pointer"></button>
+      <button onclick="if(confirm('Se d00e9connecter ?'))sbLogout()" style="background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.5);font-size:12px;padding:5px 8px;border-radius:6px;cursor:pointer">d83ddd12</button>
     </div>
   </div>
   <div class="scroll-content">
@@ -269,11 +269,11 @@
       <div class="clock-date" id="live-date"></div>
     </div>
     <div style="margin:0 12px 10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px">
-      <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;text-align:center">Période de tournage</div>
+      <div style="font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;text-align:center">P00e9riode de tournage</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
         <button id="btn-scolaire" onclick="toggleVacances('scolaire')" style="padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-size:11px;font-weight:700;cursor:pointer;color:var(--text-muted)">Scolaire</button>
         <button id="btn-vacances" onclick="toggleVacances('vacances')" style="padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-size:11px;font-weight:700;cursor:pointer;color:var(--text-muted)">Vacances</button>
-        <button id="btn-ferie" onclick="toggleVacances('ferie')" style="padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-size:11px;font-weight:700;cursor:pointer;color:var(--text-muted)">Férié</button>
+        <button id="btn-ferie" onclick="toggleVacances('ferie')" style="padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);font-size:11px;font-weight:700;cursor:pointer;color:var(--text-muted)">F00e9ri00e9</button>
       </div>
     </div>
     <div style="padding:0 12px 4px">
@@ -281,8 +281,8 @@
         <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em">Pour qui ?</div>
         <div style="display:flex;gap:5px;flex-wrap:wrap">
           <button id="filtre-tous" onclick="setFiltreStatut('tous')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;font-weight:600;cursor:pointer">Tous</button>
-          <button id="filtre-role" onclick="setFiltreStatut('role')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Rôle</button>
-          <button id="filtre-petit-role" onclick="setFiltreStatut('petit-role')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Petit rôle</button>
+          <button id="filtre-role" onclick="setFiltreStatut('role')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">R00f4le</button>
+          <button id="filtre-petit-role" onclick="setFiltreStatut('petit-role')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Petit r00f4le</button>
           <button id="filtre-silhouette-parlante" onclick="setFiltreStatut('silhouette-parlante')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Silhouette parl.</button>
           <button id="filtre-silhouette" onclick="setFiltreStatut('silhouette')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Silhouette</button>
           <button id="filtre-figurant" onclick="setFiltreStatut('figurant')" style="font-size:10px;padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Figurant(e)</button>
@@ -303,46 +303,46 @@
         <span class="icon">🚗</span><span class="lbl">Transport</span><span class="last-t" id="lt-transport"></span>
       </button>
       <button class="action-btn btn-arrivee" onclick="logAction('arrivee')">
-        <span class="icon">🎬</span><span class="lbl">Arrivée</span><span class="last-t" id="lt-arrivee"></span>
+        <span class="icon">d83cdfac</span><span class="lbl">Arriv00e9e</span><span class="last-t" id="lt-arrivee"></span>
       </button>
       <button class="action-btn btn-hmc" onclick="logAction('hmc')">
-        <span class="icon">✂️👗🎨</span><span class="lbl">HMC / Prép.</span><span class="last-t" id="lt-hmc"></span>
+        <span class="icon">2702fe0fd83ddc57d83cdfa8</span><span class="lbl">HMC / Pr00e9p.</span><span class="last-t" id="lt-hmc"></span>
       </button>
       <button class="action-btn btn-tournage" onclick="logAction('tournage')">
-        <span class="icon">🎥</span><span class="lbl">Plateau / Tournage</span><span class="last-t" id="lt-tournage"></span>
+        <span class="icon">d83cdfa5</span><span class="lbl">Tournage</span><span class="last-t" id="lt-tournage"></span>
       </button>
       <button class="action-btn btn-pause" onclick="logAction('pause')">
-        <span class="icon">🧩</span><span class="lbl">Pause</span><span class="last-t" id="lt-pause"></span>
+        <span class="icon">d83edde9</span><span class="lbl">Pause</span><span class="last-t" id="lt-pause"></span>
       </button>
       <button class="action-btn btn-repas" onclick="logAction('repas')">
-        <span class="icon">🍽</span><span class="lbl">Repas</span><span class="last-t" id="lt-repas"></span>
+        <span class="icon">d83cdf7d</span><span class="lbl">Repas</span><span class="last-t" id="lt-repas"></span>
       </button>
       <button class="action-btn btn-attente" onclick="logAction('attente')">
-        <span class="icon">☁️</span><span class="lbl">Hors plateau</span><span class="last-t" id="lt-attente"></span>
+        <span class="icon">2601fe0f</span><span class="lbl">Hors plateau</span><span class="last-t" id="lt-attente"></span>
       </button>
       <button class="action-btn btn-cours" onclick="logAction('cours')">
-        <span class="icon">📚</span><span class="lbl">Cours</span><span class="last-t" id="lt-cours"></span>
+        <span class="icon">d83ddcda</span><span class="lbl">Cours</span><span class="last-t" id="lt-cours"></span>
       </button>
       <button class="action-btn btn-cascade" onclick="logAction('cascade')">
-        <span class="icon">🤸</span><span class="lbl">Cascade</span><span class="last-t" id="lt-cascade"></span>
+        <span class="icon">d83edd38</span><span class="lbl">Cascade</span><span class="last-t" id="lt-cascade"></span>
       </button>
       <button class="action-btn btn-hmc" onclick="logAction('son')">
-        <span class="icon">🎙️</span><span class="lbl">Équipage son</span><span class="last-t" id="lt-son"></span>
+        <span class="icon">d83cdf99fe0f</span><span class="lbl">00c9quipage son</span><span class="last-t" id="lt-son"></span>
       </button>
       <button class="action-btn btn-sante" onclick="logAction('sante')">
-        <span class="icon">🩺</span><span class="lbl">Santé</span><span class="last-t" id="lt-sante"></span>
+        <span class="icon">d83ede7a</span><span class="lbl">Sant00e9</span><span class="last-t" id="lt-sante"></span>
       </button>
       <button class="action-btn btn-fin" onclick="logAction('fin')" style="grid-column:span 3">
-        <span class="icon">🏁</span><span class="lbl">Fin de journée</span><span class="last-t" id="lt-fin"></span>
+        <span class="icon">d83cdfc1</span><span class="lbl">Fin de journ00e9e</span><span class="last-t" id="lt-fin"></span>
       </button>
     </div>
     <div class="mic-wrap">
-      <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎤</button>
-      <div class="mic-hint" id="mic-hint">Dicter : "tournage", "pause", "repas"…</div>
+      <button class="mic-btn" id="mic-btn" onclick="toggleMic()">d83cdfa4</button>
+      <div class="mic-hint" id="mic-hint">Dicter : "tournage", "pause", "repas"2026</div>
       <div class="mic-txt" id="mic-txt"></div>
     </div>
     <div style="padding:4px 12px 6px">
-      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">État actuel</div>
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">00c9tat actuel</div>
       <div class="status-grid" id="status-bar"></div>
     </div>
     <div id="live-progress-bars" style="padding:0 12px 4px"></div>
@@ -351,19 +351,19 @@
         <span>Journal <span id="log-count" style="font-weight:400;color:var(--text-muted)"></span></span>
         <button onclick="clearLog()" style="font-size:11px;background:none;border:none;color:var(--text-muted);cursor:pointer">Effacer</button>
       </div>
-      <div id="log-list"><div class="empty"><div class="empty-icon"></div>Appuyez sur une action pour commencer</div></div>
+      <div id="log-list"><div class="empty"><div class="empty-icon">d83ddccb</div>Appuyez sur une action pour commencer</div></div>
     </div>
   </div>
 </div>
 <div id="page-resume" class="page">
   <div class="page-header">
-    <div class="page-title">Résumé journée</div>
+    <div class="page-title">R00e9sum00e9 journ00e9e</div>
     <div class="page-sub" id="resume-film-name">Rapport et envoi</div>
   </div>
   <div class="scroll-content">
     <div class="card">
-      <div style="margin-bottom:10px"><div id="resume-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div></div>
-      <div class="card-title">Suivi temps — journée en cours</div>
+      <div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:6px">Journée</div><div id="resume-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div></div>
+      <div class="card-title">Suivi temps 2014 journ00e9e en cours</div>
       <div id="resume-bilan-haut"></div>
     </div>
     <div class="card">
@@ -371,41 +371,37 @@
       <div class="metrics-grid" id="resume-metrics"></div>
     </div>
     <div class="card">
-      <div class="card-title">Journal de la journée</div>
-      <div id="resume-journal"></div>
-    </div>
-    <div class="card">
       <div class="card-title">Message WhatsApp / SMS</div>
       <div class="summary-box" id="summary-txt"></div>
       <div style="margin-bottom:10px">
         <div class="form-row">
-          <label class="form-label">Note / commentaire du jour (santé, incident, remarque…)</label>
-          <textarea class="form-input" id="commentaire-jour" rows="3" placeholder="Ex : Léa s'est plainte d'un mal de tête à 14h, repos 20 min. Tom fatigué en fin de journée." style="resize:vertical;line-height:1.5" oninput="saveCommentaire()"></textarea>
+          <label class="form-label">Note / commentaire du jour (sant00e9, incident, remarque2026)</label>
+          <textarea class="form-input" id="commentaire-jour" rows="3" placeholder="Ex : L00e9a s'est plainte d'un mal de t00eate 00e0 14h, repos 20 min. Tom fatigu00e9 en fin de journ00e9e." style="resize:vertical;line-height:1.5" oninput="saveCommentaire()"></textarea>
         </div>
         <div class="form-row">
-          <label class="form-label">Numéro WhatsApp scripte (avec indicatif, ex: +33612...)</label>
+          <label class="form-label">Num00e9ro WhatsApp scripte (avec indicatif, ex: +33612...)</label>
           <input class="form-input" type="tel" id="wa-scripte" placeholder="+336...">
         </div>
         <div class="form-row">
-          <label class="form-label">Numéro WhatsApp production</label>
+          <label class="form-label">Num00e9ro WhatsApp production</label>
           <input class="form-input" type="tel" id="wa-prod" placeholder="+336...">
         </div>
       </div>
       <div class="send-btns">
         <button class="send-btn btn-wa" onclick="sendWhatsApp('scripte')">
-          <span style="font-size:20px"></span>Scripte<span style="font-size:10px;opacity:.8">WhatsApp</span>
+          <span style="font-size:20px">d83ddcac</span>Scripte<span style="font-size:10px;opacity:.8">WhatsApp</span>
         </button>
         <button class="send-btn btn-wa" onclick="sendWhatsApp('prod')">
-          <span style="font-size:20px"></span>Prod<span style="font-size:10px;opacity:.8">WhatsApp</span>
+          <span style="font-size:20px">d83ddcac</span>Prod<span style="font-size:10px;opacity:.8">WhatsApp</span>
         </button>
         <button class="send-btn btn-sms" onclick="sendSMS('scripte')">
-          <span style="font-size:20px"></span>Scripte<span style="font-size:10px;opacity:.8">SMS</span>
+          <span style="font-size:20px">d83ddcf1</span>Scripte<span style="font-size:10px;opacity:.8">SMS</span>
         </button>
         <button class="send-btn btn-sms" onclick="sendSMS('prod')">
-          <span style="font-size:20px"></span>Prod<span style="font-size:10px;opacity:.8">SMS</span>
+          <span style="font-size:20px">d83ddcf1</span>Prod<span style="font-size:10px;opacity:.8">SMS</span>
         </button>
         <button class="send-btn btn-copy" onclick="copyResume()" style="grid-column:span 2">
-          <span style="font-size:20px"></span>Copier le résumé
+          <span style="font-size:20px">d83ddccb</span>Copier le r00e9sum00e9
         </button>
       </div>
       <div id="extra-contacts-btns" style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
@@ -415,7 +411,7 @@
 <div id="page-films" class="page">
   <div class="page-header">
     <div class="page-title">Films & Enfants</div>
-    <div class="page-sub">Gérer vos projets</div>
+    <div class="page-sub">G00e9rer vos projets</div>
   </div>
   <div class="scroll-content">
     <div class="card">
@@ -427,8 +423,8 @@
       <div class="card-title">Enfants du film actif</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
         <button id="ftab-tous" onclick="setFiltreFilms('tous')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--blue);background:var(--blue);color:#fff;font-weight:600;cursor:pointer">Tous</button>
-        <button id="ftab-role" onclick="setFiltreFilms('role')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Rôle</button>
-        <button id="ftab-petit-role" onclick="setFiltreFilms('petit-role')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Petit rôle</button>
+        <button id="ftab-role" onclick="setFiltreFilms('role')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">R00f4le</button>
+        <button id="ftab-petit-role" onclick="setFiltreFilms('petit-role')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Petit r00f4le</button>
         <button id="ftab-silhouette-parlante" onclick="setFiltreFilms('silhouette-parlante')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Silhouette parl.</button>
         <button id="ftab-silhouette" onclick="setFiltreFilms('silhouette')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Silhouette</button>
         <button id="ftab-figurant" onclick="setFiltreFilms('figurant')" style="font-size:11px;padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);font-weight:600;cursor:pointer">Figurant(e)</button>
@@ -439,7 +435,7 @@
       <button class="form-btn" onclick="openModal('modal-enfant')" style="margin-top:8px;background:var(--green)">+ Ajouter un enfant</button>
     </div>
     <div class="card">
-      <div class="card-title">Contacts résumé journée</div>
+      <div class="card-title">Contacts r00e9sum00e9 journ00e9e</div>
       <div class="form-row">
         <label class="form-label">Scripte</label>
         <input class="form-input" type="tel" id="contact-scripte" placeholder="+336..." oninput="saveContacts()">
@@ -471,15 +467,15 @@
     <div class="cal-grid" id="cal-grid"></div>
     <div class="card">
       <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
-        <span id="cal-events-title">Événements du mois</span>
+        <span id="cal-events-title">00c9v00e9nements du mois</span>
         <div style="display:flex;gap:6px">
-          <button onclick="partagerCalendrier()" style="font-size:11px;padding:5px 10px;border-radius:8px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer">Équipe</button>
+          <button onclick="partagerCalendrier()" style="font-size:11px;padding:5px 10px;border-radius:8px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer">00c9quipe</button>
           <button onclick="partagerParents()" style="font-size:11px;padding:5px 10px;border-radius:8px;border:none;background:#3b82f6;color:#fff;font-weight:600;cursor:pointer">Parents WA</button>
-          <button onclick="copierParents()" style="font-size:11px;padding:5px 10px;border-radius:8px;border:none;background:#8b5cf6;color:#fff;font-weight:600;cursor:pointer"> Groupe</button>
-          <button onclick="ouvrirModalPDF()" style="font-size:11px;padding:5px 10px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-weight:600;cursor:pointer"> PDF</button>
+          <button onclick="copierParents()" style="font-size:11px;padding:5px 10px;border-radius:8px;border:none;background:#8b5cf6;color:#fff;font-weight:600;cursor:pointer">d83ddccb Groupe</button>
+          <button onclick="ouvrirModalPDF()" style="font-size:11px;padding:5px 10px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-weight:600;cursor:pointer">d83ddcc4 PDF</button>
         </div>
       </div>
-      <div id="cal-events-list"><div class="empty"><div class="empty-icon"></div>Appuyez sur un jour pour ajouter un événement</div></div>
+      <div id="cal-events-list"><div class="empty"><div class="empty-icon">d83ddcc5</div>Appuyez sur un jour pour ajouter un 00e9v00e9nement</div></div>
       <div id="cal-parents-btns" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border)"></div>
     </div>
   </div>
@@ -493,26 +489,26 @@
   <div class="scroll-content">
     <div style="display:flex;gap:8px;padding:10px 12px;flex-wrap:wrap;align-items:center">
       <button onclick="renderBilan()" style="padding:7px 14px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer">Actualiser</button>
-      <button onclick="genererPDFBilan()" style="padding:7px 14px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-size:12px;font-weight:600;cursor:pointer"> PDF Bilan</button>
+      <button onclick="genererPDFBilan()" style="padding:7px 14px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-size:12px;font-weight:600;cursor:pointer">d83ddcc4 PDF Bilan</button>
     </div>
     <div id="bilan-content" style="padding:0 12px 10px"></div>
   </div>
 </div>
 <div id="page-info" class="page">
   <div class="page-header">
-    <div class="page-title">Réglementation</div>
-    <div class="page-sub">DRIEETS — Enfants sur tournage</div>
+    <div class="page-title">R00e9glementation</div>
+    <div class="page-sub">DRIEETS 2014 Enfants sur tournage</div>
   </div>
   <div class="scroll-content" style="padding:0 12px 20px">
     <div class="card" style="margin:10px 0">
-      <div class="card-title">Durées journalières de travail — Source : Code du Travail R7124-27 à R7124-30-1</div>
+      <div class="card-title">Dur00e9es journali00e8res de travail 2014 Source : Code du Travail R7124-27 00e0 R7124-30-1</div>
       
-      <div style="font-size:11px;font-weight:700;color:#1d4ed8;margin-bottom:6px;padding:4px 8px;background:#dbeafe;border-radius:6px">Période scolaire</div>
+      <div style="font-size:11px;font-weight:700;color:#1d4ed8;margin-bottom:6px;padding:4px 8px;background:#dbeafe;border-radius:6px">P00e9riode scolaire</div>
       <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px">
         <thead>
           <tr style="background:#1a1a2e;color:#fff">
-            <th style="padding:6px 8px;text-align:left">Âge</th>
-            <th style="padding:6px 8px;text-align:center">Durée max</th>
+            <th style="padding:6px 8px;text-align:left">00c2ge</th>
+            <th style="padding:6px 8px;text-align:center">Dur00e9e max</th>
             <th style="padding:6px 8px;text-align:center">Pause oblig.</th>
           </tr>
         </thead>
@@ -520,32 +516,32 @@
           <tr style="border-bottom:1px solid var(--border)">
             <td style="padding:6px 8px;font-weight:600">Moins de 6 mois</td>
             <td style="padding:6px 8px;text-align:center;color:var(--red-dark);font-weight:700">1h</td>
-            <td style="padding:6px 8px;text-align:center">après 30 min</td>
+            <td style="padding:6px 8px;text-align:center">apr00e8s 30 min</td>
           </tr>
           <tr style="border-bottom:1px solid var(--border);background:#f8fafc">
-            <td style="padding:6px 8px;font-weight:600">6 mois – 2 ans</td>
+            <td style="padding:6px 8px;font-weight:600">6 mois 2013 2 ans</td>
             <td style="padding:6px 8px;text-align:center;color:var(--red-dark);font-weight:700">1h</td>
-            <td style="padding:6px 8px;text-align:center">après 30 min</td>
+            <td style="padding:6px 8px;text-align:center">apr00e8s 30 min</td>
           </tr>
           <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:6px 8px;font-weight:600">3 – 5 ans</td>
+            <td style="padding:6px 8px;font-weight:600">3 2013 5 ans</td>
             <td style="padding:6px 8px;text-align:center;color:var(--red-dark);font-weight:700">2h</td>
-            <td style="padding:6px 8px;text-align:center">après 1h</td>
+            <td style="padding:6px 8px;text-align:center">apr00e8s 1h</td>
           </tr>
           <tr style="border-bottom:1px solid var(--border);background:#f8fafc">
-            <td style="padding:6px 8px;font-weight:600">6 – 11 ans</td>
+            <td style="padding:6px 8px;font-weight:600">6 2013 11 ans</td>
             <td style="padding:6px 8px;text-align:center;color:var(--amber-dark);font-weight:700">3h</td>
-            <td style="padding:6px 8px;text-align:center">après 1h30</td>
+            <td style="padding:6px 8px;text-align:center">apr00e8s 1h30</td>
           </tr>
           <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:6px 8px;font-weight:600">12 – 13 ans</td>
+            <td style="padding:6px 8px;font-weight:600">12 2013 13 ans</td>
             <td style="padding:6px 8px;text-align:center;color:var(--amber-dark);font-weight:700">4h</td>
-            <td style="padding:6px 8px;text-align:center">après 2h</td>
+            <td style="padding:6px 8px;text-align:center">apr00e8s 2h</td>
           </tr>
           <tr>
-            <td style="padding:6px 8px;font-weight:600">14 – 15 ans</td>
+            <td style="padding:6px 8px;font-weight:600">14 2013 15 ans</td>
             <td style="padding:6px 8px;text-align:center;color:var(--amber-dark);font-weight:700">4h</td>
-            <td style="padding:6px 8px;text-align:center">après 2h</td>
+            <td style="padding:6px 8px;text-align:center">apr00e8s 2h</td>
           </tr>
         </tbody>
       </table>
@@ -553,8 +549,8 @@
       <table style="width:100%;border-collapse:collapse;font-size:11px">
         <thead>
           <tr style="background:#1a1a2e;color:#fff">
-            <th style="padding:6px 8px;text-align:left">Âge</th>
-            <th style="padding:6px 8px;text-align:center">Durée max</th>
+            <th style="padding:6px 8px;text-align:left">00c2ge</th>
+            <th style="padding:6px 8px;text-align:center">Dur00e9e max</th>
             <th style="padding:6px 8px;text-align:center">Pause oblig.</th>
           </tr>
         </thead>
@@ -562,38 +558,38 @@
           <tr style="border-bottom:1px solid var(--border)">
             <td style="padding:6px 8px;font-weight:600">Moins de 6 mois</td>
             <td style="padding:6px 8px;text-align:center;color:var(--red-dark);font-weight:700">1h</td>
-            <td style="padding:6px 8px;text-align:center">après 30 min</td>
+            <td style="padding:6px 8px;text-align:center">apr00e8s 30 min</td>
           </tr>
           <tr style="border-bottom:1px solid var(--border);background:#f8fafc">
-            <td style="padding:6px 8px;font-weight:600">6 mois – 2 ans</td>
+            <td style="padding:6px 8px;font-weight:600">6 mois 2013 2 ans</td>
             <td style="padding:6px 8px;text-align:center;color:var(--red-dark);font-weight:700">1h</td>
-            <td style="padding:6px 8px;text-align:center">après 30 min</td>
+            <td style="padding:6px 8px;text-align:center">apr00e8s 30 min</td>
           </tr>
           <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:6px 8px;font-weight:600">3 – 5 ans</td>
+            <td style="padding:6px 8px;font-weight:600">3 2013 5 ans</td>
             <td style="padding:6px 8px;text-align:center;color:var(--red-dark);font-weight:700">2h</td>
-            <td style="padding:6px 8px;text-align:center">après 1h</td>
+            <td style="padding:6px 8px;text-align:center">apr00e8s 1h</td>
           </tr>
           <tr style="border-bottom:1px solid var(--border);background:#f8fafc">
-            <td style="padding:6px 8px;font-weight:600">6 – 11 ans</td>
+            <td style="padding:6px 8px;font-weight:600">6 2013 11 ans</td>
             <td style="padding:6px 8px;text-align:center;color:var(--green-dark);font-weight:700">4h</td>
-            <td style="padding:6px 8px;text-align:center">après 2h</td>
+            <td style="padding:6px 8px;text-align:center">apr00e8s 2h</td>
           </tr>
           <tr style="border-bottom:1px solid var(--border)">
-            <td style="padding:6px 8px;font-weight:600">12 – 13 ans</td>
+            <td style="padding:6px 8px;font-weight:600">12 2013 13 ans</td>
             <td style="padding:6px 8px;text-align:center;color:var(--green-dark);font-weight:700">6h</td>
-            <td style="padding:6px 8px;text-align:center">après 3h</td>
+            <td style="padding:6px 8px;text-align:center">apr00e8s 3h</td>
           </tr>
           <tr>
-            <td style="padding:6px 8px;font-weight:600">14 – 15 ans</td>
+            <td style="padding:6px 8px;font-weight:600">14 2013 15 ans</td>
             <td style="padding:6px 8px;text-align:center;color:var(--green-dark);font-weight:700">6h</td>
-            <td style="padding:6px 8px;text-align:center">après 3h</td>
+            <td style="padding:6px 8px;text-align:center">apr00e8s 3h</td>
           </tr>
         </tbody>
       </table>
       <div style="margin-top:8px;font-size:11px;color:var(--text-muted);background:var(--gray-light);padding:8px;border-radius:6px">
-        Le temps de travail comprend : HMC, tournage, équipage son et temps d'attente entre les prises.<br>
-        <strong>Ne sont pas comptabilisés :</strong> trajets, pause repas.
+        Le temps de travail comprend : HMC, tournage, 00e9quipage son et temps d'attente entre les prises.<br>
+        <strong>Ne sont pas comptabilis00e9s :</strong> trajets, pause repas.
       </div>
     </div>
     <div class="card" style="margin:10px 0">
@@ -601,32 +597,32 @@
       <table style="width:100%;border-collapse:collapse;font-size:12px">
         <thead>
           <tr style="background:#1a1a2e;color:#fff">
-            <th style="padding:7px 8px;text-align:left">Âge</th>
+            <th style="padding:7px 8px;text-align:left">00c2ge</th>
             <th style="padding:7px 8px;text-align:center">Interdit entre</th>
           </tr>
         </thead>
         <tbody>
           <tr style="border-bottom:1px solid var(--border)">
             <td style="padding:7px 8px;font-weight:600">Moins de 16 ans</td>
-            <td style="padding:7px 8px;text-align:center;font-weight:700;color:#1d4ed8">20h00 – 06h00</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:700;color:#1d4ed8">20h00 2013 06h00</td>
           </tr>
           <tr style="border-bottom:1px solid var(--border);background:#f8fafc">
-            <td style="padding:7px 8px;font-weight:600">16 – 17 ans</td>
-            <td style="padding:7px 8px;text-align:center;font-weight:700;color:#1d4ed8">22h00 – 06h00</td>
+            <td style="padding:7px 8px;font-weight:600">16 2013 17 ans</td>
+            <td style="padding:7px 8px;text-align:center;font-weight:700;color:#1d4ed8">22h00 2013 06h00</td>
           </tr>
           <tr>
-            <td colspan="2" style="padding:7px 8px;font-size:11px;color:var(--amber-dark);background:#fef3c7">⚠ Dérogation possible sur autorisation spécifique de l'inspection du travail. Pour les moins de 16 ans, jamais au-delà de 24h00.</td>
+            <td colspan="2" style="padding:7px 8px;font-size:11px;color:var(--amber-dark);background:#fef3c7">26a0 D00e9rogation possible sur autorisation sp00e9cifique de l'inspection du travail. Pour les moins de 16 ans, jamais au-del00e0 de 24h00.</td>
           </tr>
         </tbody>
       </table>
     </div>
     <div class="card" style="margin:10px 0">
-      <div class="card-title">Ce qui compte dans le temps de présence</div>
+      <div class="card-title">Ce qui compte dans le temps de pr00e9sence</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
         <div style="background:#d1fae5;border-radius:8px;padding:10px">
           <div style="font-weight:700;color:#065f46;margin-bottom:6px">COMPTE</div>
           <div style="color:#065f46;padding:2px 0">Tournage</div>
-          <div style="color:#065f46;padding:2px 0">HMC / Préparation</div>
+          <div style="color:#065f46;padding:2px 0">HMC / Pr00e9paration</div>
           <div style="color:#065f46;padding:2px 0">Cascade</div>
           
           <div style="color:#065f46;padding:2px 0">Pause</div>
@@ -634,45 +630,45 @@
         <div style="background:#fee2e2;border-radius:8px;padding:10px">
           <div style="font-weight:700;color:#991b1b;margin-bottom:6px">NE COMPTE PAS</div>
           <div style="color:#991b1b;padding:2px 0">Repas</div>
-          <div style="color:#991b1b;padding:2px 0">☁️ Hors plateau</div>
+          <div style="color:#991b1b;padding:2px 0">2601fe0f Hors plateau</div>
           <div style="color:#991b1b;padding:2px 0">Transport</div>
         </div>
       </div>
       <div style="margin-top:10px;background:#fef3c7;border-radius:8px;padding:10px;font-size:12px;color:#92400e">
         <div style="font-weight:700;margin-bottom:4px">Quand utiliser "Temps d'attente" ?</div>
-        <div>L'enfant est <strong>déshabillé, dans sa loge ou hors du plateau</strong>, non disponible pour tourner. Il ne peut pas être rappelé immédiatement. Ce temps <strong>ne compte pas</strong> dans le quota légal.<br><br>À ne pas confondre avec la <strong>Pause</strong>  où l'enfant reste en costume sur le plateau et peut être rappelé rapidement.</div>
+        <div>L'enfant est <strong>d00e9shabill00e9, dans sa loge ou hors du plateau</strong>, non disponible pour tourner. Il ne peut pas 00eatre rappel00e9 imm00e9diatement. Ce temps <strong>ne compte pas</strong> dans le quota l00e9gal.<br><br>00c0 ne pas confondre avec la <strong>Pause</strong> d83edde9 o00f9 l'enfant reste en costume sur le plateau et peut 00eatre rappel00e9 rapidement.</div>
       </div>
     </div>
     <div class="card" style="margin:10px 0">
-      <div class="card-title">Scolarité et cours sur plateau</div>
+      <div class="card-title">Scolarit00e9 et cours sur plateau</div>
       <div style="font-size:13px;line-height:1.8;color:var(--text)">
-        <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong>À partir de 4 jours d'absence</strong> sur une période de tournage, un instituteur de plateau est obligatoire</div>
-        <div style="padding:6px 0;border-bottom:1px solid var(--border)">⏰ <strong>Minimum 2h de cours par jour</strong> pour les enfants en âge scolaire (6-16 ans)</div>
-        <div style="padding:6px 0;border-bottom:1px solid var(--border)"> <strong>Le temps de cours compte</strong> dans la durée de présence journalière</div>
-        <div style="padding:6px 0;border-bottom:1px solid var(--border)"> <strong>Espace dédié obligatoire</strong> — calme, éclairé, séparé du plateau</div>
-        <div style="padding:6px 0"><strong>Liaison avec l'école</strong> — programme fourni par l'établissement scolaire</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong>00c0 partir de 4 jours d'absence</strong> sur une p00e9riode de tournage, un instituteur de plateau est obligatoire</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)">23f0 <strong>Minimum 2h de cours par jour</strong> pour les enfants en 00e2ge scolaire (6-16 ans)</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)">d83ddcda <strong>Le temps de cours compte</strong> dans la dur00e9e de pr00e9sence journali00e8re</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)">d83cdfe0 <strong>Espace d00e9di00e9 obligatoire</strong> 2014 calme, 00e9clair00e9, s00e9par00e9 du plateau</div>
+        <div style="padding:6px 0"><strong>Liaison avec l'00e9cole</strong> 2014 programme fourni par l'00e9tablissement scolaire</div>
       </div>
     </div>
     <div class="card" style="margin:10px 0;background:#ede9fe;border-color:#8b5cf6">
       <div class="card-title" style="color:#5b21b6">Contacts utiles</div>
       <div style="font-size:13px;color:#5b21b6;line-height:2">
-        <div> <strong>Talis Santé — Mme Abdokou</strong></div>
-        <div style="font-size:12px;color:#6b7280;margin-bottom:8px;padding-left:20px">Soutien psychologique enfants · À compléter</div>
-        <div> <strong>DRIEETS — Mme Rousseau</strong></div>
-        <div style="font-size:12px;color:#6b7280;padding-left:20px">Directrice · À compléter</div>
+        <div>d83ede7a <strong>Talis Sant00e9 2014 Mme Abdokou</strong></div>
+        <div style="font-size:12px;color:#6b7280;margin-bottom:8px;padding-left:20px">Soutien psychologique enfants 00b7 00c0 compl00e9ter</div>
+        <div>d83cdfdb <strong>DRIEETS 2014 Mme Rousseau</strong></div>
+        <div style="font-size:12px;color:#6b7280;padding-left:20px">Directrice 00b7 00c0 compl00e9ter</div>
       </div>
     </div>
     <div class="card" style="margin:10px 0">
       <div class="card-title">Jours de travail et repos hebdomadaire</div>
       <div style="font-size:13px;line-height:1.8;color:var(--text)">
-        <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong>Moins de 16 ans</strong> — maximum <strong>5 jours consécutifs</strong> · 2 jours de repos consécutifs obligatoires</div>
-        <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong>16 – 17 ans</strong> — maximum <strong>5 jours consécutifs</strong> · 2 jours de repos consécutifs obligatoires</div>
-        <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong>Dérogation possible</strong> (accord d'entreprise) → repos minimum de <strong>36h dont 24h consécutives</strong></div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong>Moins de 16 ans</strong> 2014 maximum <strong>5 jours cons00e9cutifs</strong> 00b7 2 jours de repos cons00e9cutifs obligatoires</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong>16 2013 17 ans</strong> 2014 maximum <strong>5 jours cons00e9cutifs</strong> 00b7 2 jours de repos cons00e9cutifs obligatoires</div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border)"><strong>D00e9rogation possible</strong> (accord d'entreprise) 2192 repos minimum de <strong>36h dont 24h cons00e9cutives</strong></div>
         <div style="padding:6px 0;background:#fee2e2;border-radius:8px;padding:10px;margin-top:6px">
-          <div style="font-weight:700;color:#991b1b;margin-bottom:4px">Heures supplémentaires interdites</div>
-          <div style="color:#991b1b;font-size:12px">• <strong>Moins de 16 ans</strong> : aucune heure supplémentaire autorisée</div>
-          <div style="color:#991b1b;font-size:12px">• <strong>16 – 17 ans</strong> : aucune heure supplémentaire autorisée</div>
-          <div style="color:#991b1b;font-size:12px;margin-top:4px">Les mineurs ne peuvent en aucun cas dépasser leur quota journalier légal.</div>
+          <div style="font-weight:700;color:#991b1b;margin-bottom:4px">Heures suppl00e9mentaires interdites</div>
+          <div style="color:#991b1b;font-size:12px">2022 <strong>Moins de 16 ans</strong> : aucune heure suppl00e9mentaire autoris00e9e</div>
+          <div style="color:#991b1b;font-size:12px">2022 <strong>16 2013 17 ans</strong> : aucune heure suppl00e9mentaire autoris00e9e</div>
+          <div style="color:#991b1b;font-size:12px;margin-top:4px">Les mineurs ne peuvent en aucun cas d00e9passer leur quota journalier l00e9gal.</div>
         </div>
       </div>
     </div>
@@ -681,80 +677,80 @@
       <div style="font-size:13px;color:var(--text)">
         <div style="padding:6px 0;border-bottom:1px solid var(--border)">
           <strong>Repos quotidien</strong><br>
-          <span style="color:#1d4ed8">Moins de 16 ans</span> — minimum <strong>14h consécutives</strong> entre deux journées<br>
-          <span style="color:#1d4ed8">16-18 ans</span> — minimum <strong>12h consécutives</strong>
+          <span style="color:#1d4ed8">Moins de 16 ans</span> 2014 minimum <strong>14h cons00e9cutives</strong> entre deux journ00e9es<br>
+          <span style="color:#1d4ed8">16-18 ans</span> 2014 minimum <strong>12h cons00e9cutives</strong>
         </div>
         <div style="padding:6px 0;border-bottom:1px solid var(--border)">
           <strong>Repos hebdomadaire</strong><br>
-          2 jours consécutifs incluant le dimanche<br>
-          <span style="font-size:11px;color:var(--text-muted)">Dérogation possible : 36h dont 24h consécutives</span>
+          2 jours cons00e9cutifs incluant le dimanche<br>
+          <span style="font-size:11px;color:var(--text-muted)">D00e9rogation possible : 36h dont 24h cons00e9cutives</span>
         </div>
         <div style="padding:6px 0;background:#fef3c7;border-radius:8px;padding:10px;margin-top:6px">
-          <strong>Règle des 50% pendant les vacances</strong><br>
-          L'enfant ne peut pas travailler plus de la <strong>moitié</strong> de la durée totale de chaque période de vacances scolaires.<br>
-          <span style="color:#92400e;font-size:12px">Été : un mois entier de repos obligatoire (juillet OU août complet)</span><br>
-          <span style="color:#92400e;font-size:12px">Cette règle s'applique quel que soit le nombre d'employeurs</span>
+          <strong>R00e8gle des 50% pendant les vacances</strong><br>
+          L'enfant ne peut pas travailler plus de la <strong>moiti00e9</strong> de la dur00e9e totale de chaque p00e9riode de vacances scolaires.<br>
+          <span style="color:#92400e;font-size:12px">00c9t00e9 : un mois entier de repos obligatoire (juillet OU ao00fbt complet)</span><br>
+          <span style="color:#92400e;font-size:12px">Cette r00e8gle s'applique quel que soit le nombre d'employeurs</span>
         </div>
       </div>
     </div>
     <div class="card" style="margin:10px 0">
       <div class="card-title">Rappels plateau</div>
       <div style="font-size:13px;line-height:1.8;color:var(--text)">
-        <div style="padding:4px 0">La présence commence au <strong>début du HMC</strong></div>
+        <div style="padding:4px 0">La pr00e9sence commence au <strong>d00e9but du HMC</strong></div>
         <div style="padding:4px 0">Le repas <strong>ne compte pas</strong> dans le quota journalier</div>
-        <div style="padding:4px 0">Alerter la mise en scène <strong>1h avant</strong> la fin max</div>
-        <div style="padding:4px 0">L'enfant peut refuser de tourner — <strong>ne jamais forcer</strong></div>
-        <div style="padding:4px 0">En cas de malaise ou incident → <strong>arrêt immédiat</strong></div>
+        <div style="padding:4px 0">Alerter la mise en sc00e8ne <strong>1h avant</strong> la fin max</div>
+        <div style="padding:4px 0">L'enfant peut refuser de tourner 2014 <strong>ne jamais forcer</strong></div>
+        <div style="padding:4px 0">En cas de malaise ou incident 2192 <strong>arr00eat imm00e9diat</strong></div>
       </div>
     </div>
     <div class="card" style="margin:10px 0">
-      <div class="card-title">Calendrier des commissions — Enfants du Spectacle IDF</div>
+      <div class="card-title">Calendrier des commissions 2014 Enfants du Spectacle IDF</div>
       
       <div style="text-align:center;padding:8px 0;font-size:11px;color:var(--text-muted)">
-        Source : DRIEETS Île-de-France · Màj 3/10/2025
+        Source : DRIEETS 00cele-de-France 00b7 M00e0j 3/10/2025
       </div>
     </div>
     <div class="card" style="margin:10px 0">
       <div class="card-title">Calendrier des commissions 2025-2026</div>
       <div style="background:#1a1a2e;border-radius:8px;padding:10px 12px;margin-bottom:10px;text-align:center">
         <div style="font-size:12px;font-weight:700;color:#fff">COMMISSION DES ENFANTS DU SPECTACLE</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:2px">DRIEETS Île-de-France · Màj 3/10/2025</div>
-        <div style="font-size:10px;color:#f87171;margin-top:4px;font-weight:600">Les dossiers incomplets ne sont pas présentés en commission</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:2px">DRIEETS 00cele-de-France 00b7 M00e0j 3/10/2025</div>
+        <div style="font-size:10px;color:#f87171;margin-top:4px;font-weight:600">Les dossiers incomplets ne sont pas pr00e9sent00e9s en commission</div>
       </div>
       <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:6px">2025</div>
-      <div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px">Dép. 75, 77, 78, 91, 93, 94, 95</div>
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px">D00e9p. 75, 77, 78, 91, 93, 94, 95</div>
       <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px">
         <thead><tr style="background:#1a1a2e;color:#fff">
-          <th style="padding:6px 8px;text-align:left">Réunion</th>
-          <th style="padding:6px 8px;text-align:left">Date limite dépôt</th>
+          <th style="padding:6px 8px;text-align:left">R00e9union</th>
+          <th style="padding:6px 8px;text-align:left">Date limite d00e9p00f4t</th>
         </tr></thead>
         <tbody>
           <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 6 novembre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Mer. 1er octobre 2025</td></tr>
-          <tr style="background:#f8fafc"><td style="padding:6px 8px;font-weight:600">Jeudi 4 décembre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Mar. 4 novembre</td></tr>
+          <tr style="background:#f8fafc"><td style="padding:6px 8px;font-weight:600">Jeudi 4 d00e9cembre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Mar. 4 novembre</td></tr>
         </tbody>
       </table>
-      <div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px">Dép. 92</div>
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px">D00e9p. 92</div>
       <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:14px">
         <thead><tr style="background:#1a1a2e;color:#fff">
-          <th style="padding:6px 8px;text-align:left">Réunion</th>
-          <th style="padding:6px 8px;text-align:left">Date limite dépôt</th>
+          <th style="padding:6px 8px;text-align:left">R00e9union</th>
+          <th style="padding:6px 8px;text-align:left">Date limite d00e9p00f4t</th>
         </tr></thead>
         <tbody>
           <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Mercredi 12 novembre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Mer. 1er octobre 2025</td></tr>
-          <tr style="background:#f8fafc"><td style="padding:6px 8px;font-weight:600">Mercredi 10 décembre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 3 novembre</td></tr>
+          <tr style="background:#f8fafc"><td style="padding:6px 8px;font-weight:600">Mercredi 10 d00e9cembre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 3 novembre</td></tr>
         </tbody>
       </table>
       <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:6px">2026</div>
-      <div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px">Dép. 75, 77, 78, 91, 93, 94, 95</div>
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px">D00e9p. 75, 77, 78, 91, 93, 94, 95</div>
       <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px">
         <thead><tr style="background:#1a1a2e;color:#fff">
-          <th style="padding:6px 8px;text-align:left">Réunion</th>
-          <th style="padding:6px 8px;text-align:left">Date limite dépôt</th>
+          <th style="padding:6px 8px;text-align:left">R00e9union</th>
+          <th style="padding:6px 8px;text-align:left">Date limite d00e9p00f4t</th>
         </tr></thead>
         <tbody>
-          <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 8 janvier</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 1er déc. 2025</td></tr>
-          <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 5 février</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Ven. 2 janvier</td></tr>
-          <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 12 mars</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 2 février</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 8 janvier</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 1er d00e9c. 2025</td></tr>
+          <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 5 f00e9vrier</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Ven. 2 janvier</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 12 mars</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 2 f00e9vrier</td></tr>
           <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 9 avril</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 2 mars</td></tr>
           <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 7 mai</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Mer. 1er avril</td></tr>
           <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 11 juin</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Ven. 1er mai</td></tr>
@@ -762,19 +758,19 @@
           <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 10 septembre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Mer. 1er juillet</td></tr>
           <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 8 octobre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Mar. 1er septembre</td></tr>
           <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 5 novembre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Jeu. 1er octobre</td></tr>
-          <tr><td style="padding:6px 8px;font-weight:600">Jeudi 3 décembre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 2 novembre</td></tr>
+          <tr><td style="padding:6px 8px;font-weight:600">Jeudi 3 d00e9cembre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 2 novembre</td></tr>
         </tbody>
       </table>
-      <div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px">Dép. 92</div>
+      <div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px">D00e9p. 92</div>
       <table style="width:100%;border-collapse:collapse;font-size:11px">
         <thead><tr style="background:#1a1a2e;color:#fff">
-          <th style="padding:6px 8px;text-align:left">Réunion</th>
-          <th style="padding:6px 8px;text-align:left">Date limite dépôt</th>
+          <th style="padding:6px 8px;text-align:left">R00e9union</th>
+          <th style="padding:6px 8px;text-align:left">Date limite d00e9p00f4t</th>
         </tr></thead>
         <tbody>
-          <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 8 janvier</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 1er déc. 2025</td></tr>
-          <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 5 février</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Ven. 2 janvier</td></tr>
-          <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Mercredi 11 mars</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 2 février</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 8 janvier</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 1er d00e9c. 2025</td></tr>
+          <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Jeudi 5 f00e9vrier</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Ven. 2 janvier</td></tr>
+          <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Mercredi 11 mars</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 2 f00e9vrier</td></tr>
           <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Mercredi 8 avril</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 2 mars</td></tr>
           <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Mercredi 6 mai</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Mer. 1er avril</td></tr>
           <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Mercredi 10 juin</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Ven. 1er mai</td></tr>
@@ -782,16 +778,16 @@
           <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Mercredi 9 septembre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Mer. 1er juillet</td></tr>
           <tr style="border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Mercredi 7 octobre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Mar. 1er septembre</td></tr>
           <tr style="background:#f8fafc;border-bottom:1px solid var(--border)"><td style="padding:6px 8px;font-weight:600">Mercredi 4 novembre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Jeu. 1er octobre</td></tr>
-          <tr><td style="padding:6px 8px;font-weight:600">Mercredi 2 décembre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 2 novembre</td></tr>
+          <tr><td style="padding:6px 8px;font-weight:600">Mercredi 2 d00e9cembre</td><td style="padding:6px 8px;color:var(--red-dark);font-weight:600">Lun. 2 novembre</td></tr>
         </tbody>
       </table>
     </div>
     <div style="text-align:center;padding:10px 0;font-size:11px;color:var(--text-muted)">
-      Source : DRIEETS Île-de-France · Réglementation en vigueur
+      Source : DRIEETS 00cele-de-France 00b7 R00e9glementation en vigueur
     </div>
   </div>
 </div>
-<div id="page-cours" class="page"><div class="page-header"><div class="page-title">Cours sur plateau</div><div class="page-sub" id="cours-film-name">Planning scolaire</div></div><div class="scroll-content"><div class="card"><div style="margin-bottom:10px"><div id="cours-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div></div><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Planning du jour</span><button onclick="openModal('modal-cours')" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter</button></div><div id="cours-list"><div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div></div></div><div class="card"><div class="card-title">Envoyer le planning</div><div class="send-btns"><button class="send-btn btn-wa" onclick="envoyerCoursWA('parents')"><span style="font-size:20px">&#128172;</span>Parents<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-wa" onclick="envoyerCoursWA('prod')" style="background:#1a9e5a"><span style="font-size:20px">&#128172;</span>Production<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-copy" onclick="copierCours()" style="grid-column:span 2"><span style="font-size:20px">&#128203;</span>Copier</button></div></div></div></div>
+<div id="page-cours" class="page"><div class="page-header"><div class="page-title">Cours sur plateau</div><div class="page-sub" id="cours-film-name">Planning scolaire</div></div><div class="scroll-content"><div class="card"><div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:6px">Filtrer par date</div><div id="cours-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div></div><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Planning du jour</span><button onclick="openModal('modal-cours')" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter</button></div><div id="cours-list"><div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div></div></div><div class="card"><div class="card-title">Envoyer le planning</div><div class="send-btns"><button class="send-btn btn-wa" onclick="envoyerCoursWA('parents')"><span style="font-size:20px">&#128172;</span>Parents<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-wa" onclick="envoyerCoursWA('prod')" style="background:#1a9e5a"><span style="font-size:20px">&#128172;</span>Production<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-copy" onclick="copierCours()" style="grid-column:span 2"><span style="font-size:20px">&#128203;</span>Copier</button></div></div></div></div>
 <nav class="nav">
   <button class="nav-btn" onclick="showPage('films',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
@@ -807,7 +803,7 @@
   </button>
   <button class="nav-btn" onclick="showPage('resume',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-    Résumé
+    R00e9sum00e9
   </button>
   <button class="nav-btn" onclick="showPage('bilan',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
@@ -825,38 +821,38 @@
 <!-- MODALS -->
 <div class="modal-overlay" id="modal-film">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-film')">✕</button>
+    <button class="modal-close" onclick="closeModal('modal-film')">2715</button>
     <div class="modal-title">Nouveau film</div>
     <div class="form-row"><label class="form-label">Titre du film / production</label><input class="form-input" id="new-film-nom" placeholder="ex: Les Aventuriers"></div>
-    <div class="form-row"><label class="form-label">Réalisateur</label><input class="form-input" id="new-film-real" placeholder="ex: Marie Dubois"></div>
-    <button class="form-btn" onclick="ajouterFilm()">Créer ce film</button>
+    <div class="form-row"><label class="form-label">R00e9alisateur</label><input class="form-input" id="new-film-real" placeholder="ex: Marie Dubois"></div>
+    <button class="form-btn" onclick="ajouterFilm()">Cr00e9er ce film</button>
   </div>
 </div>
 <div class="modal-overlay" id="modal-enfant">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-enfant')">✕</button>
+    <button class="modal-close" onclick="closeModal('modal-enfant')">2715</button>
     <div class="modal-title">Ajouter un enfant</div>
-    <div class="form-row"><label class="form-label">Prénom Nom</label><input class="form-input" id="new-enf-nom" placeholder="ex: Léa Martin"></div>
-    <div class="form-row"><label class="form-label">Tranche d'âge</label>
+    <div class="form-row"><label class="form-label">Pr00e9nom Nom</label><input class="form-input" id="new-enf-nom" placeholder="ex: L00e9a Martin"></div>
+    <div class="form-row"><label class="form-label">Tranche d'00e2ge</label>
       <select class="form-input" id="new-enf-age">
         <option value="&lt;3">Moins de 3 ans (max 2h)</option>
-        <option value="3-5">3 – 5 ans (max 3h)</option>
-        <option value="6-11">6 – 11 ans (max 4h)</option>
-        <option value="12-15" selected>12 – 15 ans (max 6h)</option>
-        <option value="16-17">16 – 17 ans (max 8h)</option>
+        <option value="3-5">3 2013 5 ans (max 3h)</option>
+        <option value="6-11">6 2013 11 ans (max 4h)</option>
+        <option value="12-15" selected>12 2013 15 ans (max 6h)</option>
+        <option value="16-17">16 2013 17 ans (max 8h)</option>
       </select>
     </div>
     <div class="form-row"><label class="form-label">Genre</label>
       <select class="form-input" id="new-enf-genre">
-        <option value="m">Garçon</option>
+        <option value="m">Gar00e7on</option>
         <option value="f">Fille</option>
-        <option value="x">Mixte (garçons + filles)</option>
+        <option value="x">Mixte (gar00e7ons + filles)</option>
       </select>
     </div>
     <div class="form-row"><label class="form-label">Statut</label>
       <select class="form-input" id="new-enf-statut">
-        <option value="role">Rôle</option>
-        <option value="petit-role">Petit rôle</option>
+        <option value="role">R00f4le</option>
+        <option value="petit-role">Petit r00f4le</option>
         <option value="silhouette-parlante">Silhouette parlante</option>
         <option value="silhouette">Silhouette</option>
         <option value="figurant">Figurant</option>
@@ -868,35 +864,60 @@
       </select>
     </div>
     <div class="form-row"><label class="form-label">Couleur</label><input type="color" class="form-input" id="new-enf-color" value="#3b82f6" style="height:40px;padding:4px;cursor:pointer"></div>
-    <div class="form-row"><label class="form-label"> Numéro WhatsApp parent (optionnel)</label><input class="form-input" type="tel" id="new-enf-tel" placeholder="+336..."></div>
+    <div class="form-row"><label class="form-label">d83ddcf1 Num00e9ro WhatsApp parent (optionnel)</label><input class="form-input" type="tel" id="new-enf-tel" placeholder="+336..."></div>
     <button class="form-btn" style="background:var(--green)" onclick="ajouterEnfant()">Ajouter cet enfant</button>
   </div>
 </div>
 <div class="modal-overlay" id="modal-cours"><div class="modal"><button class="modal-close" onclick="closeModal('modal-cours')">X</button><div class="modal-title">Ajouter un cours</div><div class="form-row"><label class="form-label">Enfant</label><select class="form-input" id="cours-enfant-id"></select></div><div class="form-row"><label class="form-label">Matiere</label><select class="form-input" id="cours-matiere"><option>Mathematiques</option><option>Francais</option><option>Histoire-Geo</option><option>Sciences</option><option>Anglais</option><option>Arts</option><option>Sport</option><option>Autre</option></select></div><div class="form-row"><label class="form-label">Matiere perso (optionnel)</label><input class="form-input" id="cours-matiere-custom" placeholder="ex: Espagnol..."></div><div class="form-row"><label class="form-label">Date</label><input class="form-input" type="date" id="cours-date"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Debut</label><input class="form-input" type="time" id="cours-debut"></div><div><label class="form-label">Fin</label><input class="form-input" type="time" id="cours-fin"></div></div><div class="form-row"><label class="form-label">Precepteur (optionnel)</label><input class="form-input" id="cours-prof" placeholder="ex: M. Martin"></div><button class="form-btn" style="background:var(--purple)" onclick="ajouterCours()">Ajouter ce cours</button></div></div>
 <div class="modal-overlay" id="modal-edit-log"><div class="modal"><button class="modal-close" onclick="closeModal('modal-edit-log')">X</button><div class="modal-title">Modifier cette action</div><input type="hidden" id="edit-log-id"><div class="form-row"><label class="form-label">Action</label><select class="form-input" id="edit-log-type"><option value="arrivee">Arrivee</option><option value="hmc">HMC</option><option value="tournage">Tournage</option><option value="pause">Pause</option><option value="repas">Repas/Cantine</option><option value="attente">Attente</option><option value="cours">Cours</option><option value="cascade">Cascade</option><option value="sante">Sante</option><option value="son">Equipage son</option><option value="fin">Fin journee</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Heure debut</label><input class="form-input" type="time" id="edit-log-heure"></div><div><label class="form-label">Heure fin</label><input class="form-input" type="time" id="edit-log-fin"></div></div><button class="form-btn" style="background:var(--blue)" onclick="sauvegarderLog()">Enregistrer</button></div></div>
+<div class="modal-overlay" id="modal-hmc">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-hmc')">2715</button>
+    <div class="modal-title">HMC 2014 Checklist</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Cochez ce qui est fait pour l'enfant</div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
+      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--blue-light);border-radius:8px;cursor:pointer">
+        <input type="checkbox" id="hmc-habillage" style="width:20px;height:20px;cursor:pointer">
+        <span style="font-size:15px">d83ddc57</span>
+        <span style="font-size:14px;font-weight:600;color:var(--blue-dark)">Habillage</span>
+      </label>
+      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:#fce7f3;border-radius:8px;cursor:pointer">
+        <input type="checkbox" id="hmc-maquillage" style="width:20px;height:20px;cursor:pointer">
+        <span style="font-size:15px">d83ddc84</span>
+        <span style="font-size:14px;font-weight:600;color:#9d174d">Maquillage</span>
+      </label>
+      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--amber-light);border-radius:8px;cursor:pointer">
+        <input type="checkbox" id="hmc-coiffure" style="width:20px;height:20px;cursor:pointer">
+        <span style="font-size:15px">2702fe0f</span>
+        <span style="font-size:14px;font-weight:600;color:var(--amber-dark)">Coiffure</span>
+      </label>
+      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--gray-light);border-radius:8px;cursor:pointer">
+        <input type="checkbox" id="hmc-son" style="width:20px;height:20px;cursor:pointer">
+        <span style="font-size:15px">d83cdf99fe0f</span>
+        <span style="font-size:14px;font-weight:600;color:var(--gray-dark)">Son (micro)</span>
+      </label>
+      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--purple-light);border-radius:8px;cursor:pointer">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script>
-// ─── CONSTANTES ───────────────────────────────────────────────────
-// Limites selon période (scolaire ou vacances)
+// 250025002500 CONSTANTES 250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
+// Limites selon p00e9riode (scolaire ou vacances)
 const LIMITES_SCOLAIRE = { '<3': 60, '3-5': 120, '6-11': 180, '12-15': 240, '16-17': 480 };
 const LIMITES_VACANCES = { '<3': 60, '3-5': 120, '6-11': 240, '12-15': 360, '16-17': 480 };
 // Vacances scolaires Zone C (Paris/Ile-de-France) 2025-2026
 const VACANCES_ZONE_C = [
   { debut: '2025-10-18', fin: '2025-11-03', label: 'Toussaint 2025' },
-  { debut: '2025-12-20', fin: '2026-01-05', label: 'Noël 2025' },
+  { debut: '2025-12-20', fin: '2026-01-05', label: 'No00ebl 2025' },
   { debut: '2026-02-14', fin: '2026-03-02', label: 'Hiver 2026' },
   { debut: '2026-04-18', fin: '2026-05-04', label: 'Printemps 2026' },
-  { debut: '2026-07-04', fin: '2026-09-01', label: 'Été 2026' },
+  { debut: '2026-07-04', fin: '2026-09-01', label: '00c9t00e9 2026' },
   // Mercredis et week-ends sont toujours hors scolaire
 ];
-// Jours fériés 2025-2026
+// Jours f00e9ri00e9s 2025-2026
 const JOURS_FERIES = [
   '2025-11-01','2025-11-11','2025-12-25',
   '2026-01-01','2026-04-06','2026-05-01','2026-05-08','2026-05-14','2026-05-25','2026-06-15','2026-07-14','2026-08-15','2026-11-01','2026-11-11','2026-12-25'
 ];
 function estEnVacances(dateStr) {
-  // Si mode manuel forcé, utiliser ça
+  // Si mode manuel forc00e9, utiliser 00e7a
   if (modeVacancesForce === 'vacances') return true;
   if (modeVacancesForce === 'ferie') return true;
   if (modeVacancesForce === 'scolaire') return false;
@@ -908,44 +929,44 @@ function estEnVacances(dateStr) {
   
   // Week-end = vacances pour le calcul
   if (jour === 0 || jour === 6) return true;
-  // Jour férié = vacances
+  // Jour f00e9ri00e9 = vacances
   if (JOURS_FERIES.includes(str)) return true;
-  // Périodes de vacances
+  // P00e9riodes de vacances
   return VACANCES_ZONE_C.some(v => str >= v.debut && str <= v.fin);
 }
 function getPeriodeLabel(dateStr) {
-  if (modeVacancesForce === 'scolaire') return 'Scolaire (forcé)';
-  if (modeVacancesForce === 'vacances') return 'Vacances (forcé)';
-  if (modeVacancesForce === 'ferie') return 'Férié (forcé)';
-  if (modeVacancesForce !== null) return modeVacancesForce ? 'Vacances (forcé)' : 'Scolaire (forcé)';
+  if (modeVacancesForce === 'scolaire') return 'Scolaire (forc00e9)';
+  if (modeVacancesForce === 'vacances') return 'Vacances (forc00e9)';
+  if (modeVacancesForce === 'ferie') return 'F00e9ri00e9 (forc00e9)';
+  if (modeVacancesForce !== null) return modeVacancesForce ? 'Vacances (forc00e9)' : 'Scolaire (forc00e9)';
   const d = dateStr ? new Date(dateStr) : new Date();
   const str = d.toISOString().slice(0,10);
   const v = VACANCES_ZONE_C.find(v => str >= v.debut && str <= v.fin);
   if (v) return v.label;
   const jour = d.getDay();
   if (jour === 0 || jour === 6) return 'Week-end';
-  return 'Période scolaire';
+  return 'P00e9riode scolaire';
 }
-let modeVacancesForce = null; // null = auto, true = vacances forcé, false = scolaire forcé
-let modeVacances = false; // calculé automatiquement
+let modeVacancesForce = null; // null = auto, true = vacances forc00e9, false = scolaire forc00e9
+let modeVacances = false; // calcul00e9 automatiquement
 function getLimites(dateStr) { 
   return estEnVacances(dateStr) ? LIMITES_VACANCES : LIMITES_SCOLAIRE; 
 }
 const LIMITES = new Proxy({}, { get: (t, k) => getLimites()[k] });
 const TYPE_LABEL = {
-  arrivee: 'Arrivée', hmc: 'HMC/Prép.', tournage: 'Tournage',
+  arrivee: 'Arriv00e9e', hmc: 'HMC/Pr00e9p.', tournage: 'Tournage',
   pause: 'Pause', repas: 'Repas', attente: 'Hors plateau',
-  cours: 'Cours', cascade: 'Cascade', sante: 'Santé', son: 'Équipage son', fin: 'Fin journée'
+  cours: 'Cours', cascade: 'Cascade', sante: 'Sant00e9', son: '00c9quipage son', fin: 'Fin journ00e9e', transport: 'Transport', pickup: 'Pick-up maison'
 };
 const TYPE_COLOR = {
   arrivee: ['#d1fae5', '#065f46'], hmc: ['#dbeafe', '#1d4ed8'],
   tournage: ['#a7f3d0', '#065f46'], pause: ['#f3f4f6', '#1f2937'],
   repas: ['#fef9c3', '#713f12'], attente: ['#fef3c7', '#92400e'],
   cours: ['#ede9fe', '#5b21b6'], cascade: ['#fee2e2', '#991b1b'],
-  sante: ['#fce7f3', '#9d174d'], son: ['#dbeafe', '#1d4ed8'], fin: ['#fce7f3', '#9d174d']
+  sante: ['#fce7f3', '#9d174d'], son: ['#dbeafe', '#1d4ed8'], fin: ['#fce7f3', '#9d174d'], transport: ['#e0f2fe', '#0369a1'], pickup: ['#d1fae5', '#065f46']
 };
 const WORK_TYPES = ['tournage', 'hmc', 'cascade', 'pause', 'son'];
-// ─── STATE ────────────────────────────────────────────────────────
+// 250025002500 STATE 25002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 let state = {
   films: [],
   enfants: [],
@@ -955,13 +976,10 @@ let state = {
 };
 let selectedEnfants = [];  // [] = tous
 let filtreStatut = 'tous'; // 'tous', 'role', 'figurant'
-let bilanFilmId = null;
-let resumeDate = null;
-let coursDateFiltre = null;
 let filtreFilms = 'tous'; // filtre dans la page Films
 function setFiltreFilms(f) {
   filtreFilms = f;
-  // Mettre à jour les boutons
+  // Mettre 00e0 jour les boutons
   const tabs = ['tous','role','petit-role','silhouette-parlante','silhouette','figurant','cascadeur','doublure'];
   tabs.forEach(k => {
     const btn = document.getElementById('ftab-' + k);
@@ -996,7 +1014,7 @@ function enfantsFiltres() {
 let recognition = null;
 let isListening = false;
 let nextId = 1;
-// ─── SUPABASE AUTH ───────────────────────────────────────────────
+// 250025002500 SUPABASE AUTH 25002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 const SB_URL = 'https://ljregtoosrhetgocvrkg.supabase.co';
 const SB_KEY = 'sb_publishable_zBiWpvk73YHJepQ1Ds2PXA_naS3HTPB';
 let currentUser = null;
@@ -1105,7 +1123,7 @@ async function handleLogin() {
     btn.disabled = false;
   }
 }
-// ─── PERSISTENCE ─────────────────────────────────────────────────
+// 250025002500 PERSISTENCE 2500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 let saveTimer = null;
 function save() {
   try { localStorage.setItem('tournage_v2', JSON.stringify({ state, nextId, selectedEnfants })); } catch(e) {}
@@ -1161,9 +1179,9 @@ function saveContacts() {
   if (wp) wp.value = state.contacts.prod;
   save();
 }
-// ─── MODE SCOLAIRE / VACANCES ────────────────────────────────────
+// 250025002500 MODE SCOLAIRE / VACANCES 250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function toggleVacances(val) {
-  // null = auto, 'scolaire'/'vacances'/'ferie' = forcé
+  // null = auto, 'scolaire'/'vacances'/'ferie' = forc00e9
   if (modeVacancesForce === val) {
     modeVacancesForce = null; // re-clic = retour auto
   } else {
@@ -1195,18 +1213,18 @@ function updatePeriodeLabel() {
   } else if (modeVacancesForce === 'ferie' && btnFer) {
     btnFer.style.background = '#f59e0b'; btnFer.style.color = '#fff'; btnFer.style.borderColor = '#f59e0b';
   } else {
-    // Auto — on colore selon la période détectée en grisé
+    // Auto 2014 on colore selon la p00e9riode d00e9tect00e9e en gris00e9
     if (modeVacances && btnVac) { btnVac.style.borderColor = '#10b981'; btnVac.style.color = '#10b981'; }
     else if (btnScol) { btnScol.style.borderColor = '#1d4ed8'; btnScol.style.color = '#1d4ed8'; }
   }
 }
-// ─── HELPERS ──────────────────────────────────────────────────────
+// 250025002500 HELPERS 250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function statutLabel(statut, genre) {
   const f = genre === 'f';
   const m = genre === 'm';
   const map = {
-    'role': 'Rôle',
-    'petit-role': 'Petit rôle',
+    'role': 'R00f4le',
+    'petit-role': 'Petit r00f4le',
     'silhouette-parlante': 'Silhouette parlante',
     'silhouette': 'Silhouette',
     'figurant': f ? 'Figurante' : (m ? 'Figurant' : 'Figurant(e)'),
@@ -1216,11 +1234,11 @@ function statutLabel(statut, genre) {
     'danseur': f ? 'Danseuse' : (m ? 'Danseur' : 'Danseur/euse'),
     'artiste-cirque': 'Artiste de cirque'
   };
-  return map[statut] || 'Rôle';
+  return map[statut] || 'R00f4le';
 }
 function toMin(t) { const [h, m] = t.split(':').map(Number); return h * 60 + m; }
 function fmt(min) {
-  if (!min || min <= 0) return '—';
+  if (!min || min <= 0) return '2014';
   const h = Math.floor(min / 60), m = min % 60;
   return h > 0 ? (m > 0 ? `${h}h${String(m).padStart(2,'0')}` : `${h}h`) : `${m}min`;
 }
@@ -1233,7 +1251,7 @@ function initials(nom) { return nom.split(' ').map(w => w[0]).join('').toUpperCa
 function activeFilm() { return state.films.find(f => f.id === state.activeFilmId); }
 function activeEnfants() { return state.enfants.filter(e => e.filmId === state.activeFilmId); }
 function todayLogs() { return state.logs.filter(l => l.filmId === state.activeFilmId && l.date === todayStr()); }
-// ─── CLOCK ────────────────────────────────────────────────────────
+// 250025002500 CLOCK 25002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function tickClock() {
   const n = new Date();
   const hm = `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
@@ -1241,7 +1259,7 @@ function tickClock() {
   const el = document.getElementById('live-clock');
   if (el) el.textContent = hm;
   const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const months = ['janvier','f00e9vrier','mars','avril','mai','juin','juillet','ao00fbt','septembre','octobre','novembre','d00e9cembre'];
   const nd = new Date();
   const ds = `${days[nd.getDay()]} ${nd.getDate()} ${months[nd.getMonth()]} ${nd.getFullYear()}`;
   const ld = document.getElementById('live-date');
@@ -1251,14 +1269,14 @@ function tickClock() {
 }
 setInterval(tickClock, 1000);
 tickClock();
-// ─── NAVIGATION ───────────────────────────────────────────────────
+// 250025002500 NAVIGATION 250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function showPage(name, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   if (btn) btn.classList.add('active');
   if (name === 'planning') 
-  if (name === 'resume') { remplirSelectResume(); renderResume(); }
+  if (name === 'resume') renderResume();
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
   if (name === 'bilan') renderBilan();
@@ -1268,7 +1286,7 @@ function showPage(name, btn) {
 }
 function openModal(id) { document.getElementById(id).classList.add('open'); if(id==='modal-groupe') ouvrirGroupe(); if(id==='modal-cours') ouvrirModalCours(); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-// ─── FILMS ────────────────────────────────────────────────────────
+// 250025002500 FILMS 25002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function ajouterFilm() {
   const nom = document.getElementById('new-film-nom').value.trim();
   const real = document.getElementById('new-film-real').value.trim();
@@ -1296,7 +1314,7 @@ function setActiveFilm(id) {
   renderLog();
 }
 function supprimerFilm(id) {
-  if (!confirm('Supprimer ce film et toutes ses données ?')) return;
+  if (!confirm('Supprimer ce film et toutes ses donn00e9es ?')) return;
   state.films = state.films.filter(f => f.id !== id);
   state.enfants = state.enfants.filter(e => e.filmId !== id);
   state.logs = state.logs.filter(l => l.filmId !== id);
@@ -1308,7 +1326,7 @@ function supprimerFilm(id) {
 }
 function updateFilmDisplay() {
   const f = activeFilm();
-  const name = f ? f.nom : 'Aucun film sélectionné';
+  const name = f ? f.nom : 'Aucun film s00e9lectionn00e9';
   ['film-name-live', 'planning-film-name', 'resume-film-name', 'bilan-film-name'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.textContent = name;
@@ -1318,28 +1336,28 @@ function renderFilmsPage() {
   const fl = document.getElementById('films-list');
   if (!fl) return;
   if (!state.films.length) {
-    fl.innerHTML = '<div class="empty"><div class="empty-icon"></div>Aucun film. Créez votre premier projet.</div>';
+    fl.innerHTML = '<div class="empty"><div class="empty-icon">d83cdfac</div>Aucun film. Cr00e9ez votre premier projet.</div>';
   } else {
     fl.innerHTML = state.films.map(f => `
       <div class="film-card ${f.id === state.activeFilmId ? 'active-film' : ''}" onclick="setActiveFilm(${f.id})">
-        <div class="film-card-icon"></div>
+        <div class="film-card-icon">d83cdfac</div>
         <div class="film-card-info">
           <div class="film-card-name">${f.nom}</div>
-          <div class="film-card-sub">${f.real ? 'Réal. ' + f.real : 'Appuyez pour sélectionner'}${f.id === state.activeFilmId ? ' ✓ Actif' : ''}</div>
+          <div class="film-card-sub">${f.real ? 'R00e9al. ' + f.real : 'Appuyez pour s00e9lectionner'}${f.id === state.activeFilmId ? ' 2713 Actif' : ''}</div>
         </div>
-        <button class="film-card-del" onclick="event.stopPropagation();supprimerFilm(${f.id})"></button>
+        <button class="film-card-del" onclick="event.stopPropagation();supprimerFilm(${f.id})">d83dddd1</button>
       </div>`).join('');
   }
   renderEnfantsList();
   renderContactsExtra();
 }
-// ─── ENFANTS ──────────────────────────────────────────────────────
+// 250025002500 ENFANTS 250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function ajouterEnfant() {
-  if (!state.activeFilmId) { alert('Créez ou sélectionnez un film d\'abord.'); return; }
+  if (!state.activeFilmId) { alert('Cr00e9ez ou s00e9lectionnez un film d\'abord.'); return; }
   const nom = document.getElementById('new-enf-nom').value.trim();
   const age = document.getElementById('new-enf-age').value;
   const couleur = document.getElementById('new-enf-color').value;
-  if (!nom) { alert('Entrez un prénom.'); return; }
+  if (!nom) { alert('Entrez un pr00e9nom.'); return; }
   const tel = document.getElementById('new-enf-tel').value.trim();
   const statut = document.getElementById('new-enf-statut').value;
   const genre = document.getElementById('new-enf-genre').value;
@@ -1397,7 +1415,7 @@ function renderEnfantsList() {
   const enfs = filtreFilms === 'tous' ? tous : tous.filter(e => (e.statut || 'role') === filtreFilms);
   if (!enfs.length) {
     const msg = filtreFilms === 'tous' ? 'Aucun enfant sur ce film.' : 'Aucun enfant avec ce statut.';
-    el.innerHTML = '<div class="empty"><div class="empty-icon"></div>' + msg + '</div>';
+    el.innerHTML = '<div class="empty"><div class="empty-icon">d83ddc66</div>' + msg + '</div>';
     return;
   }
   el.innerHTML = enfs.map(e => `
@@ -1405,15 +1423,15 @@ function renderEnfantsList() {
       <div style="width:34px;height:34px;border-radius:50%;background:${e.couleur}22;color:${e.couleur};font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${initials(e.nom)}</div>
       <div style="flex:1">
         <div style="font-size:14px;font-weight:600">${e.nom}</div>
-        <div style="font-size:11px;color:var(--text-muted)">${e.age} ans · max ${fmt(LIMITES[e.age])}/jour</div>
+        <div style="font-size:11px;color:var(--text-muted)">${e.age} ans 00b7 max ${fmt(LIMITES[e.age])}/jour</div>
         <div style="font-size:11px;color:var(--purple-dark);font-weight:600">${statutLabel(e.statut)}</div>
-        <div style="font-size:11px;color:${e.tel ? '#10b981' : 'var(--text-muted)'}"> ${e.tel || 'Pas de numéro parent'}</div>
+        <div style="font-size:11px;color:${e.tel ? '#10b981' : 'var(--text-muted)'}">d83ddcf1 ${e.tel || 'Pas de num00e9ro parent'}</div>
       </div>
-      <button onclick="ouvrirModifierEnfant(${e.id})" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);font-size:11px;font-weight:600;cursor:pointer">✏️</button>
-      <button onclick="supprimerEnfant(${e.id})" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)">✕</button>
+      <button onclick="ouvrirModifierEnfant(${e.id})" style="padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);font-size:11px;font-weight:600;cursor:pointer">270ffe0f</button>
+      <button onclick="supprimerEnfant(${e.id})" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)">2715</button>
     </div>`).join('');
 }
-// ─── CHIPS ────────────────────────────────────────────────────────
+// 250025002500 CHIPS 25002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function renderChips() {
   const c = document.getElementById('enfant-chips');
   if (!c) return;
@@ -1442,28 +1460,18 @@ function selectEnfant(id) {
   renderChips();
   save();
 }
-// ─── LOG ACTION ───────────────────────────────────────────────────
+// 250025002500 LOG ACTION 250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function logAction(type) {
-  if (!state.activeFilmId) { alert('Sélectionnez un film d\'abord (onglet Films).'); return; }
+  if (!state.activeFilmId) { alert('S00e9lectionnez un film d\'abord (onglet Films).'); return; }
   const enfs = activeEnfants();
   if (!enfs.length) { alert('Ajoutez des enfants dans l\'onglet Films.'); return; }
   const hm = nowHM();
   const targets = selectedEnfants.length > 0 ? selectedEnfants : enfs.map(e => e.id);
   targets.forEach(eid => {
-    const PONCTUEL = ['arrivee', 'fin', 'pickup'];
-    const prev = todayLogs()
-      .filter(l => l.enfantId === eid && !l.fin)
-      .sort((a, b) => b.heure.localeCompare(a.heure))[0];
+        const PONCTUEL = ['arrivee','fin','pickup','transport'];
+    const prev = todayLogs().filter(l=>l.enfantId===eid&&!l.fin).sort((a,b)=>b.heure.localeCompare(a.heure))[0];
     if (prev && !PONCTUEL.includes(type)) prev.fin = hm;
-    state.logs.push({
-      id: nextId++,
-      filmId: state.activeFilmId,
-      enfantId: eid,
-      type,
-      heure: hm,
-      fin: PONCTUEL.includes(type) ? hm : null,
-      date: todayStr()
-    });
+    state.logs.push({id:nextId++,filmId:state.activeFilmId,enfantId:eid,type,heure:hm,fin:PONCTUEL.includes(type)?hm:null,date:todayStr()});
   });
   // update last-time on button
   const ltEl = document.getElementById('lt-' + type);
@@ -1505,27 +1513,25 @@ function renderLog() {
   if (lc) lc.textContent = `(${logs.length})`;
   if (!el) return;
   if (!logs.length) {
-    el.innerHTML = '<div class="empty"><div class="empty-icon"></div>Appuyez sur une action pour commencer</div>';
+    el.innerHTML = '<div class="empty"><div class="empty-icon">d83ddccb</div>Appuyez sur une action pour commencer</div>';
     return;
   }
   const enfs = activeEnfants();
   el.innerHTML = logs.map(l => {
     const enf = enfs.find(e => e.id === l.enfantId);
     const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6', '#1f2937'];
-    const dur = l.fin && l.fin !== l.heure ? fmt(toMin(l.fin) - toMin(l.heure)) : '';
-    const PONCT = ['arrivee','fin','pickup'];
-    const heures = (PONCT.includes(l.type) || !l.fin || l.fin===l.heure) ? l.heure : l.heure + ' → ' + l.fin;
+    const dur = l.fin ? fmt(toMin(l.fin) - toMin(l.heure)) : 'en cours';
     return `<div class="log-item">
-      <div class="log-time" style="font-size:12px;min-width:90px">${heures}</div>
+      <div class="log-time">${l.heure}</div>
       <div class="log-tag" style="background:${bg};color:${tc}">${TYPE_LABEL[l.type] || l.type}</div>
-      <div class="log-who">${enf ? enf.nom.split(' ')[0] : '?'}${l.fin ? ' → ' + l.fin : ''}${l.detail ? ' · ' + l.detail : ''}</div>
+      <div class="log-who">${enf ? enf.nom.split(' ')[0] : '?'}${l.fin ? ' 2192 ' + l.fin : ''}${l.detail ? ' 00b7 ' + l.detail : ''}</div>
       <div class="log-dur">${dur}</div>
       <button class="log-del" onclick="ouvrirEditLog(${l.id})" style="color:var(--blue)">&#9998;</button>
-      <button class="log-del" onclick="delLog(${l.id})">✕</button>
+      <button class="log-del" onclick="delLog(${l.id})">2715</button>
     </div>`;
   }).join('');
 }
-// ─── STATUS BAR ───────────────────────────────────────────────────
+// 250025002500 STATUS BAR 250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function renderProgressBars() {
   const el = document.getElementById('live-progress-bars');
   if (!el) return;
@@ -1575,15 +1581,15 @@ function renderStatusBar() {
     const [bg] = last ? TYPE_COLOR[last.type] || ['#f3f4f6'] : ['#f3f4f6'];
     return `<div class="status-card ${warn ? 'status-warn' : ''}">
       <div class="status-name">${e.nom.split(' ')[0]}</div>
-      <div class="status-state"><div class="dot" style="background:${bg}"></div>${last ? (TYPE_LABEL[last.type] || last.type) : 'Non arrivé'}</div>
-      <div class="status-time">${last ? last.heure : '—'} · plateau ${pct}%</div>
+      <div class="status-state"><div class="dot" style="background:${bg}"></div>${last ? (TYPE_LABEL[last.type] || last.type) : 'Non arriv00e9'}</div>
+      <div class="status-time">${last ? last.heure : '2014'} 00b7 plateau ${pct}%</div>
     </div>`;
   }).join('');
 }
-// ─── VOICE ────────────────────────────────────────────────────────
+// 250025002500 VOICE 25002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function toggleMic() {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    alert('La dictée vocale nécessite Chrome ou Safari récent.');
+    alert('La dict00e9e vocale n00e9cessite Chrome ou Safari r00e9cent.');
     return;
   }
   if (isListening) { stopMic(); return; }
@@ -1595,7 +1601,7 @@ function toggleMic() {
   recognition.onstart = () => {
     isListening = true;
     document.getElementById('mic-btn').classList.add('on');
-    document.getElementById('mic-hint').textContent = 'Écoute… parlez !';
+    document.getElementById('mic-hint').textContent = '00c9coute2026 parlez !';
   };
   recognition.onresult = (e) => {
     const t = Array.from(e.results).map(r => r[0].transcript).join('');
@@ -1612,21 +1618,21 @@ function stopMic() {
   const btn = document.getElementById('mic-btn');
   if (btn) btn.classList.remove('on');
   const hint = document.getElementById('mic-hint');
-  if (hint) hint.textContent = 'Dicter : "tournage", "pause", "repas"…';
+  if (hint) hint.textContent = 'Dicter : "tournage", "pause", "repas"2026';
   setTimeout(() => { const t = document.getElementById('mic-txt'); if (t) t.textContent = ''; }, 3000);
 }
 function parseVoice(text) {
   const map = {
-    'arrivée': 'arrivee', 'arrivee': 'arrivee', 'arrivé': 'arrivee',
-    'hmc': 'hmc', 'maquillage': 'hmc', 'costume': 'hmc', 'préparation': 'hmc', 'prep': 'hmc',
+    'arriv00e9e': 'arrivee', 'arrivee': 'arrivee', 'arriv00e9': 'arrivee',
+    'hmc': 'hmc', 'maquillage': 'hmc', 'costume': 'hmc', 'pr00e9paration': 'hmc', 'prep': 'hmc',
     'tournage': 'tournage', 'action': 'tournage', 'on tourne': 'tournage',
     'pause': 'pause', 'coupure': 'pause',
-    'repas': 'repas', 'déjeuner': 'repas', 'manger': 'repas', 'lunch': 'repas',
+    'repas': 'repas', 'd00e9jeuner': 'repas', 'manger': 'repas', 'lunch': 'repas',
     'attente': 'attente',
-    'cours': 'cours', 'école': 'cours', 'scolaire': 'cours',
+    'cours': 'cours', '00e9cole': 'cours', 'scolaire': 'cours',
     'cascade': 'cascade',
-    'santé': 'sante', 'médecin': 'sante', 'docteur': 'sante',
-    'fin': 'fin', 'départ': 'fin', 'terminé': 'fin', 'fini': 'fin'
+    'sant00e9': 'sante', 'm00e9decin': 'sante', 'docteur': 'sante',
+    'fin': 'fin', 'd00e9part': 'fin', 'termin00e9': 'fin', 'fini': 'fin'
   };
   for (const [k, v] of Object.entries(map)) {
     if (text.includes(k)) { logAction(v); return; }
@@ -1634,51 +1640,43 @@ function parseVoice(text) {
   const t = document.getElementById('mic-txt');
   if (t) t.textContent = `Pas compris : "${text}"`;
 }
-// ─── PLANNING ─────────────────────────────────────────────────────
+// 250025002500 PLANNING 25002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function buildSummary() {
   const film = activeFilm();
   const enfs = activeEnfants();
-  const dateRef = resumeDate || todayStr();
-  const logsDate = state.logs.filter(l => l.filmId === state.activeFilmId && l.date === dateRef)
-    .sort((a, b) => a.heure.localeCompare(b.heure));
+  const logs = state.logs.filter(l => l.filmId === state.activeFilmId && l.date === (resumeDate || todayStr())).sort((a, b) => a.heure.localeCompare(b.heure));
+  const today = new Date();
   const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
   const months = ['janvier','fevrier','mars','avril','mai','juin','juillet','aout','septembre','octobre','novembre','decembre'];
-  const d = new Date(dateRef + 'T12:00:00');
-  const dateStr = days[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+  const dateStr = days[today.getDay()] + ' ' + today.getDate() + ' ' + months[today.getMonth()] + ' ' + today.getFullYear();
   const commentaire = document.getElementById('commentaire-jour')?.value?.trim() || '';
   let txt = (film ? film.nom.toUpperCase() : 'TOURNAGE') + '\n' + dateStr + '\n\n';
   enfs.forEach(enf => {
-    const evs = logsDate.filter(l => l.enfantId === enf.id);
+    const evs = logs.filter(l => l.enfantId === enf.id);
     if (!evs.length) return;
     const dur = {};
     Object.keys(TYPE_LABEL).forEach(t => dur[t] = 0);
     evs.forEach(l => {
-      if (l.fin && l.fin !== l.heure) dur[l.type] = (dur[l.type]||0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
+      if (l.fin) dur[l.type] = (dur[l.type] || 0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
     });
-    const hDebut = evs.find(l => l.type==='hmc') || evs.find(l => l.type==='arrivee');
-    const hPickup = evs.find(l => l.type==='pickup');
-    const hTransport = evs.find(l => l.type==='transport');
-    const logFin = evs.slice().reverse().find(l => l.type==='fin');
-    const dernierFerme = evs.slice().reverse().find(l => l.fin && l.fin!==l.heure);
-    const hFinHeure = logFin ? logFin.heure : (dernierFerme ? dernierFerme.fin : null);
-    txt += enf.nom + '\n';
-    if (hPickup) txt += 'Pick-up maison : ' + hPickup.heure + '\n';
-    if (hTransport) txt += 'Transport : ' + hTransport.heure + '\n';
-    if (hDebut) txt += 'Debut : ' + hDebut.heure + '\n';
+    const hArrivee = evs.find(l => l.type === 'arrivee');
+    const hHmc = evs.find(l => l.type === 'hmc');
+    const hFin = [...evs].reverse().find(l => l.type === 'fin');
+    const hRepas = evs.find(l => l.type === 'repas');
+    txt += enf.nom + ' 2014 ' + statutLabel(enf.statut || 'role', enf.genre) + '\n';
+    if (hArrivee) txt += 'Debut : ' + hArrivee.heure + '\n';
     if (dur.tournage) txt += 'Tournage : ' + fmt(dur.tournage) + '\n';
     if (dur.pause) txt += 'Pause : ' + fmt(dur.pause) + '\n';
-    if (dur.attente) txt += 'Attente : ' + fmt(dur.attente) + '\n';
-    if (hFinHeure) txt += 'Fin : ' + hFinHeure + '\n';
-    const travail = WORK_TYPES.reduce((s,t) => s+(dur[t]||0), 0);
-    const lim = LIMITES[enf.age];
-    if (travail > lim) txt += 'DEPASSEMENT : +' + fmt(travail-lim) + '\n';
+    if (dur.attente) txt += 'Temps d2019attente : ' + fmt(dur.attente) + '\n';
+    if (hRepas) txt += 'Repas : ' + hRepas.heure + (hRepas.fin ? ' - ' + hRepas.fin : '') + '\n';
+    if (dur.cours) txt += 'Cours : ' + fmt(dur.cours) + '\n';
+    if (hFin) txt += 'Fin : ' + hFin.heure + '\n';
     txt += '\n';
   });
   if (commentaire) txt += 'Observation : ' + commentaire + '\n\n';
-  txt += '— Liv ;-)';
+  txt += '2014 Liv ;-)';
   return txt;
 }
-
 function calcFinMax() {
   // Calcule l'heure max de fin pour chaque enfant et l'alerte 1H avant
   const enfs = activeEnfants();
@@ -1694,11 +1692,11 @@ function calcFinMax() {
       if (l.fin) dur[l.type] = (dur[l.type]||0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
     });
     // Presence = HMC + tournage + cascade + cours + pause (sans repas ni attente)
-    const presence = WORK_TYPES.reduce((sum,t) => sum+(dur[t]||0), 0);
+    const presence = (dur.hmc||0) + (dur.tournage||0) + (dur.cascade||0) + (dur.cours||0) + (dur.pause||0);
     const lim = LIMITES[enf.age];
     const reste = Math.max(0, lim - presence);
     
-    // Trouver l'heure de début (HMC ou arrivée)
+    // Trouver l'heure de d00e9but (HMC ou arriv00e9e)
     const debut = evs.find(l => l.type === 'hmc') || evs.find(l => l.type === 'arrivee');
     let finMax = null;
     let finMaxMin = null;
@@ -1721,146 +1719,105 @@ function renderResume() {
   remplirSelectResume();
   const sp = document.getElementById('summary-txt');
   if (sp) sp.textContent = buildSummary();
-
-  // Logs filtrés par date sélectionnée
-  const dateRef = resumeDate || todayStr();
-  const logsRef = state.logs.filter(l => l.filmId === state.activeFilmId && l.date === dateRef);
-
-  // Bloc résumé horaire en haut
+  
+  // Bloc r00e9sum00e9 horaire en haut
   const bilanDiv = document.getElementById('resume-bilan-haut');
   if (bilanDiv) {
-    const enfs = activeEnfants();
-    let html = '';
-    enfs.forEach(enf => {
-      const evs = logsRef.filter(l => l.enfantId === enf.id).sort((a,b) => a.heure.localeCompare(b.heure));
-      if (!evs.length) return;
-      const dur = {};
-      Object.keys(TYPE_LABEL).forEach(t => dur[t] = 0);
-      evs.forEach(l => {
-        if (l.fin && l.fin !== l.heure) dur[l.type] = (dur[l.type]||0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
-      });
-      const presence = WORK_TYPES.reduce((sum,t) => sum+(dur[t]||0), 0);
-      const lim = LIMITES[enf.age];
-      const pct = Math.round(presence / lim * 100);
-      const barColor = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
-      const alertStyle = pct >= 100 ? 'background:#fee2e2;border:1px solid #ef4444;' : 'background:var(--gray-light);';
-      const hmcEv = evs.find(l => l.type==='hmc');
-      const arriveeEv = evs.find(l => l.type==='arrivee');
-      const debutEv = hmcEv || arriveeEv;
-      const debutH = debutEv ? debutEv.heure : '-';
-      const hmcH = hmcEv ? hmcEv.heure : null;
-      const logFin = evs.slice().reverse().find(l => l.type==='fin');
-      const dernierFerme = evs.slice().reverse().find(l => l.fin && l.fin!==l.heure);
-      const hFinHeure = logFin ? logFin.heure : (dernierFerme ? dernierFerme.fin : null);
-
-      html += '<div style="' + alertStyle + 'border-radius:10px;padding:10px 12px;margin-bottom:8px">';
-      html += '<div style="font-size:13px;font-weight:700;margin-bottom:8px">' + enf.nom + '</div>';
-      html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
-      html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Début</div><div style="font-size:14px;font-weight:600">' + debutH + '</div></div>';
-      html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + (hmcH||'—') + '</div></div>';
-      html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Tournage</div><div style="font-size:14px;font-weight:600;color:#065f46">' + (fmt(dur.tournage)||'—') + '</div></div>';
-      html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Fin</div><div style="font-size:14px;font-weight:600">' + (hFinHeure||'—') + '</div></div>';
-      html += '</div>';
-      if (dur.pause||dur.repas||dur.attente) {
-        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">';
-        if (dur.pause) html += 'Pause : ' + fmt(dur.pause) + ' · ';
-        if (dur.repas) html += 'Repas (non compté) : ' + fmt(dur.repas) + ' · ';
-        if (dur.attente) html += 'Hors plateau (non compté) : ' + fmt(dur.attente);
+    const stats = calcFinMax();
+    if (stats.length) {
+      let html = '';
+      stats.forEach(s => {
+        const pct = Math.round(s.presence / s.lim * 100);
+        const barColor = pct >= 100 ? '#ef4444' : pct >= 80 ? '#f59e0b' : '#10b981';
+        const alertClass = s.enAlerte ? 'background:#fee2e2;border:1px solid #ef4444;' : 'background:var(--gray-light);';
+        html += '<div style="' + alertClass + 'border-radius:10px;padding:10px 12px;margin-bottom:8px">';
+        html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">';
+        html += '<div style="font-size:13px;font-weight:700">' + s.enf.nom.split(' ')[0] + '</div>';
+        if (s.enAlerte) html += '<div style="font-size:11px;font-weight:700;color:#991b1b">26a0 ALERTER MISE EN SCENE</div>';
         html += '</div>';
-      }
-      html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:4px">';
-      html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,pct) + '%"></div>';
-      html += '</div>';
-      html += '<div style="display:flex;justify-content:space-between;font-size:11px">';
-      html += '<span style="color:' + (pct>=100?'#991b1b':'var(--text-muted)') + ';font-weight:' + (pct>=100?'700':'400') + '">';
-      html += (pct>=100?'⚠ DÉPASSÉ : ':'Présence : ') + fmt(presence) + ' / ' + fmt(lim) + ' (' + pct + '%)</span>';
-      if (pct >= 100) html += '<span style="font-weight:700;color:#991b1b">+' + fmt(presence-lim) + '</span>';
-      html += '</div>';
-      html += '</div>';
-    });
-    bilanDiv.innerHTML = html || '<div style="color:var(--text-muted);font-size:13px">Aucune donnée pour cette journée.</div>';
-  }
-
-  // Journal détaillé de la journée sélectionnée
-  const journalDiv = document.getElementById('resume-journal');
-  if (journalDiv) {
-    const enfs = activeEnfants();
-    const logsTriés = logsRef.slice().sort((a,b) => a.heure.localeCompare(b.heure));
-    if (!logsTriés.length) {
-      journalDiv.innerHTML = '<div class="empty" style="padding:1rem">Aucune action enregistrée.</div>';
-    } else {
-      journalDiv.innerHTML = logsTriés.map(l => {
-        const enf = enfs.find(e => e.id === l.enfantId);
-        const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6','#1f2937'];
-        const PONCT = ['arrivee','fin','pickup','transport'];
-        const heures = (PONCT.includes(l.type)||!l.fin||l.fin===l.heure) ? l.heure : l.heure+' → '+l.fin;
-        const dur = (l.fin && l.fin!==l.heure) ? fmt(toMin(l.fin)-toMin(l.heure)) : '';
-        return '<div class="log-item">' +
-          '<div class="log-time" style="font-size:12px;min-width:90px">'+heures+'</div>' +
-          '<div class="log-tag" style="background:'+bg+';color:'+tc+'">'+TYPE_LABEL[l.type]+'</div>' +
-          '<div class="log-who">'+(enf?enf.nom.split(' ')[0]:'?')+'</div>' +
-          '<div class="log-dur">'+dur+'</div>' +
-          '</div>';
-      }).join('');
+        // Heure de d00e9but = HMC ou arriv00e9e
+        const logsEnf = todayLogs().filter(l => l.enfantId === s.enf.id).sort((a,b) => a.heure.localeCompare(b.heure));
+        const debutEvR = logsEnf.find(l => l.type === 'hmc') || logsEnf.find(l => l.type === 'arrivee');
+        const debutH = debutEvR ? debutEvR.heure : '-';
+        html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">D00e9but</div><div style="font-size:14px;font-weight:600">' + debutH + '</div></div>';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.hmc||0) + '</div></div>';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Tournage</div><div style="font-size:14px;font-weight:600;color:#065f46">' + fmt(s.dur.tournage||0) + '</div></div>';
+        html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Pause</div><div style="font-size:14px;font-weight:600">' + fmt(s.dur.pause||0) + '</div></div>';
+        html += '</div>';
+        html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">Repas non compt00e9 : ' + fmt(s.dur.repas||0) + ' 00b7 Hors plateau non compt00e9 : ' + fmt(s.dur.attente||0) + '</div>';
+        html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:6px">';
+        html += '<div style="height:100%;border-radius:6px;background:' + barColor + ';width:' + Math.min(100,pct) + '%"></div>';
+        html += '</div>';
+        html += '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted)">';
+        const presLabel = (pct >= 100 ? '26a0 DEPASSE : ' : 'Presence : ') + fmt(s.presence) + ' / ' + fmt(s.lim) + ' (' + pct + '%)';
+        html += '<span style="color:' + (pct>=100?'#991b1b':'var(--text-muted)') + ';font-weight:' + (pct>=100?'700':'400') + '">' + presLabel + '</span>';
+        let finInfo = '';
+        if (s.finMax) finInfo += 'Fin max : ' + s.finMax;
+        if (s.finReelH) finInfo += ' 00b7 Fin r00e9elle : ' + s.finReelH;
+        if (s.depasseMin > 0) finInfo += ' 00b7 D00e9passement : ' + fmt(s.depasseMin);
+        if (s.alerteH && !s.finReelH) finInfo += ' 00b7 Alerte : ' + s.alerteH;
+        if (finInfo) html += '<span style="font-weight:600;color:' + (s.depasse?'#991b1b':s.enAlerte?'#991b1b':'var(--text)') + '">' + finInfo + '</span>';
+        html += '</div>';
+        html += '</div>';
+      });
+      bilanDiv.innerHTML = html;
     }
-  }
-
-  // Bouton voir detail
-  var vdd = document.getElementById('resume-voir-detail');
-  if (vdd) {
-    var dr2 = resumeDate || todayStr();
-    var j2 = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-    var m2 = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
-    var d2 = new Date(dr2 + 'T12:00:00');
-    var lbl2 = j2[d2.getDay()] + ' ' + d2.getDate() + ' ' + m2[d2.getMonth()];
-    var b2 = document.createElement('button');
-    b2.textContent = 'Voir le detail du ' + lbl2;
-    b2.style.cssText = 'width:100%;padding:12px;border-radius:10px;border:none;background:#1a1a2e;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px';
-    b2.onclick = (function(d){ return function(){ allerAuBilan(d); }; })(dr2);
-    vdd.innerHTML = ''; vdd.appendChild(b2);
   }
   // contacts sync
   const ws = document.getElementById('wa-scripte');
   const wp = document.getElementById('wa-prod');
   if (ws && state.contacts.scripte) ws.value = state.contacts.scripte;
   if (wp && state.contacts.prod) wp.value = state.contacts.prod;
-
   // alerts + metrics
   const enfs = activeEnfants();
+  const logs = todayLogs();
   const alertDiv = document.getElementById('resume-alerts');
   const metrics = document.getElementById('resume-metrics');
   let alerts = '';
-  let totTournage = 0; const present = new Set();
-  logsRef.forEach(l => {
-    if (l.type === 'tournage' && l.fin && l.fin !== l.heure) {
-      totTournage += Math.max(0, toMin(l.fin) - toMin(l.heure));
-      present.add(l.enfantId);
-    }
+  let totTournage = 0, present = new Set();
+  logs.forEach(l => {
+    if (l.type === 'tournage' && l.fin) { totTournage += Math.max(0, toMin(l.fin) - toMin(l.heure)); present.add(l.enfantId); }
   });
   if (metrics) metrics.innerHTML = `
-    <div class="metric"><div class="metric-val">${present.size}</div><div class="metric-lbl">Présents</div></div>
-    <div class="metric"><div class="metric-val">${fmt(totTournage)||'—'}</div><div class="metric-lbl">Tournage</div></div>
-    <div class="metric"><div class="metric-val">${logsRef.length}</div><div class="metric-lbl">Entrées</div></div>
+    <div class="metric"><div class="metric-val">${present.size}</div><div class="metric-lbl">Pr00e9sents</div></div>
+    <div class="metric"><div class="metric-val">${fmt(totTournage) || '2014'}</div><div class="metric-lbl">Tournage</div></div>
+    <div class="metric"><div class="metric-val">${logs.length}</div><div class="metric-lbl">Entr00e9es</div></div>
   `;
   enfs.forEach(e => {
     const lim = LIMITES[e.age];
-    const travail = logsRef.filter(l => l.enfantId===e.id && WORK_TYPES.includes(l.type) && l.fin && l.fin!==l.heure)
-      .reduce((s,l) => s + Math.max(0, toMin(l.fin)-toMin(l.heure)), 0);
-    const pct = Math.round(travail/lim*100);
-    if (pct >= 100) alerts += `<div class="alert alert-danger">⚠ ${e.nom} a dépassé la limite (${fmt(travail)} / ${fmt(lim)})</div>`;
-    else if (pct >= 80) alerts += `<div class="alert alert-warn">⚠ ${e.nom} proche de la limite (${pct}%)</div>`;
+    const travail = logs.filter(l => l.enfantId === e.id && WORK_TYPES.includes(l.type) && l.fin)
+      .reduce((s, l) => s + Math.max(0, toMin(l.fin) - toMin(l.heure)), 0);
+    const pct = Math.round(travail / lim * 100);
+    if (pct >= 100) alerts += `<div class="alert alert-danger">26a0 ${e.nom} a d00e9pass00e9 la limite l00e9gale (${fmt(travail)} / ${fmt(lim)})</div>`;
+    else if (pct >= 80) alerts += `<div class="alert alert-warn">26a0 ${e.nom} proche de la limite (${pct}%)</div>`;
   });
-  if (!alerts && logsRef.length) alerts = '<div class="alert alert-ok">✅ Tous les enfants respectent les limites légales</div>';
+  if (!alerts && logs.length) alerts = '<div class="alert alert-ok">2705 Tous les enfants respectent les limites l00e9gales</div>';
   if (alertDiv) alertDiv.innerHTML = alerts;
-  renderExtraContactsBtns();
+  if (chrono) {
+    chrono.innerHTML = enfs.map(e => {
+      const evs = logs.filter(l => l.enfantId === e.id).sort((a, b) => a.heure.localeCompare(b.heure));
+      if (!evs.length) return '';
+      const items = evs.map(l => {
+        const [bg, tc] = TYPE_COLOR[l.type] || ['#f3f4f6', '#1f2937'];
+        return `<span class="chrono-item"><span class="chrono-item-time">${l.heure}</span> <span style="background:${bg};color:${tc};padding:1px 7px;border-radius:8px;font-size:11px;font-weight:600">${TYPE_LABEL[l.type]}</span>${l.fin ? '<span style="font-size:11px;color:var(--text-muted)">2192' + l.fin + '</span>' : ''}</span>`;
+      }).join(' ');
+      return `<div class="chrono-block">
+        <div class="chrono-name">
+          <div style="width:22px;height:22px;border-radius:50%;background:${e.couleur}22;color:${e.couleur};font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center">${initials(e.nom)}</div>
+          ${e.nom}
+        </div>
+        <div class="chrono-items">${items}</div>
+      </div>`;
+    }).join('') || '<div class="empty">Aucune donn00e9e pour aujourd\'hui</div>';
+  }
 }
-
-// ─── WHATSAPP / SMS ───────────────────────────────────────────────
+// 250025002500 WHATSAPP / SMS 25002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function getNumber(role) {
   const fromResume = document.getElementById('wa-' + role)?.value;
   const fromContacts = state.contacts[role];
   const n = fromResume || fromContacts || '';
-  if (!n) { alert(`Entrez le numéro ${role === 'scripte' ? 'de la scripte' : 'de la production'} dans le champ ci-dessous.`); }
+  if (!n) { alert(`Entrez le num00e9ro ${role === 'scripte' ? 'de la scripte' : 'de la production'} dans le champ ci-dessous.`); }
   // save it
   if (n) { state.contacts[role] = n; save(); }
   return n;
@@ -1883,20 +1840,20 @@ function sendSMS(role) {
 function copyResume() {
   const txt = buildSummary();
   navigator.clipboard.writeText(txt)
-    .then(() => alert('Résumé copié !'))
+    .then(() => alert('R00e9sum00e9 copi00e9 !'))
     .catch(() => {
       const ta = document.createElement('textarea');
       ta.value = txt; document.body.appendChild(ta); ta.select();
       document.execCommand('copy'); document.body.removeChild(ta);
-      alert('Résumé copié !');
+      alert('R00e9sum00e9 copi00e9 !');
     });
 }
-// ─── CONTACTS EXTRA ──────────────────────────────────────────────
+// 250025002500 CONTACTS EXTRA 2500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function getContactsExtra() { return state.contactsExtra || []; }
 function ajouterContactExtra() {
   const nom = document.getElementById('new-contact-nom').value.trim();
   const tel = document.getElementById('new-contact-tel').value.trim();
-  if (!nom || !tel) { alert('Merci de renseigner un nom et un numéro.'); return; }
+  if (!nom || !tel) { alert('Merci de renseigner un nom et un num00e9ro.'); return; }
   if (!state.contactsExtra) state.contactsExtra = [];
   state.contactsExtra.push({ id: nextId++, nom, tel });
   document.getElementById('new-contact-nom').value = '';
@@ -1924,7 +1881,7 @@ function renderContactsExtra() {
         <div style="font-size:11px;color:var(--text-muted)">${c.tel}</div>
       </div>
       <button onclick="sendWhatsAppExtra(${c.id})" style="padding:5px 10px;border-radius:8px;border:none;background:#25D366;color:#fff;font-size:11px;font-weight:600;cursor:pointer">WA</button>
-      <button onclick="supprimerContactExtra(${c.id})" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--text-muted)">✕</button>
+      <button onclick="supprimerContactExtra(${c.id})" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--text-muted)">2715</button>
     </div>`).join('');
 }
 function renderExtraContactsBtns() {
@@ -1934,7 +1891,7 @@ function renderExtraContactsBtns() {
   if (!contacts.length) { el.innerHTML = ''; return; }
   el.innerHTML = contacts.map(c => `
     <button class="send-btn btn-wa" onclick="sendWhatsAppExtra(${c.id})" style="background:#1a9e5a">
-      <span style="font-size:16px"></span>${c.nom}<span style="font-size:10px;opacity:.8">WhatsApp</span>
+      <span style="font-size:16px">d83ddcac</span>${c.nom}<span style="font-size:10px;opacity:.8">WhatsApp</span>
     </button>`).join('');
 }
 function sendWhatsAppExtra(id) {
@@ -1944,7 +1901,7 @@ function sendWhatsAppExtra(id) {
   const msg = encodeURIComponent(buildSummary());
   window.open(`https://wa.me/${clean}?text=${msg}`);
 }
-// ─── AGENDA PARENT + PDF ─────────────────────────────────────────
+// 250025002500 AGENDA PARENT + PDF 25002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function buildMsgEvenement(ev, enfId) {
   const months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
   const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
@@ -1961,7 +1918,7 @@ function buildMsgEvenement(ev, enfId) {
   if (ev.repasDebut) txt += 'Repas : ' + ev.repasDebut + (ev.repasFin ? ' - ' + ev.repasFin : '') + '\n';
   if (ev.retour) txt += 'Retour estime : ' + ev.retour + '\n';
   if (enf) txt += '\nPour : ' + enf.nom;
-  txt += '\n\n— Liv ;-)';
+  txt += '\n\n2014 Liv ;-)';
   return txt;
 }
 function envoyerEvenementParent(evId, enfId) {
@@ -1979,7 +1936,7 @@ function envoyerEvenementTous(evId) {
   if (!ev) return;
   const enfsAvecTel = activeEnfants().filter(en => en.tel);
   if (!enfsAvecTel.length) { alert('Aucun parent avec numero. Ajoutez les numeros dans Films.'); return; }
-  // Envoyer à chacun
+  // Envoyer 00e0 chacun
   enfsAvecTel.forEach((enf, idx) => {
     setTimeout(() => {
       const txt = buildMsgEvenement(ev, enf.id);
@@ -2014,7 +1971,7 @@ function envoyerAgendaParent(enfantId) {
     if (e.retour) txt += '\n    Retour estime : ' + e.retour;
     txt += '\n';
   });
-  txt += '\n— Liv ;-)';
+  txt += '\n2014 Liv ;-)';
   const clean = enf.tel.replace(/\s/g, '').replace(/^00/, '+');
   window.open('https://wa.me/' + clean + '?text=' + encodeURIComponent(txt));
 }
@@ -2026,7 +1983,7 @@ function ouvrirModalPDF() {
     const d = new Date(e.date);
     return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
   });
-  // Dates uniques triées
+  // Dates uniques tri00e9es
   const dates = [...new Set(events.map(e => e.date))].sort();
   const daysEl = document.getElementById('pdf-days-list');
   if (!daysEl) return;
@@ -2054,10 +2011,10 @@ function genererPDF() {
   const months = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
   const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
   const film = activeFilm();
-  // Récupérer jours sélectionnés
+  // R00e9cup00e9rer jours s00e9lectionn00e9s
   const selDays = [...document.querySelectorAll('.pdf-day-cb:checked')].map(cb => cb.value);
   if (!selDays.length) { alert('Selectionnez au moins un jour.'); return; }
-  // Récupérer enfants sélectionnés
+  // R00e9cup00e9rer enfants s00e9lectionn00e9s
   const allEnfs = document.querySelector('.pdf-enf-cb[value="all"]:checked');
   const selEnfIds = allEnfs ? null : [...document.querySelectorAll('.pdf-enf-cb:checked')].map(cb => parseInt(cb.value));
   const events = (state.calEvents || []).filter(e => {
@@ -2090,7 +2047,7 @@ function genererPDF() {
         '</tr>';
     });
   });
-  const titre = (film ? film.nom + ' — ' : '') + months[calYear === new Date().getFullYear() ? calMonth : calMonth] + ' ' + calYear;
+  const titre = (film ? film.nom + ' 2014 ' : '') + months[calYear === new Date().getFullYear() ? calMonth : calMonth] + ' ' + calYear;
   const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' +
     'body{font-family:Arial,sans-serif;padding:20px;color:#1e293b;font-size:13px}' +
     'h1{font-size:18px;margin-bottom:4px;color:#1a1a2e}' +
@@ -2103,7 +2060,7 @@ function genererPDF() {
     '@media print{body{padding:10px}}' +
     '</style></head><body>' +
     '<h1>' + titre + '</h1>' +
-    '<div class="sub">Planning — Liv · RESPONSABLE ENFANTS (ARECA)</div>' +
+    '<div class="sub">Planning 2014 Liv 00b7 RESPONSABLE ENFANTS (ARECA)</div>' +
     '<table><thead><tr>' +
     '<th>Date</th><th>Type</th><th>Evenement</th><th>Horaires</th><th>Repas</th>' +
     '<th>Lieu</th><th>Scenes</th><th>Retour</th><th>Enfant</th>' +
@@ -2116,7 +2073,7 @@ function genererPDF() {
   if (win) { win.onload = () => { setTimeout(() => { win.print(); }, 500); }; }
   closeModal('modal-pdf');
 }
-// ─── CALENDRIER ──────────────────────────────────────────────────
+// 250025002500 CALENDRIER 25002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 let calYear = new Date().getFullYear();
 let calMonth = new Date().getMonth();
 function calKey(y, m) { return `${y}-${String(m+1).padStart(2,'0')}`; }
@@ -2137,7 +2094,7 @@ function delCalEvent(id) {
 function calPrev() { calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } renderCal(); }
 function calNext() { calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } renderCal(); }
 function renderCal() {
-  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const months = ['Janvier','F00e9vrier','Mars','Avril','Mai','Juin','Juillet','Ao00fbt','Septembre','Octobre','Novembre','D00e9cembre'];
   const lbl = document.getElementById('cal-month-label');
   if (lbl) lbl.textContent = months[calMonth] + ' ' + calYear;
   const film = activeFilm();
@@ -2167,13 +2124,13 @@ function renderCal() {
     </div>`;
   }
   grid.innerHTML = html;
-  // liste événements du mois
+  // liste 00e9v00e9nements du mois
   const list = document.getElementById('cal-events-list');
   const title = document.getElementById('cal-events-title');
-  if (title) title.textContent = `Événements — ${months[calMonth]} ${calYear}`;
+  if (title) title.textContent = `00c9v00e9nements 2014 ${months[calMonth]} ${calYear}`;
   const monthEvs = events.sort((a,b) => a.date.localeCompare(b.date));
   if (!monthEvs.length) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon"></div>Appuyez sur un jour pour ajouter un événement</div>';
+    list.innerHTML = '<div class="empty"><div class="empty-icon">d83ddcc5</div>Appuyez sur un jour pour ajouter un 00e9v00e9nement</div>';
     return;
   }
   list.innerHTML = monthEvs.map(e => {
@@ -2182,31 +2139,31 @@ function renderCal() {
     const jours2 = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
     const dateLabel = jours2[d.getDay()] + ' ' + d.getDate();
     const enf = state.enfants.find(en => en.id === e.enfantId);
-    // Boutons d'envoi selon les enfants concernés
+    // Boutons d'envoi selon les enfants concern00e9s
     let sendBtns = '';
     if (e.enfantId) {
-      // Événement pour un enfant spécifique
+      // 00c9v00e9nement pour un enfant sp00e9cifique
       const enfEv = state.enfants.find(en => en.id === e.enfantId);
       if (enfEv && enfEv.tel) {
-        sendBtns += `<button onclick="envoyerEvenementParent(${e.id})" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer;margin-right:4px"> ${enfEv.nom.split(' ')[0]}</button>`;
+        sendBtns += `<button onclick="envoyerEvenementParent(${e.id})" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer;margin-right:4px">d83ddcf1 ${enfEv.nom.split(' ')[0]}</button>`;
       }
     } else {
-      // Événement pour tous - un bouton par enfant qui a un numéro
+      // 00c9v00e9nement pour tous - un bouton par enfant qui a un num00e9ro
       activeEnfants().filter(en => en.tel).forEach(en => {
-        sendBtns += `<button onclick="envoyerEvenementParent(${e.id},${en.id})" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer;margin-right:4px"> ${en.nom.split(' ')[0]}</button>`;
+        sendBtns += `<button onclick="envoyerEvenementParent(${e.id},${en.id})" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#25D366;color:#fff;font-weight:600;cursor:pointer;margin-right:4px">d83ddcf1 ${en.nom.split(' ')[0]}</button>`;
       });
       if (activeEnfants().some(en => en.tel)) {
-        sendBtns += `<button onclick="envoyerEvenementTous(${e.id})" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#3b82f6;color:#fff;font-weight:600;cursor:pointer"> Tous</button>`;
+        sendBtns += `<button onclick="envoyerEvenementTous(${e.id})" style="font-size:10px;padding:3px 7px;border-radius:6px;border:none;background:#3b82f6;color:#fff;font-weight:600;cursor:pointer">d83ddcf1 Tous</button>`;
       }
     }
     return `<div class="ev-item">
       <div class="ev-dot" style="background:${col}"></div>
       <div class="ev-info">
         <div class="ev-title">${e.titre}</div>
-        <div class="ev-sub">${dateLabel}${e.debut ? ' · ' + e.debut + (e.fin ? ' - ' + e.fin : '') : ''}${e.retour ? ' · ' + e.retour : ''}${e.repasDebut ? ' · ' + e.repasDebut + (e.repasFin ? '-' + e.repasFin : '') : ''}${e.lieu ? ' · ' + e.lieu : ''}${e.scenes ? ' · ' + e.scenes : ''} ${enf ? '· ' + enf.nom.split(' ')[0] : '· Tous'}</div>
+        <div class="ev-sub">${dateLabel}${e.debut ? ' 00b7 ' + e.debut + (e.fin ? ' - ' + e.fin : '') : ''}${e.retour ? ' 00b7 d83cdfe0' + e.retour : ''}${e.repasDebut ? ' 00b7 d83cdf7d' + e.repasDebut + (e.repasFin ? '-' + e.repasFin : '') : ''}${e.lieu ? ' 00b7 d83ddccd' + e.lieu : ''}${e.scenes ? ' 00b7 d83cdfac' + e.scenes : ''} ${enf ? '00b7 ' + enf.nom.split(' ')[0] : '00b7 Tous'}</div>
         ${sendBtns ? '<div style="margin-top:5px">' + sendBtns + '</div>' : ''}
       </div>
-      <button class="ev-del" onclick="delCalEvent(${e.id})">✕</button>
+      <button class="ev-del" onclick="delCalEvent(${e.id})">2715</button>
     </div>`;
   }).join('');
 }
@@ -2214,7 +2171,7 @@ let calSelectedEnfants = [];
 function openAddEvent(dateStr) {
   const d = new Date(dateStr);
   const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const months = ['janvier','f00e9vrier','mars','avril','mai','juin','juillet','ao00fbt','septembre','octobre','novembre','d00e9cembre'];
   const label = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
   calSelectedEnfants = [];
   document.getElementById('modal-cal-title').textContent = label;
@@ -2294,22 +2251,22 @@ function copierParents() {
   const txt = buildParentsMessage();
   if (!txt) return;
   navigator.clipboard.writeText(txt)
-    .then(() => alert('Message copié ! Ouvrez votre groupe WhatsApp parents et collez le message.'))
+    .then(() => alert('Message copi00e9 ! Ouvrez votre groupe WhatsApp parents et collez le message.'))
     .catch(() => {
       const ta = document.createElement('textarea');
       ta.value = txt; document.body.appendChild(ta); ta.select();
       document.execCommand('copy'); document.body.removeChild(ta);
-      alert('Message copié ! Ouvrez votre groupe WhatsApp parents et collez le message.');
+      alert('Message copi00e9 ! Ouvrez votre groupe WhatsApp parents et collez le message.');
     });
 }
 function buildParentsMessage() {
-  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const months = ['Janvier','F00e9vrier','Mars','Avril','Mai','Juin','Juillet','Ao00fbt','Septembre','Octobre','Novembre','D00e9cembre'];
   const film = activeFilm();
   const events = getCalEvents().filter(e => {
     const d = new Date(e.date);
     return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
   }).sort((a,b) => a.date.localeCompare(b.date));
-  if (!events.length) { alert('Aucun événement ce mois-ci.'); return null; }
+  if (!events.length) { alert('Aucun 00e9v00e9nement ce mois-ci.'); return null; }
   const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
   let txt = 'Planning ' + months[calMonth] + ' ' + calYear;
   if (film) txt += ' - ' + film.nom;
@@ -2324,7 +2281,7 @@ function buildParentsMessage() {
     txt += jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + '\n';
     byDate[date].forEach(e => {
       const enf = state.enfants.find(en => en.id === e.enfantId);
-      txt += '  • ' + e.titre;
+      txt += '  2022 ' + e.titre;
       if (e.debut) txt += ' de ' + e.debut + (e.fin ? ' a ' + e.fin : '');
       if (e.lieu) txt += '\n    Lieu : ' + e.lieu;
       if (e.scenes) txt += '\n    Scenes : ' + e.scenes;
@@ -2336,17 +2293,17 @@ function buildParentsMessage() {
     });
     txt += '\n';
   });
-  txt += '— Liv ;-)';
+  txt += '2014 Liv ;-)';
   return txt;
 }
 function partagerParents() {
-  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const months = ['Janvier','F00e9vrier','Mars','Avril','Mai','Juin','Juillet','Ao00fbt','Septembre','Octobre','Novembre','D00e9cembre'];
   const film = activeFilm();
   const events = getCalEvents().filter(e => {
     const d = new Date(e.date);
     return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
   }).sort((a,b) => a.date.localeCompare(b.date));
-  if (!events.length) { alert('Aucun événement ce mois-ci.'); return; }
+  if (!events.length) { alert('Aucun 00e9v00e9nement ce mois-ci.'); return; }
   const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
   let txt = `Planning ${months[calMonth]} ${calYear}`;
   if (film) txt += ' - ' + film.nom;
@@ -2363,7 +2320,7 @@ function partagerParents() {
     byDate[date].forEach(e => {
       const enf = state.enfants.find(en => en.id === e.enfantId);
       const typeLabel = e.type === 't' ? 'Tournage' : 'Info';
-      txt += `  • ${e.titre}`;
+      txt += `  2022 ${e.titre}`;
       if (e.debut) txt += ` de ${e.debut}${e.fin ? ' a ' + e.fin : ''}`;
       if (e.lieu) txt += '\n    Lieu : ' + e.lieu;
       if (enf) txt += '\n    Enfant : ' + enf.nom;
@@ -2372,25 +2329,25 @@ function partagerParents() {
     });
     txt += '\n';
   });
-  txt += `— Liv ;-)`;
+  txt += `2014 Liv ;-)`;
   const n = state.contacts.scripte || state.contacts.prod || '';
   if (n) {
     const clean = n.replace(/\s/g, '').replace(/^00/, '+');
     window.open(`https://wa.me/${clean}?text=${encodeURIComponent(txt)}`);
   } else {
     navigator.clipboard.writeText(txt)
-      .then(() => alert('Planning parents copié ! Collez-le dans WhatsApp.'))
+      .then(() => alert('Planning parents copi00e9 ! Collez-le dans WhatsApp.'))
       .catch(() => alert(txt));
   }
 }
 function partagerCalendrier() {
-  const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const months = ['Janvier','F00e9vrier','Mars','Avril','Mai','Juin','Juillet','Ao00fbt','Septembre','Octobre','Novembre','D00e9cembre'];
   const film = activeFilm();
   const events = getCalEvents().filter(e => {
     const d = new Date(e.date);
     return d.getFullYear() === calYear && d.getMonth() === calMonth && (!e.filmId || e.filmId === state.activeFilmId);
   }).sort((a,b) => a.date.localeCompare(b.date));
-  if (!events.length) { alert('Aucun événement ce mois-ci.'); return; }
+  if (!events.length) { alert('Aucun 00e9v00e9nement ce mois-ci.'); return; }
   const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
   let txt = `${film ? film.nom.toUpperCase() : 'PLANNING'} - ${months[calMonth]} ${calYear}\n\n`;
   events.forEach(e => {
@@ -2410,10 +2367,10 @@ function partagerCalendrier() {
     const clean = n.replace(/\s/g, '').replace(/^00/, '+');
     window.open(`https://wa.me/${clean}?text=${encodeURIComponent(txt)}`);
   } else {
-    navigator.clipboard.writeText(txt).then(() => alert('Planning copié ! Collez-le dans WhatsApp.')).catch(() => alert(txt));
+    navigator.clipboard.writeText(txt).then(() => alert('Planning copi00e9 ! Collez-le dans WhatsApp.')).catch(() => alert(txt));
   }
 }
-// ─── BILAN FILM ──────────────────────────────────────────────────
+// 250025002500 BILAN FILM 25002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function supprimerJour(date) {
   if (!confirm('Supprimer toute la journee du ' + date + ' ?')) return;
   state.logs = state.logs.filter(l => !(l.filmId === state.activeFilmId && l.date === date));
@@ -2456,7 +2413,7 @@ function renderBilan() {
   if (!el) return;
   const dates = getAllDates();
   if (!dates.length) {
-    el.innerHTML = '<div class="empty"><div class="empty-icon"></div>Aucune journee enregistree pour ce film.</div>';
+    el.innerHTML = '<div class="empty"><div class="empty-icon">d83ddcca</div>Aucune journee enregistree pour ce film.</div>';
     return;
   }
   const months = ['Jan','Fev','Mar','Avr','Mai','Jun','Jul','Aou','Sep','Oct','Nov','Dec'];
@@ -2474,7 +2431,7 @@ function renderBilan() {
     html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden">';
     html += '<div style="background:#1a1a2e;color:#fff;padding:8px 14px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">';
     html += '<span>' + dayLabel + '</span>';
-    html += '<button onclick="supprimerJour(' + "'" + date + "'" + ')" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:3px 10px;border-radius:6px;font-size:11px;cursor:pointer"> Supprimer</button>';
+    html += '<button onclick="supprimerJour(' + "'" + date + "'" + ')" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:3px 10px;border-radius:6px;font-size:11px;cursor:pointer">d83dddd1 Supprimer</button>';
     html += '</div>';
     html += '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px">';
     html += '<thead><tr style="background:var(--gray-light)">';
@@ -2503,7 +2460,7 @@ function renderBilan() {
       html += '<td style="padding:6px 8px">' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin ? '-' + s.hRepas.fin : '') : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
       html += '<td style="padding:6px 8px;color:' + (s.hasCascade ? '#991b1b' : 'var(--text-muted)') + '">' + (s.hasCascade ? fmt(s.dur.cascade) : '-') + '</td>';
-      html += '<td style="padding:6px 8px;color:' + (s.hasSante ? '#9d174d' : 'var(--text-muted)') + '">' + (s.hasSante ? '⚠' : '-') + '</td>';
+      html += '<td style="padding:6px 8px;color:' + (s.hasSante ? '#9d174d' : 'var(--text-muted)') + '">' + (s.hasSante ? '26a0' : '-') + '</td>';
       const cBilan = (state.coursJour||[]).filter(c => c.date===date && c.enfantId===s.enf.id);
       const cStr = cBilan.length ? cBilan.map(c => c.matiere+' '+c.debut+(c.fin?'-'+c.fin:'')).join(', ') : '-';
       html += '<td style="padding:6px 8px;color:#5b21b6;font-size:10px">' + cStr + '</td>';
@@ -2514,7 +2471,7 @@ function renderBilan() {
     html += '</tbody></table></div>';
     const noteId = 'note_bilan_' + date;
     html += '<div style="padding:8px 12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px">';
-    html += '<span style="font-size:18px"></span>';
+    html += '<span style="font-size:18px">d83ddcdd</span>';
     html += '<input type="text" id="' + noteId + '"';
     html += ' value="' + (comment || '').replace(/"/g, '&quot;') + '"';
     html += ' placeholder="Ajouter une note pour cette journee..."';
@@ -2568,7 +2525,7 @@ function genererPDFBilan() {
     '@media print{body{padding:8px}}' +
     '</style></head><body>' +
     '<h1>' + titre + '</h1>' +
-    '<div class="sub">Bilan complet — Liv · RESPONSABLE ENFANTS (ARECA)</div>' +
+    '<div class="sub">Bilan complet 2014 Liv 00b7 RESPONSABLE ENFANTS (ARECA)</div>' +
     '<table><thead><tr>' +
     '<th>Date</th><th>Enfant</th><th>Arrivee</th><th>HMC</th><th>Tournage</th>' +
     '<th>Pause</th><th>Repas</th><th>Hors plateau</th><th>Cascade</th><th>Sante</th><th>Plateau</th>' +
@@ -2580,7 +2537,7 @@ function genererPDFBilan() {
   const win = window.open(url, '_blank');
   if (win) { win.onload = () => { setTimeout(() => { win.print(); }, 500); }; }
 }
-// ─── INIT ─────────────────────────────────────────────────────────
+// 250025002500 INIT 250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 function ouvrirEditLog(id) {
   var log = state.logs.find(function(l){ return l.id === id; });
   if (!log) return;
@@ -2659,7 +2616,7 @@ function renderCoursList() {
         ';font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">'+(enf?initials(enf.nom):'?')+'</div>' +
         '<div style="flex:1"><div style="font-size:13px;font-weight:700">'+(enf?enf.nom:'?')+'</div>' +
         '<div style="font-size:12px;font-weight:600;color:var(--purple-dark)">'+c.matiere+'</div>' +
-        '<div style="font-size:11px;color:var(--text-muted)">'+c.debut+(c.fin?' - '+c.fin:'')+(c.prof?' · '+c.prof:'')+'</div></div>' +
+        '<div style="font-size:11px;color:var(--text-muted)">'+c.debut+(c.fin?' - '+c.fin:'')+(c.prof?' 00b7 '+c.prof:'')+'</div></div>' +
         '<button onclick="supprimerCours('+c.id+')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)">X</button></div>';
     });
   });
@@ -2708,7 +2665,7 @@ function copierCours() {
   navigator.clipboard.writeText(txt).then(function(){ alert('Copie!'); }).catch(function(){ alert(txt); });
 }
 function ouvrirChecklistHMC() {
-  // Enregistrer l'heure dès le clic
+  // Enregistrer l'heure d00e8s le clic
   if (!window._hmcHeureDebut) window._hmcHeureDebut = nowHM();
   // Reset les cases
   ['hmc-habillage','hmc-maquillage','hmc-coiffure','hmc-son','hmc-coaching'].forEach(function(id) {
@@ -2724,9 +2681,9 @@ function validerHMC() {
     var el = document.getElementById(id);
     if (el && el.checked) checked.push(labels[id]);
   });
-  // Enregistrer l'action HMC avec le détail
+  // Enregistrer l'action HMC avec le d00e9tail
   logAction('hmc');
-  // Mettre à jour la note dans le dernier log HMC
+  // Mettre 00e0 jour la note dans le dernier log HMC
   var logs = todayLogs().filter(function(l){ return l.type === 'hmc'; });
   if (logs.length && checked.length) {
     logs[logs.length-1].detail = checked.join(', ');
@@ -2738,29 +2695,37 @@ function validerHMC() {
 
 function remplirSelectResume() {
   var today = todayStr();
-  var dates = [...new Set((state.logs||[]).filter(function(l){ return !state.activeFilmId||l.filmId===state.activeFilmId; }).map(function(l){ return l.date; }))].sort().reverse();
-  if (!dates.includes(today)) dates.unshift(today);
-  if (!resumeDate || !dates.includes(resumeDate)) resumeDate = today;
+  var dates = [];
+  var seen = {};
+  (state.logs||[]).forEach(function(l) {
+    if (l.filmId === state.activeFilmId && !seen[l.date]) { seen[l.date] = true; dates.push(l.date); }
+  });
+  dates.sort().reverse();
+  if (!seen[today]) dates.unshift(today);
+  if (!resumeDate || dates.indexOf(resumeDate) === -1) resumeDate = dates[0] || today;
   var container = document.getElementById('resume-dates-container');
   if (!container) return;
-  var jrs=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  var mts=['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
   container.innerHTML = '';
   dates.forEach(function(d) {
-    var dt = new Date(d+'T12:00:00');
-    var label = (d===today?'Auj. ':'')+jrs[dt.getDay()]+' '+dt.getDate()+' '+mts[dt.getMonth()];
+    var dt = new Date(d + 'T12:00:00');
+    var label = (d===today?'Auj. ':'') + jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
     var btn = document.createElement('button');
     btn.textContent = label;
-    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid '+(d===resumeDate?'#3b82f6':'#e2e8f0')+';background:'+(d===resumeDate?'#3b82f6':'#fff')+';color:'+(d===resumeDate?'#fff':'#0f172a')+';font-size:12px;font-weight:600;cursor:pointer';
+    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid ' + (d===resumeDate?'#3b82f6':'#e2e8f0') + ';background:' + (d===resumeDate?'#3b82f6':'#fff') + ';color:' + (d===resumeDate?'#fff':'#0f172a') + ';font-size:12px;font-weight:600;cursor:pointer';
     btn.onclick = (function(date){return function(){changerDateResume(date);};})(d);
     container.appendChild(btn);
   });
 }
+
 function changerDateResume(date) {
   resumeDate = date;
   remplirSelectResume();
-  renderResume();
+  var sp = document.getElementById('summary-txt');
+  if (sp) sp.textContent = buildSummary() || '(Aucune donnee)';
 }
+
 function remplirSelectCours() {
   var today = todayStr();
   var dates = [];
@@ -2771,42 +2736,34 @@ function remplirSelectCours() {
   dates.sort().reverse();
   var container = document.getElementById('cours-dates-container');
   if (!container) return;
-  var jrs=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  var mts=['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
   container.innerHTML = '';
   var btnTous = document.createElement('button');
   btnTous.textContent = 'Tous';
-  btnTous.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid '+(coursDateFiltre===null?'#3b82f6':'#e2e8f0')+';background:'+(coursDateFiltre===null?'#3b82f6':'#fff')+';color:'+(coursDateFiltre===null?'#fff':'#0f172a')+';font-size:12px;font-weight:600;cursor:pointer';
+  btnTous.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid ' + (coursDateFiltre===null?'#3b82f6':'#e2e8f0') + ';background:' + (coursDateFiltre===null?'#3b82f6':'#fff') + ';color:' + (coursDateFiltre===null?'#fff':'#0f172a') + ';font-size:12px;font-weight:600;cursor:pointer';
   btnTous.onclick = function(){ changerDateCours(null); };
   container.appendChild(btnTous);
   dates.forEach(function(d) {
-    var dt = new Date(d+'T12:00:00');
-    var label = (d===today?'Auj. ':'')+jrs[dt.getDay()]+' '+dt.getDate()+' '+mts[dt.getMonth()];
+    var dt = new Date(d + 'T12:00:00');
+    var label = (d===today?'Auj. ':'') + jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
     var btn = document.createElement('button');
     btn.textContent = label;
-    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid '+(d===coursDateFiltre?'#3b82f6':'#e2e8f0')+';background:'+(d===coursDateFiltre?'#3b82f6':'#fff')+';color:'+(d===coursDateFiltre?'#fff':'#0f172a')+';font-size:12px;font-weight:600;cursor:pointer';
+    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid ' + (d===coursDateFiltre?'#3b82f6':'#e2e8f0') + ';background:' + (d===coursDateFiltre?'#3b82f6':'#fff') + ';color:' + (d===coursDateFiltre?'#fff':'#0f172a') + ';font-size:12px;font-weight:600;cursor:pointer';
     btn.onclick = (function(date){return function(){changerDateCours(date);};})(d);
     container.appendChild(btn);
   });
 }
+
 function changerDateCours(date) {
   coursDateFiltre = date;
   remplirSelectCours();
   renderCoursList();
 }
 
-function allerAuBilan(date) {
-  bilanDateCible = date;
-  var bilanBtn = document.querySelector('.nav-btn[onclick*="bilan"]');
-  showPage('bilan', bilanBtn);
-  setTimeout(function() {
-    var el = document.getElementById('bilan-date-' + date);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 400);
-}
 async function initApp() {
   await load();
-  // Mode vacances : auto par défaut
+  // Mode vacances : auto par d00e9faut
   const savedMode = localStorage.getItem('modeVacancesForce');
   if (savedMode === 'scolaire') modeVacancesForce = 'scolaire';
   else if (savedMode === 'vacances') modeVacancesForce = 'vacances';
@@ -2824,11 +2781,9 @@ async function initApp() {
     renderContactsExtra();
     renderExtraContactsBtns();
     updatePeriodeLabel();
-    remplirSelectResume();
-    remplirSelectCours();
   } catch(e) { console.error('Init error:', e); }
 }
-// Vérifier si token existant
+// V00e9rifier si token existant
 (async () => {
   const token = localStorage.getItem('sb_token');
   if (token) {
@@ -2842,14 +2797,14 @@ async function initApp() {
   }
   showLoginScreen();
 })();
-// Splash screen - se ferme toujours même en cas d'erreur
+// Splash screen - se ferme toujours m00eame en cas d'erreur
 function closeSplash() {
   const splash = document.getElementById('splash');
   if (splash) { splash.style.opacity = '0'; setTimeout(() => { try { splash.remove(); } catch(e) {} }, 600); }
 }
 setTimeout(() => { const bar = document.getElementById('splash-bar'); if (bar) bar.style.width = '100%'; }, 100);
 setTimeout(closeSplash, 1800);
-// Sécurité : ferme dans tous les cas après 3s
+// S00e9curit00e9 : ferme dans tous les cas apr00e8s 3s
 setTimeout(closeSplash, 3000);
 // refresh planning + status every minute
 setInterval(() => {
@@ -2857,37 +2812,45 @@ setInterval(() => {
   if (activePage && activePage.id === 'page-planning') 
   renderStatusBar();
 }, 60000);
-// Désactiver et supprimer tous les service workers
+// D00e9sactiver et supprimer tous les service workers
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
 }
-// ─── INIT ─────────────────────────────────────────────────────────
+// 250025002500 INIT 250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 
 function remplirSelectResume() {
   var today = todayStr();
-  var dates = [...new Set((state.logs||[]).filter(function(l){ return !state.activeFilmId||l.filmId===state.activeFilmId; }).map(function(l){ return l.date; }))].sort().reverse();
-  if (!dates.includes(today)) dates.unshift(today);
-  if (!resumeDate || !dates.includes(resumeDate)) resumeDate = today;
+  var dates = [];
+  var seen = {};
+  (state.logs||[]).forEach(function(l) {
+    if (l.filmId === state.activeFilmId && !seen[l.date]) { seen[l.date] = true; dates.push(l.date); }
+  });
+  dates.sort().reverse();
+  if (!seen[today]) dates.unshift(today);
+  if (!resumeDate || dates.indexOf(resumeDate) === -1) resumeDate = dates[0] || today;
   var container = document.getElementById('resume-dates-container');
   if (!container) return;
-  var jrs=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  var mts=['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
   container.innerHTML = '';
   dates.forEach(function(d) {
-    var dt = new Date(d+'T12:00:00');
-    var label = (d===today?'Auj. ':'')+jrs[dt.getDay()]+' '+dt.getDate()+' '+mts[dt.getMonth()];
+    var dt = new Date(d + 'T12:00:00');
+    var label = (d===today?'Auj. ':'') + jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
     var btn = document.createElement('button');
     btn.textContent = label;
-    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid '+(d===resumeDate?'#3b82f6':'#e2e8f0')+';background:'+(d===resumeDate?'#3b82f6':'#fff')+';color:'+(d===resumeDate?'#fff':'#0f172a')+';font-size:12px;font-weight:600;cursor:pointer';
+    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid ' + (d===resumeDate?'#3b82f6':'#e2e8f0') + ';background:' + (d===resumeDate?'#3b82f6':'#fff') + ';color:' + (d===resumeDate?'#fff':'#0f172a') + ';font-size:12px;font-weight:600;cursor:pointer';
     btn.onclick = (function(date){return function(){changerDateResume(date);};})(d);
     container.appendChild(btn);
   });
 }
+
 function changerDateResume(date) {
   resumeDate = date;
   remplirSelectResume();
-  renderResume();
+  var sp = document.getElementById('summary-txt');
+  if (sp) sp.textContent = buildSummary() || '(Aucune donnee)';
 }
+
 function remplirSelectCours() {
   var today = todayStr();
   var dates = [];
@@ -2898,42 +2861,34 @@ function remplirSelectCours() {
   dates.sort().reverse();
   var container = document.getElementById('cours-dates-container');
   if (!container) return;
-  var jrs=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-  var mts=['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+  var jrs = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var mts = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
   container.innerHTML = '';
   var btnTous = document.createElement('button');
   btnTous.textContent = 'Tous';
-  btnTous.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid '+(coursDateFiltre===null?'#3b82f6':'#e2e8f0')+';background:'+(coursDateFiltre===null?'#3b82f6':'#fff')+';color:'+(coursDateFiltre===null?'#fff':'#0f172a')+';font-size:12px;font-weight:600;cursor:pointer';
+  btnTous.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid ' + (coursDateFiltre===null?'#3b82f6':'#e2e8f0') + ';background:' + (coursDateFiltre===null?'#3b82f6':'#fff') + ';color:' + (coursDateFiltre===null?'#fff':'#0f172a') + ';font-size:12px;font-weight:600;cursor:pointer';
   btnTous.onclick = function(){ changerDateCours(null); };
   container.appendChild(btnTous);
   dates.forEach(function(d) {
-    var dt = new Date(d+'T12:00:00');
-    var label = (d===today?'Auj. ':'')+jrs[dt.getDay()]+' '+dt.getDate()+' '+mts[dt.getMonth()];
+    var dt = new Date(d + 'T12:00:00');
+    var label = (d===today?'Auj. ':'') + jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
     var btn = document.createElement('button');
     btn.textContent = label;
-    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid '+(d===coursDateFiltre?'#3b82f6':'#e2e8f0')+';background:'+(d===coursDateFiltre?'#3b82f6':'#fff')+';color:'+(d===coursDateFiltre?'#fff':'#0f172a')+';font-size:12px;font-weight:600;cursor:pointer';
+    btn.style.cssText = 'padding:6px 12px;margin:2px;border-radius:8px;border:1.5px solid ' + (d===coursDateFiltre?'#3b82f6':'#e2e8f0') + ';background:' + (d===coursDateFiltre?'#3b82f6':'#fff') + ';color:' + (d===coursDateFiltre?'#fff':'#0f172a') + ';font-size:12px;font-weight:600;cursor:pointer';
     btn.onclick = (function(date){return function(){changerDateCours(date);};})(d);
     container.appendChild(btn);
   });
 }
+
 function changerDateCours(date) {
   coursDateFiltre = date;
   remplirSelectCours();
   renderCoursList();
 }
 
-function allerAuBilan(date) {
-  bilanDateCible = date;
-  var bilanBtn = document.querySelector('.nav-btn[onclick*="bilan"]');
-  showPage('bilan', bilanBtn);
-  setTimeout(function() {
-    var el = document.getElementById('bilan-date-' + date);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 400);
-}
 async function initApp() {
   await load();
-  // Mode vacances : auto par défaut
+  // Mode vacances : auto par d00e9faut
   const savedMode = localStorage.getItem('modeVacancesForce');
   if (savedMode === 'scolaire') modeVacancesForce = 'scolaire';
   else if (savedMode === 'vacances') modeVacancesForce = 'vacances';
@@ -2951,11 +2906,9 @@ async function initApp() {
     renderContactsExtra();
     renderExtraContactsBtns();
     updatePeriodeLabel();
-    remplirSelectResume();
-    remplirSelectCours();
   } catch(e) { console.error('Init error:', e); }
 }
-// Vérifier si token existant
+// V00e9rifier si token existant
 (async () => {
   const token = localStorage.getItem('sb_token');
   if (token) {
@@ -2969,14 +2922,14 @@ async function initApp() {
   }
   showLoginScreen();
 })();
-// Splash screen - se ferme toujours même en cas d'erreur
+// Splash screen - se ferme toujours m00eame en cas d'erreur
 function closeSplash() {
   const splash = document.getElementById('splash');
   if (splash) { splash.style.opacity = '0'; setTimeout(() => { try { splash.remove(); } catch(e) {} }, 600); }
 }
 setTimeout(() => { const bar = document.getElementById('splash-bar'); if (bar) bar.style.width = '100%'; }, 100);
 setTimeout(closeSplash, 1800);
-// Sécurité : ferme dans tous les cas après 3s
+// S00e9curit00e9 : ferme dans tous les cas apr00e8s 3s
 setTimeout(closeSplash, 3000);
 // refresh planning + status every minute
 setInterval(() => {
@@ -2984,38 +2937,50 @@ setInterval(() => {
   if (activePage && activePage.id === 'page-planning') 
   renderStatusBar();
 }, 60000);
-// Désactiver et supprimer tous les service workers
+// D00e9sactiver et supprimer tous les service workers
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+}
+e9curit00e9 : ferme dans tous les cas apr00e8s 3s
+setTimeout(closeSplash, 3000);
+// refresh planning + status every minute
+setInterval(() => {
+  const activePage = document.querySelector('.page.active');
+  if (activePage && activePage.id === 'page-planning') 
+  renderStatusBar();
+}, 60000);
+// D00e9sactiver et supprimer tous les service workers
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
 }
 </script>
 <div class="modal-overlay" id="modal-cal">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-cal')">✕</button>
-    <div class="modal-title" id="modal-cal-title">Ajouter un événement</div>
+    <button class="modal-close" onclick="closeModal('modal-cal')">2715</button>
+    <div class="modal-title" id="modal-cal-title">Ajouter un 00e9v00e9nement</div>
     <input type="hidden" id="cal-ev-date">
     <div class="form-row">
       <label class="form-label">Type</label>
       <select class="form-input" id="cal-ev-type">
-        <option value="t">Tournage (répétition, HMC, essai santé, assurance…)</option>
-        <option value="f">Famille / Personnel (examen, brevet, RDV, vacances…)</option>
+        <option value="t">Tournage (r00e9p00e9tition, HMC, essai sant00e9, assurance2026)</option>
+        <option value="f">Famille / Personnel (examen, brevet, RDV, vacances2026)</option>
       </select>
     </div>
     <div class="form-row">
-      <label class="form-label">Titre de l'événement</label>
-      <input class="form-input" id="cal-ev-titre" placeholder="ex: Coaching, Répétition scène 3, Brevet…">
+      <label class="form-label">Titre de l'00e9v00e9nement</label>
+      <input class="form-input" id="cal-ev-titre" placeholder="ex: Coaching, R00e9p00e9tition sc00e8ne 3, Brevet2026">
     </div>
     <div class="form-row">
       <label class="form-label">Lieu</label>
-      <input class="form-input" id="cal-ev-lieu" placeholder="ex: Studio 5, Salle de répétition Paris 11e…">
+      <input class="form-input" id="cal-ev-lieu" placeholder="ex: Studio 5, Salle de r00e9p00e9tition Paris 11e2026">
     </div>
     <div class="form-row">
-      <label class="form-label">Scènes prévues (optionnel)</label>
-      <input class="form-input" id="cal-ev-scenes" placeholder="ex: Scènes 12B, 15A, 23…">
+      <label class="form-label">Sc00e8nes pr00e9vues (optionnel)</label>
+      <input class="form-input" id="cal-ev-scenes" placeholder="ex: Sc00e8nes 12B, 15A, 232026">
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
       <div>
-        <label class="form-label">Heure début</label>
+        <label class="form-label">Heure d00e9but</label>
         <input class="form-input" type="time" id="cal-ev-debut">
       </div>
       <div>
@@ -3024,36 +2989,36 @@ if ('serviceWorker' in navigator) {
       </div>
     </div>
     <div class="form-row">
-      <label class="form-label"> Heure de retour estimée (pour les parents)</label>
+      <label class="form-label">d83cdfe0 Heure de retour estim00e9e (pour les parents)</label>
       <input class="form-input" type="time" id="cal-ev-retour">
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
       <div>
-        <label class="form-label"> Coupure repas début</label>
+        <label class="form-label">d83cdf7d Coupure repas d00e9but</label>
         <input class="form-input" type="time" id="cal-ev-repas-debut">
       </div>
       <div>
-        <label class="form-label"> Coupure repas fin</label>
+        <label class="form-label">d83cdf7d Coupure repas fin</label>
         <input class="form-input" type="time" id="cal-ev-repas-fin">
       </div>
     </div>
     <div class="form-row">
-      <label class="form-label">Enfants concernés (appuyez pour sélectionner)</label>
+      <label class="form-label">Enfants concern00e9s (appuyez pour s00e9lectionner)</label>
       <div id="cal-enfants-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px"></div>
     </div>
-    <button class="form-btn" onclick="validerCalEvent()">Ajouter cet événement</button>
+    <button class="form-btn" onclick="validerCalEvent()">Ajouter cet 00e9v00e9nement</button>
   </div>
 </div>
 <div class="modal-overlay" id="modal-contact">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-contact')">✕</button>
+    <button class="modal-close" onclick="closeModal('modal-contact')">2715</button>
     <div class="modal-title">Ajouter un contact</div>
     <div class="form-row">
-      <label class="form-label">Nom / rôle</label>
-      <input class="form-input" id="new-contact-nom" placeholder="ex: Directeur de prod, Parent de Léa…">
+      <label class="form-label">Nom / r00f4le</label>
+      <input class="form-input" id="new-contact-nom" placeholder="ex: Directeur de prod, Parent de L00e9a2026">
     </div>
     <div class="form-row">
-      <label class="form-label">Numéro WhatsApp (avec indicatif)</label>
+      <label class="form-label">Num00e9ro WhatsApp (avec indicatif)</label>
       <input class="form-input" type="tel" id="new-contact-tel" placeholder="+336...">
     </div>
     <button class="form-btn" style="background:var(--purple)" onclick="ajouterContactExtra()">Ajouter ce contact</button>
@@ -3061,30 +3026,30 @@ if ('serviceWorker' in navigator) {
 </div>
 <div class="modal-overlay" id="modal-edit-enfant">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-edit-enfant')">✕</button>
+    <button class="modal-close" onclick="closeModal('modal-edit-enfant')">2715</button>
     <div class="modal-title">Modifier l'enfant</div>
     <input type="hidden" id="edit-enf-id">
-    <div class="form-row"><label class="form-label">Prénom Nom</label><input class="form-input" id="edit-enf-nom"></div>
-    <div class="form-row"><label class="form-label">Tranche d'âge</label>
+    <div class="form-row"><label class="form-label">Pr00e9nom Nom</label><input class="form-input" id="edit-enf-nom"></div>
+    <div class="form-row"><label class="form-label">Tranche d'00e2ge</label>
       <select class="form-input" id="edit-enf-age">
         <option value="<3">Moins de 3 ans (max 2h)</option>
-        <option value="3-5">3 – 5 ans (max 3h)</option>
-        <option value="6-11">6 – 11 ans (max 4h)</option>
-        <option value="12-15">12 – 15 ans (max 6h)</option>
-        <option value="16-17">16 – 17 ans (max 8h)</option>
+        <option value="3-5">3 2013 5 ans (max 3h)</option>
+        <option value="6-11">6 2013 11 ans (max 4h)</option>
+        <option value="12-15">12 2013 15 ans (max 6h)</option>
+        <option value="16-17">16 2013 17 ans (max 8h)</option>
       </select>
     </div>
     <div class="form-row"><label class="form-label">Genre</label>
       <select class="form-input" id="edit-enf-genre">
-        <option value="m">Garçon</option>
+        <option value="m">Gar00e7on</option>
         <option value="f">Fille</option>
-        <option value="x">Mixte (garçons + filles)</option>
+        <option value="x">Mixte (gar00e7ons + filles)</option>
       </select>
     </div>
     <div class="form-row"><label class="form-label">Statut</label>
       <select class="form-input" id="edit-enf-statut">
-        <option value="role">Rôle</option>
-        <option value="petit-role">Petit rôle</option>
+        <option value="role">R00f4le</option>
+        <option value="petit-role">Petit r00f4le</option>
         <option value="silhouette-parlante">Silhouette parlante</option>
         <option value="silhouette">Silhouette</option>
         <option value="figurant">Figurant</option>
@@ -3095,7 +3060,7 @@ if ('serviceWorker' in navigator) {
         <option value="artiste-cirque">Artiste de cirque</option>
       </select>
     </div>
-    <div class="form-row"><label class="form-label"> Numéro WhatsApp parent</label><input class="form-input" type="tel" id="edit-enf-tel" placeholder="+336..."></div>
+    <div class="form-row"><label class="form-label">d83ddcf1 Num00e9ro WhatsApp parent</label><input class="form-input" type="tel" id="edit-enf-tel" placeholder="+336..."></div>
     <div class="form-row"><label class="form-label">Couleur</label><input type="color" class="form-input" id="edit-enf-color" style="height:40px;padding:4px;cursor:pointer"></div>
     <button class="form-btn" style="background:var(--green)" onclick="sauvegarderEnfant()">Enregistrer</button>
   </div>
