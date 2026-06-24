@@ -363,12 +363,18 @@
   <div class="scroll-content">
     <div class="card">
       <div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:6px">Journée</div><div id="resume-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div></div>
+      <div style="margin-bottom:10px"><div id="resume-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div></div>
       <div class="card-title">Suivi temps 2014 journ00e9e en cours</div>
       <div id="resume-bilan-haut"></div>
+      <div id="resume-voir-detail" style="margin-top:8px"></div>
     </div>
     <div class="card">
       <div id="resume-alerts"></div>
       <div class="metrics-grid" id="resume-metrics"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Journal de la journée</div>
+      <div id="resume-journal"></div>
     </div>
     <div class="card">
       <div class="card-title">Message WhatsApp / SMS</div>
@@ -787,7 +793,14 @@
     </div>
   </div>
 </div>
-<div id="page-cours" class="page"><div class="page-header"><div class="page-title">Cours sur plateau</div><div class="page-sub" id="cours-film-name">Planning scolaire</div></div><div class="scroll-content"><div class="card"><div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:6px">Filtrer par date</div><div id="cours-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div></div><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Planning du jour</span><button onclick="openModal('modal-cours')" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter</button></div><div id="cours-list"><div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div></div></div><div class="card"><div class="card-title">Envoyer le planning</div><div class="send-btns"><button class="send-btn btn-wa" onclick="envoyerCoursWA('parents')"><span style="font-size:20px">&#128172;</span>Parents<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-wa" onclick="envoyerCoursWA('prod')" style="background:#1a9e5a"><span style="font-size:20px">&#128172;</span>Production<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-copy" onclick="copierCours()" style="grid-column:span 2"><span style="font-size:20px">&#128203;</span>Copier</button></div></div></div></div>
+<div id="page-cours" class="page"><div class="page-header"><div class="page-title">Cours sur plateau</div><div class="page-sub" id="cours-film-name">Planning scolaire</div></div><div class="scroll-content"><div class="card"><div style="margin-bottom:10px"><div style="font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:6px">Filtrer par date</div><div id="cours-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div></div><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Planning du jour</span><button onclick="openModal('modal-cours')" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter</button></div><div id="cours-list"><div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div></div></div><div class="card"><div class="card-title">Envoyer le planning</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<button class="send-btn btn-wa" onclick="envoyerCoursWA('parents')"><span style="font-size:18px">💬</span>Parents<span style="font-size:10px;opacity:.8">Date sélect.</span></button>
+<button class="send-btn btn-wa" onclick="envoyerCoursWA('parents-all')" style="background:#1a9e5a"><span style="font-size:18px">💬</span>Parents<span style="font-size:10px;opacity:.8">Toutes dates</span></button>
+<button class="send-btn btn-wa" onclick="envoyerCoursWA('prod')" style="background:#0369a1"><span style="font-size:18px">💬</span>Prod<span style="font-size:10px;opacity:.8">Date sélect.</span></button>
+<button class="send-btn btn-wa" onclick="envoyerCoursWA('prod-all')" style="background:#1d4ed8"><span style="font-size:18px">💬</span>Prod<span style="font-size:10px;opacity:.8">Toutes dates</span></button>
+<button class="send-btn btn-copy" onclick="copierCours()" style="grid-column:span 2"><span style="font-size:18px">📋</span>Copier (date sélect.)</button>
+<button class="send-btn btn-copy" onclick="copierCoursAll()" style="grid-column:span 2;background:#e2e8f0"><span style="font-size:18px">📋</span>Copier (toutes dates)</button>
+</div></div></div></div>
 <nav class="nav">
   <button class="nav-btn" onclick="showPage('films',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
@@ -870,34 +883,9 @@
 </div>
 <div class="modal-overlay" id="modal-cours"><div class="modal"><button class="modal-close" onclick="closeModal('modal-cours')">X</button><div class="modal-title">Ajouter un cours</div><div class="form-row"><label class="form-label">Enfant</label><select class="form-input" id="cours-enfant-id"></select></div><div class="form-row"><label class="form-label">Matiere</label><select class="form-input" id="cours-matiere"><option>Mathematiques</option><option>Francais</option><option>Histoire-Geo</option><option>Sciences</option><option>Anglais</option><option>Arts</option><option>Sport</option><option>Autre</option></select></div><div class="form-row"><label class="form-label">Matiere perso (optionnel)</label><input class="form-input" id="cours-matiere-custom" placeholder="ex: Espagnol..."></div><div class="form-row"><label class="form-label">Date</label><input class="form-input" type="date" id="cours-date"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Debut</label><input class="form-input" type="time" id="cours-debut"></div><div><label class="form-label">Fin</label><input class="form-input" type="time" id="cours-fin"></div></div><div class="form-row"><label class="form-label">Precepteur (optionnel)</label><input class="form-input" id="cours-prof" placeholder="ex: M. Martin"></div><button class="form-btn" style="background:var(--purple)" onclick="ajouterCours()">Ajouter ce cours</button></div></div>
 <div class="modal-overlay" id="modal-edit-log"><div class="modal"><button class="modal-close" onclick="closeModal('modal-edit-log')">X</button><div class="modal-title">Modifier cette action</div><input type="hidden" id="edit-log-id"><div class="form-row"><label class="form-label">Action</label><select class="form-input" id="edit-log-type"><option value="arrivee">Arrivee</option><option value="hmc">HMC</option><option value="tournage">Tournage</option><option value="pause">Pause</option><option value="repas">Repas/Cantine</option><option value="attente">Attente</option><option value="cours">Cours</option><option value="cascade">Cascade</option><option value="sante">Sante</option><option value="son">Equipage son</option><option value="fin">Fin journee</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Heure debut</label><input class="form-input" type="time" id="edit-log-heure"></div><div><label class="form-label">Heure fin</label><input class="form-input" type="time" id="edit-log-fin"></div></div><button class="form-btn" style="background:var(--blue)" onclick="sauvegarderLog()">Enregistrer</button></div></div>
-<div class="modal-overlay" id="modal-hmc">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-hmc')">2715</button>
-    <div class="modal-title">HMC 2014 Checklist</div>
-    <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Cochez ce qui est fait pour l'enfant</div>
-    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px">
-      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--blue-light);border-radius:8px;cursor:pointer">
-        <input type="checkbox" id="hmc-habillage" style="width:20px;height:20px;cursor:pointer">
-        <span style="font-size:15px">d83ddc57</span>
-        <span style="font-size:14px;font-weight:600;color:var(--blue-dark)">Habillage</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:#fce7f3;border-radius:8px;cursor:pointer">
-        <input type="checkbox" id="hmc-maquillage" style="width:20px;height:20px;cursor:pointer">
-        <span style="font-size:15px">d83ddc84</span>
-        <span style="font-size:14px;font-weight:600;color:#9d174d">Maquillage</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--amber-light);border-radius:8px;cursor:pointer">
-        <input type="checkbox" id="hmc-coiffure" style="width:20px;height:20px;cursor:pointer">
-        <span style="font-size:15px">2702fe0f</span>
-        <span style="font-size:14px;font-weight:600;color:var(--amber-dark)">Coiffure</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--gray-light);border-radius:8px;cursor:pointer">
-        <input type="checkbox" id="hmc-son" style="width:20px;height:20px;cursor:pointer">
-        <span style="font-size:15px">d83cdf99fe0f</span>
-        <span style="font-size:14px;font-weight:600;color:var(--gray-dark)">Son (micro)</span>
-      </label>
-      <label style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--purple-light);border-radius:8px;cursor:pointer">
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
 // 250025002500 CONSTANTES 250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
 // Limites selon p00e9riode (scolaire ou vacances)
 const LIMITES_SCOLAIRE = { '<3': 60, '3-5': 120, '6-11': 180, '12-15': 240, '16-17': 480 };
@@ -956,14 +944,16 @@ const LIMITES = new Proxy({}, { get: (t, k) => getLimites()[k] });
 const TYPE_LABEL = {
   arrivee: 'Arriv00e9e', hmc: 'HMC/Pr00e9p.', tournage: 'Tournage',
   pause: 'Pause', repas: 'Repas', attente: 'Hors plateau',
-  cours: 'Cours', cascade: 'Cascade', sante: 'Sant00e9', son: '00c9quipage son', fin: 'Fin journ00e9e', transport: 'Transport', pickup: 'Pick-up maison'
+  cours: 'Cours', cascade: 'Cascade', sante: 'Sant00e9', son: '00c9quipage son', fin: 'Fin journ00e9e'
+, transport: 'Transport', pickup: 'Pick-up maison'
 };
 const TYPE_COLOR = {
   arrivee: ['#d1fae5', '#065f46'], hmc: ['#dbeafe', '#1d4ed8'],
   tournage: ['#a7f3d0', '#065f46'], pause: ['#f3f4f6', '#1f2937'],
   repas: ['#fef9c3', '#713f12'], attente: ['#fef3c7', '#92400e'],
   cours: ['#ede9fe', '#5b21b6'], cascade: ['#fee2e2', '#991b1b'],
-  sante: ['#fce7f3', '#9d174d'], son: ['#dbeafe', '#1d4ed8'], fin: ['#fce7f3', '#9d174d'], transport: ['#e0f2fe', '#0369a1'], pickup: ['#d1fae5', '#065f46']
+  sante: ['#fce7f3', '#9d174d'], son: ['#dbeafe', '#1d4ed8'], fin: ['#fce7f3', '#9d174d']
+, transport: ['#e0f2fe', '#0369a1'], pickup: ['#d1fae5', '#065f46']
 };
 const WORK_TYPES = ['tournage', 'hmc', 'cascade', 'pause', 'son'];
 // 250025002500 STATE 25002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500250025002500
@@ -1468,10 +1458,20 @@ function logAction(type) {
   const hm = nowHM();
   const targets = selectedEnfants.length > 0 ? selectedEnfants : enfs.map(e => e.id);
   targets.forEach(eid => {
-        const PONCTUEL = ['arrivee','fin','pickup','transport'];
-    const prev = todayLogs().filter(l=>l.enfantId===eid&&!l.fin).sort((a,b)=>b.heure.localeCompare(a.heure))[0];
-    if (prev && !PONCTUEL.includes(type)) prev.fin = hm;
-    state.logs.push({id:nextId++,filmId:state.activeFilmId,enfantId:eid,type,heure:hm,fin:PONCTUEL.includes(type)?hm:null,date:todayStr()});
+    // fermer l'entr00e9e pr00e9c00e9dente ouverte pour cet enfant aujourd'hui
+    const prev = todayLogs()
+      .filter(l => l.enfantId === eid && !l.fin)
+      .sort((a, b) => b.heure.localeCompare(a.heure))[0];
+    if (prev) prev.fin = hm;
+    state.logs.push({
+      id: nextId++,
+      filmId: state.activeFilmId,
+      enfantId: eid,
+      type,
+      heure: hm,
+      fin: null,
+      date: todayStr()
+    });
   });
   // update last-time on button
   const ltEl = document.getElementById('lt-' + type);
@@ -2930,18 +2930,6 @@ function closeSplash() {
 setTimeout(() => { const bar = document.getElementById('splash-bar'); if (bar) bar.style.width = '100%'; }, 100);
 setTimeout(closeSplash, 1800);
 // S00e9curit00e9 : ferme dans tous les cas apr00e8s 3s
-setTimeout(closeSplash, 3000);
-// refresh planning + status every minute
-setInterval(() => {
-  const activePage = document.querySelector('.page.active');
-  if (activePage && activePage.id === 'page-planning') 
-  renderStatusBar();
-}, 60000);
-// D00e9sactiver et supprimer tous les service workers
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
-}
-e9curit00e9 : ferme dans tous les cas apr00e8s 3s
 setTimeout(closeSplash, 3000);
 // refresh planning + status every minute
 setInterval(() => {
