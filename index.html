@@ -2666,7 +2666,7 @@ function renderCoursList() {
   el.innerHTML = html;
 }
 function buildCoursMessage(dateFiltre) {
-  // dateFiltre = null -> toutes les dates >= aujourd'hui ; string -> date spécifique
+  // dateFiltre = null -> tous les cours ; string -> date spécifique
   var film = activeFilm();
   var today = todayStr();
   var all = (state.coursJour||[]).slice();
@@ -2674,7 +2674,7 @@ function buildCoursMessage(dateFiltre) {
   if (dateFiltre) {
     cours = all.filter(function(c){ return c.date===dateFiltre; });
   } else {
-    cours = all.filter(function(c){ return (c.date||today) >= today; });
+    cours = all; // tous les cours sans restriction de date
   }
   cours.sort(function(a,b){
     return ((a.date||today).localeCompare(b.date||today)) || a.debut.localeCompare(b.debut);
