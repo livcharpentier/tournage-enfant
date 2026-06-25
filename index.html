@@ -791,7 +791,7 @@
     </div>
   </div>
 </div>
-<div id="page-cours" class="page"><div class="page-header"><div class="page-title">Cours sur plateau</div><div class="page-sub" id="cours-film-name">Planning scolaire</div></div><div class="scroll-content"><div class="card"><div style="margin-bottom:10px"><div id="cours-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div></div><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Planning du jour</span><button onclick="openModal('modal-cours')" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter</button></div><div id="cours-list"><div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div></div></div><div class="card"><div class="card-title">Envoyer le planning</div><div class="send-btns"><button class="send-btn btn-wa" onclick="envoyerCoursWA('parents')"><span style="font-size:20px">&#128172;</span>Parents<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-wa" onclick="envoyerCoursWA('prod')" style="background:#1a9e5a"><span style="font-size:20px">&#128172;</span>Production<span style="font-size:10px;opacity:.8">WhatsApp</span></button><button class="send-btn btn-copy" onclick="copierCours()" style="grid-column:span 2"><span style="font-size:20px">&#128203;</span>Copier</button></div></div></div></div>
+<div id="page-cours" class="page"><div class="page-header"><div class="page-title">Cours sur plateau</div><div class="page-sub" id="cours-film-name">Planning scolaire</div></div><div class="scroll-content"><div class="card"><div style="margin-bottom:10px"><div id="cours-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div></div><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Planning du jour</span><button onclick="openModal('modal-cours')" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter</button></div><div id="cours-list"><div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div></div></div><div class="card"><div class="card-title">Envoyer le planning</div><div id="cours-date-label" style="font-size:12px;color:var(--text-muted);margin-bottom:8px;text-align:center">Filtre actif : toutes les dates</div><div class="send-btns"><button class="send-btn btn-wa" onclick="envoyerCoursWA('parents')"><span style="font-size:18px">&#128172;</span>Parents<span style="font-size:10px;opacity:.8">WA</span></button><button class="send-btn btn-wa" onclick="envoyerCoursWA('prod')" style="background:#1a9e5a"><span style="font-size:18px">&#128172;</span>Prod<span style="font-size:10px;opacity:.8">WA</span></button><button class="send-btn btn-copy" onclick="copierCours()" style="grid-column:span 2"><span style="font-size:18px">&#128203;</span>Copier</button></div></div></div></div>
 <nav class="nav">
   <button class="nav-btn" onclick="showPage('films',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
@@ -2665,28 +2665,44 @@ function renderCoursList() {
   });
   el.innerHTML = html;
 }
-function buildCoursMessage() {
+function buildCoursMessage(dateFiltre) {
+  // dateFiltre = null -> toutes les dates >= aujourd'hui ; string -> date spécifique
   var film = activeFilm();
-  var cours = (state.coursJour||[]).filter(function(c){ return c.date===todayStr(); })
-    .sort(function(a,b){ return a.debut.localeCompare(b.debut); });
+  var today = todayStr();
+  var all = (state.coursJour||[]).slice();
+  var cours;
+  if (dateFiltre) {
+    cours = all.filter(function(c){ return c.date===dateFiltre; });
+  } else {
+    cours = all.filter(function(c){ return (c.date||today) >= today; });
+  }
+  cours.sort(function(a,b){
+    return ((a.date||today).localeCompare(b.date||today)) || a.debut.localeCompare(b.debut);
+  });
   if (!cours.length) return null;
   var enfs = activeEnfants();
-  var today = new Date();
   var days = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
   var mths = ['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
-  var txt = 'Cours ' + days[today.getDay()] + ' ' + today.getDate() + ' ' + mths[today.getMonth()] + '\n';
-  if (film) txt += film.nom + '\n';
-  txt += '\n';
-  cours.forEach(function(c) {
-    var enf = enfs.find(function(e){ return e.id===c.enfantId; });
-    txt += (enf?enf.nom:'?') + ' - ' + c.matiere + ' ' + c.debut + (c.fin?' - '+c.fin:'') + '\n';
+  // Grouper par date
+  var byDate = {};
+  cours.forEach(function(c){ var d=c.date||today; if(!byDate[d]) byDate[d]=[]; byDate[d].push(c); });
+  var txt = (film ? film.nom + '\n' : '') + 'Planning cours\n\n';
+  Object.keys(byDate).sort().forEach(function(date) {
+    var d = new Date(date+'T12:00:00');
+    txt += days[d.getDay()] + ' ' + d.getDate() + ' ' + mths[d.getMonth()] + '\n';
+    byDate[date].forEach(function(c) {
+      var enf = enfs.find(function(e){ return e.id===c.enfantId; });
+      txt += '  ' + (enf?enf.nom:'?') + ' - ' + c.matiere + ' ' + c.debut + (c.fin?' - '+c.fin:'') + (c.prof?' ('+c.prof+')':'') + '\n';
+    });
+    txt += '\n';
   });
   txt += '- Liv ;-)';
   return txt;
 }
 function envoyerCoursWA(dest) {
-  var txt = buildCoursMessage();
-  if (!txt) { alert('Aucun cours planifie.'); return; }
+  // coursDateFiltre = null -> toutes les dates futures ; string -> date sélectionnée
+  var txt = buildCoursMessage(coursDateFiltre);
+  if (!txt) { alert('Aucun cours planifie' + (coursDateFiltre ? ' pour cette date.' : ' a venir.')); return; }
   if (dest === 'prod') {
     var n = (state.contacts||{}).prod || '';
     if (!n) { alert('Numero prod manquant dans Films.'); return; }
@@ -2703,8 +2719,8 @@ function envoyerCoursWA(dest) {
   }
 }
 function copierCours() {
-  var txt = buildCoursMessage();
-  if (!txt) { alert('Aucun cours.'); return; }
+  var txt = buildCoursMessage(coursDateFiltre);
+  if (!txt) { alert('Aucun cours' + (coursDateFiltre ? ' pour cette date.' : ' a venir.')); return; }
   navigator.clipboard.writeText(txt).then(function(){ alert('Copie!'); }).catch(function(){ alert(txt); });
 }
 function ouvrirChecklistHMC() {
@@ -2793,6 +2809,18 @@ function changerDateCours(date) {
   coursDateFiltre = date;
   remplirSelectCours();
   renderCoursList();
+  // Mettre à jour le label du filtre
+  var lbl = document.getElementById('cours-date-label');
+  if (lbl) {
+    if (!date) {
+      lbl.textContent = 'Filtre actif : toutes les dates';
+    } else {
+      var jrs=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+      var mts=['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+      var dt = new Date(date+'T12:00:00');
+      lbl.textContent = 'Filtre actif : ' + jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
+    }
+  }
 }
 
 function allerAuBilan(date) {
@@ -2920,6 +2948,18 @@ function changerDateCours(date) {
   coursDateFiltre = date;
   remplirSelectCours();
   renderCoursList();
+  // Mettre à jour le label du filtre
+  var lbl = document.getElementById('cours-date-label');
+  if (lbl) {
+    if (!date) {
+      lbl.textContent = 'Filtre actif : toutes les dates';
+    } else {
+      var jrs=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+      var mts=['jan','fev','mar','avr','mai','juin','juil','aout','sep','oct','nov','dec'];
+      var dt = new Date(date+'T12:00:00');
+      lbl.textContent = 'Filtre actif : ' + jrs[dt.getDay()] + ' ' + dt.getDate() + ' ' + mts[dt.getMonth()];
+    }
+  }
 }
 
 function allerAuBilan(date) {
