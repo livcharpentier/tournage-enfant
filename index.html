@@ -1661,12 +1661,10 @@ function buildSummary() {
     const logFin = evs.slice().reverse().find(l => l.type==='fin');
     const dernierFerme = evs.slice().reverse().find(l => l.fin && l.fin!==l.heure);
     const hFinHeure = logFin ? logFin.heure : (dernierFerme ? dernierFerme.fin : null);
-    // Ne pas afficher un enfant sans données utiles (juste pickup/transport seuls)
-    const aDesInfos = hDebut || hFinHeure || dur.tournage || dur.pause || dur.attente || dur.hmc || dur.cours || dur.cascade;
-    if (!aDesInfos && !hPickup && !hTransport) return;
+    if (!evs.length) return;
     txt += enf.nom + '\n';
-    if (hPickup) txt += 'Pick-up maison : ' + hPickup.heure + '\n';
-    if (hTransport) txt += 'Transport : ' + hTransport.heure + '\n';
+    if (hPickup) txt += '  (Pick-up : ' + hPickup.heure + ')\n';
+    if (hTransport) txt += '  (Transport : ' + hTransport.heure + ')\n';
     if (hDebut) txt += 'Debut : ' + hDebut.heure + '\n';
     if (dur.hmc) txt += 'HMC : ' + fmt(dur.hmc) + '\n';
     if (dur.tournage) txt += 'Tournage : ' + fmt(dur.tournage) + '\n';
@@ -1759,12 +1757,16 @@ function renderResume() {
       const dernierFerme = evs.slice().reverse().find(l => l.fin && l.fin!==l.heure);
       const hFinHeure = logFin ? logFin.heure : (dernierFerme ? dernierFerme.fin : null);
 
-      // Ne pas afficher un enfant sans données utiles
-      const aDesInfosBilan = debutEv || hFinHeure || dur.tournage || dur.hmc || dur.pause || dur.cours || dur.cascade;
-      if (!aDesInfosBilan) return;
-
+      const hPickupBilan = evs.find(l => l.type==='pickup');
+      const hTransportBilan = evs.find(l => l.type==='transport');
       html += '<div style="' + alertStyle + 'border-radius:10px;padding:10px 12px;margin-bottom:8px">';
-      html += '<div style="font-size:13px;font-weight:700;margin-bottom:8px">' + enf.nom + '</div>';
+      html += '<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px">';
+      html += '<div style="font-size:13px;font-weight:700">' + enf.nom + '</div>';
+      var infoGris = [];
+      if (hPickupBilan) infoGris.push('Pick-up ' + hPickupBilan.heure);
+      if (hTransportBilan) infoGris.push('Transport ' + hTransportBilan.heure);
+      if (infoGris.length) html += '<div style="font-size:11px;color:var(--text-muted)">' + infoGris.join(' · ') + '</div>';
+      html += '</div>';
       html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
       html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">Début</div><div style="font-size:14px;font-weight:600">' + debutH + '</div></div>';
       html += '<div style="text-align:center"><div style="font-size:10px;color:var(--text-muted)">HMC</div><div style="font-size:14px;font-weight:600">' + (hmcH||'—') + '</div></div>';
