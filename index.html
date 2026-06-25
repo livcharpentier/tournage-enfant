@@ -2643,6 +2643,40 @@ function supprimerCours(id) {
   save(); renderCoursList(); renderCoursResume();
 }
 
+function ouvrirEditCours(id) {
+  var c = (state.coursJour||[]).find(function(x){ return x.id===id; });
+  if (!c) return;
+  // Remplir le select enfants
+  var enfs = activeEnfants();
+  var sel = document.getElementById('edit-cours-enfant-id');
+  if (sel) sel.innerHTML = enfs.map(function(e){ return '<option value="'+e.id+'"'+(e.id===c.enfantId?' selected':'')+'>'+e.nom+'</option>'; }).join('');
+  document.getElementById('edit-cours-id').value = id;
+  document.getElementById('edit-cours-matiere').value = c.matiere || 'Mathematiques';
+  document.getElementById('edit-cours-matiere-custom').value = '';
+  document.getElementById('edit-cours-date').value = c.date || todayStr();
+  document.getElementById('edit-cours-debut').value = c.debut || '';
+  document.getElementById('edit-cours-fin').value = c.fin || '';
+  document.getElementById('edit-cours-prof').value = c.prof || '';
+  openModal('modal-edit-cours');
+}
+
+function sauvegarderCours() {
+  var id = parseInt(document.getElementById('edit-cours-id').value);
+  var c = (state.coursJour||[]).find(function(x){ return x.id===id; });
+  if (!c) return;
+  var mc = document.getElementById('edit-cours-matiere-custom').value.trim();
+  c.enfantId = parseInt(document.getElementById('edit-cours-enfant-id').value);
+  c.matiere = mc || document.getElementById('edit-cours-matiere').value;
+  c.date = document.getElementById('edit-cours-date').value || todayStr();
+  c.debut = document.getElementById('edit-cours-debut').value;
+  c.fin = document.getElementById('edit-cours-fin').value;
+  c.prof = document.getElementById('edit-cours-prof').value.trim();
+  save();
+  closeModal('modal-edit-cours');
+  renderCoursList();
+  renderCoursResume();
+}
+
 function renderCoursResume() {
   var el = document.getElementById('cours-resume-content');
   if (!el) return;
@@ -2807,7 +2841,8 @@ function renderCoursList() {
         '<div style="flex:1"><div style="font-size:13px;font-weight:700">'+(enf?enf.nom:'?')+'</div>' +
         '<div style="font-size:12px;font-weight:600;color:var(--purple-dark)">'+c.matiere+'</div>' +
         '<div style="font-size:11px;color:var(--text-muted)">'+c.debut+(c.fin?' - '+c.fin:'')+(c.prof?' · '+c.prof:'')+'</div></div>' +
-        '<button onclick="supprimerCours('+c.id+')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)">X</button></div>';
+        '<button onclick="ouvrirEditCours('+c.id+')" style="padding:5px 9px;border-radius:7px;border:1px solid var(--border);background:var(--bg);font-size:14px;cursor:pointer;color:var(--blue-dark)">&#9998;</button>' +
+        '<button onclick="supprimerCours('+c.id+')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)">&#x2715;</button></div>';
     });
   });
   el.innerHTML = html;
@@ -3305,6 +3340,28 @@ if ('serviceWorker' in navigator) {
     <button class="form-btn" style="background:#ef4444;margin-top:8px" onclick="genererPDF()">Generer le PDF</button>
   </div>
 </div>
+</div>
+<div class="modal-overlay" id="modal-edit-cours">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-edit-cours')">&#x2715;</button>
+    <div class="modal-title">&#9998; Modifier le cours</div>
+    <input type="hidden" id="edit-cours-id">
+    <div class="form-row"><label class="form-label">Enfant</label><select class="form-input" id="edit-cours-enfant-id"></select></div>
+    <div class="form-row"><label class="form-label">Matière</label>
+      <select class="form-input" id="edit-cours-matiere">
+        <option>Mathematiques</option><option>Francais</option><option>Histoire-Geo</option>
+        <option>Sciences</option><option>Anglais</option><option>Arts</option><option>Sport</option><option>Autre</option>
+      </select>
+    </div>
+    <div class="form-row"><label class="form-label">Matière perso (optionnel)</label><input class="form-input" id="edit-cours-matiere-custom" placeholder="ex: Espagnol..."></div>
+    <div class="form-row"><label class="form-label">Date</label><input class="form-input" type="date" id="edit-cours-date"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div><label class="form-label">Début</label><input class="form-input" type="time" id="edit-cours-debut"></div>
+      <div><label class="form-label">Fin</label><input class="form-input" type="time" id="edit-cours-fin"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Précepteur (optionnel)</label><input class="form-input" id="edit-cours-prof" placeholder="ex: M. Martin"></div>
+    <button class="form-btn" style="background:var(--purple)" onclick="sauvegarderCours()">Enregistrer</button>
+  </div>
 </div>
 </body>
 </html>
