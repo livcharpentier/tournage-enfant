@@ -1661,13 +1661,19 @@ function buildSummary() {
     const logFin = evs.slice().reverse().find(l => l.type==='fin');
     const dernierFerme = evs.slice().reverse().find(l => l.fin && l.fin!==l.heure);
     const hFinHeure = logFin ? logFin.heure : (dernierFerme ? dernierFerme.fin : null);
+    // Ne pas afficher un enfant sans données utiles (juste pickup/transport seuls)
+    const aDesInfos = hDebut || hFinHeure || dur.tournage || dur.pause || dur.attente || dur.hmc || dur.cours || dur.cascade;
+    if (!aDesInfos && !hPickup && !hTransport) return;
     txt += enf.nom + '\n';
     if (hPickup) txt += 'Pick-up maison : ' + hPickup.heure + '\n';
     if (hTransport) txt += 'Transport : ' + hTransport.heure + '\n';
     if (hDebut) txt += 'Debut : ' + hDebut.heure + '\n';
+    if (dur.hmc) txt += 'HMC : ' + fmt(dur.hmc) + '\n';
     if (dur.tournage) txt += 'Tournage : ' + fmt(dur.tournage) + '\n';
+    if (dur.cours) txt += 'Cours : ' + fmt(dur.cours) + '\n';
     if (dur.pause) txt += 'Pause : ' + fmt(dur.pause) + '\n';
-    if (dur.attente) txt += 'Attente : ' + fmt(dur.attente) + '\n';
+    if (dur.repas) txt += 'Repas : ' + fmt(dur.repas) + '\n';
+    if (dur.attente) txt += 'Hors plateau : ' + fmt(dur.attente) + '\n';
     if (hFinHeure) txt += 'Fin : ' + hFinHeure + '\n';
     const travail = WORK_TYPES.reduce((s,t) => s+(dur[t]||0), 0);
     const lim = LIMITES[enf.age];
@@ -1752,6 +1758,10 @@ function renderResume() {
       const logFin = evs.slice().reverse().find(l => l.type==='fin');
       const dernierFerme = evs.slice().reverse().find(l => l.fin && l.fin!==l.heure);
       const hFinHeure = logFin ? logFin.heure : (dernierFerme ? dernierFerme.fin : null);
+
+      // Ne pas afficher un enfant sans données utiles
+      const aDesInfosBilan = debutEv || hFinHeure || dur.tournage || dur.hmc || dur.pause || dur.cours || dur.cascade;
+      if (!aDesInfosBilan) return;
 
       html += '<div style="' + alertStyle + 'border-radius:10px;padding:10px 12px;margin-bottom:8px">';
       html += '<div style="font-size:13px;font-weight:700;margin-bottom:8px">' + enf.nom + '</div>';
