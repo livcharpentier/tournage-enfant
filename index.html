@@ -791,7 +791,7 @@
     </div>
   </div>
 </div>
-<div id="page-cours" class="page"><div class="page-header"><div class="page-title">Cours sur plateau</div><div class="page-sub" id="cours-film-name">Planning scolaire</div></div><div class="scroll-content"><div class="card"><div style="margin-bottom:10px"><div id="cours-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div></div><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Planning du jour</span><button onclick="openModal('modal-cours')" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter</button></div><div id="cours-list"><div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div></div></div><div class="card"><div class="card-title">Envoyer le planning</div><div id="cours-date-label" style="font-size:12px;color:var(--text-muted);margin-bottom:8px;text-align:center">Filtre actif : toutes les dates</div><div class="send-btns"><button class="send-btn btn-wa" onclick="envoyerCoursWA('parents')"><span style="font-size:18px">&#128172;</span>Parents<span style="font-size:10px;opacity:.8">WA</span></button><button class="send-btn btn-wa" onclick="envoyerCoursWA('prod')" style="background:#1a9e5a"><span style="font-size:18px">&#128172;</span>Prod<span style="font-size:10px;opacity:.8">WA</span></button><button class="send-btn btn-copy" onclick="copierCours()" style="grid-column:span 2"><span style="font-size:18px">&#128203;</span>Copier</button></div></div></div></div>
+<div id="page-cours" class="page"><div class="page-header"><div class="page-title">Cours sur plateau</div><div class="page-sub" id="cours-film-name">Planning scolaire</div></div><div class="scroll-content"><div class="card"><div style="margin-bottom:10px"><div id="cours-dates-container" style="display:flex;flex-wrap:wrap;gap:4px"></div></div><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>Planning du jour</span><button onclick="openModal('modal-cours')" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple);color:#fff;font-size:12px;font-weight:600;cursor:pointer">+ Ajouter</button></div><div id="cours-list"><div class="empty"><div class="empty-icon">&#128218;</div>Aucun cours planifie</div></div></div><div class="card"><div class="card-title">Envoyer le planning</div><div id="cours-date-label" style="font-size:12px;color:var(--text-muted);margin-bottom:8px;text-align:center">Filtre actif : toutes les dates</div><div class="send-btns"><button class="send-btn btn-wa" onclick="envoyerCoursWA('parents')"><span style="font-size:18px">&#128172;</span>Parents<span style="font-size:10px;opacity:.8">WA</span></button><button class="send-btn btn-wa" onclick="envoyerCoursWA('prod')" style="background:#1a9e5a"><span style="font-size:18px">&#128172;</span>Prod<span style="font-size:10px;opacity:.8">WA</span></button><button class="send-btn btn-copy" onclick="copierCours()" style="grid-column:span 2"><span style="font-size:18px">&#128203;</span>Copier</button></div></div><div class="card"><div class="card-title" style="display:flex;justify-content:space-between;align-items:center"><span>&#128218; Résumé par enfant</span><button onclick="copierResumeCours()" style="padding:5px 12px;border-radius:8px;border:none;background:var(--purple-light);color:var(--purple-dark);font-size:11px;font-weight:600;cursor:pointer">&#128203; Copier</button></div><div id="cours-resume-content"><div class="empty" style="padding:1rem">Aucun cours enregistré.</div></div></div></div></div>
 <nav class="nav">
   <button class="nav-btn" onclick="showPage('films',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
@@ -1262,7 +1262,7 @@ function showPage(name, btn) {
   if (name === 'films') renderFilmsPage();
   if (name === 'calendrier') renderCal();
   if (name === 'bilan') renderBilan();
-  if (name === 'cours') { remplirSelectCours(); renderCoursList(); const cfn=document.getElementById('cours-film-name'); if(cfn) cfn.textContent=activeFilm()?activeFilm().nom:'Scolaire'; }
+  if (name === 'cours') { remplirSelectCours(); renderCoursList(); renderCoursResume(); const cfn=document.getElementById('cours-film-name'); if(cfn) cfn.textContent=activeFilm()?activeFilm().nom:'Scolaire'; }
   if (name === 'resume') renderExtraContactsBtns();
   if (name === 'live') { renderChips(); renderStatusBar(); renderLog(); updateFilmDisplay(); renderProgressBars(); }
 }
@@ -2624,11 +2624,146 @@ function ajouterCours() {
   ['cours-matiere-custom','cours-debut','cours-fin','cours-prof'].forEach(function(xid) {
     var el2 = document.getElementById(xid); if(el2) el2.value='';
   });
-  save(); closeModal('modal-cours'); renderCoursList();
+  save(); closeModal('modal-cours'); renderCoursList(); renderCoursResume();
 }
 function supprimerCours(id) {
   state.coursJour = (state.coursJour||[]).filter(function(c){ return c.id!==id; });
-  save(); renderCoursList();
+  save(); renderCoursList(); renderCoursResume();
+}
+
+function renderCoursResume() {
+  var el = document.getElementById('cours-resume-content');
+  if (!el) return;
+  var allCours = state.coursJour || [];
+  var enfs = activeEnfants();
+  if (!allCours.length || !enfs.length) {
+    el.innerHTML = '<div class="empty" style="padding:1rem">Aucun cours enregistré.</div>';
+    return;
+  }
+  // Filtrer selon coursDateFiltre
+  var cours = coursDateFiltre
+    ? allCours.filter(function(c){ return c.date===coursDateFiltre; })
+    : allCours;
+  if (!cours.length) {
+    el.innerHTML = '<div class="empty" style="padding:1rem">Aucun cours pour ce filtre.</div>';
+    return;
+  }
+  // Par enfant
+  var html = '';
+  enfs.forEach(function(enf) {
+    var cesCours = cours.filter(function(c){ return c.enfantId===enf.id; });
+    if (!cesCours.length) return;
+    // Total heures
+    var totalMin = 0;
+    cesCours.forEach(function(c) {
+      if (c.debut && c.fin) {
+        var hd=c.debut.split(':'), hf=c.fin.split(':');
+        var diff = (parseInt(hf[0])*60+parseInt(hf[1])) - (parseInt(hd[0])*60+parseInt(hd[1]));
+        if (diff > 0) totalMin += diff;
+      }
+    });
+    // Par matière
+    var parMatiere = {};
+    cesCours.forEach(function(c) {
+      var k = c.matiere || 'Autre';
+      if (!parMatiere[k]) parMatiere[k] = { nb: 0, min: 0 };
+      parMatiere[k].nb++;
+      if (c.debut && c.fin) {
+        var hd=c.debut.split(':'), hf=c.fin.split(':');
+        var diff = (parseInt(hf[0])*60+parseInt(hf[1])) - (parseInt(hd[0])*60+parseInt(hd[1]));
+        if (diff > 0) parMatiere[k].min += diff;
+      }
+    });
+    // Par prof
+    var parProf = {};
+    cesCours.forEach(function(c) {
+      var k = c.prof || '(sans précepteur)';
+      if (!parProf[k]) parProf[k] = { nb: 0, min: 0 };
+      parProf[k].nb++;
+      if (c.debut && c.fin) {
+        var hd=c.debut.split(':'), hf=c.fin.split(':');
+        var diff = (parseInt(hf[0])*60+parseInt(hf[1])) - (parseInt(hd[0])*60+parseInt(hd[1]));
+        if (diff > 0) parProf[k].min += diff;
+      }
+    });
+    var col = enf.couleur || '#8b5cf6';
+    var bg = col + '18';
+    html += '<div style="background:'+bg+';border:1.5px solid '+col+'33;border-radius:10px;padding:12px;margin-bottom:10px">';
+    // En-tête enfant
+    html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
+    html += '<div style="width:36px;height:36px;border-radius:50%;background:'+col+'22;color:'+col+';font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">'+initials(enf.nom)+'</div>';
+    html += '<div><div style="font-size:14px;font-weight:700">'+enf.nom+'</div>';
+    html += '<div style="font-size:11px;color:var(--text-muted)">'+cesCours.length+' séance'+(cesCours.length>1?'s':'')+' · '+(totalMin?fmtMin(totalMin):'durées non saisies')+'</div></div></div>';
+    // Par matière
+    html += '<div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px">Par matière</div>';
+    Object.keys(parMatiere).forEach(function(mat) {
+      var m = parMatiere[mat];
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid '+col+'22">';
+      html += '<span style="font-size:13px;font-weight:600;color:var(--purple-dark)">'+mat+'</span>';
+      html += '<span style="font-size:12px;color:var(--text-muted)">'+m.nb+' séance'+(m.nb>1?'s':'')+(m.min?' · '+fmtMin(m.min):'')+'</span>';
+      html += '</div>';
+    });
+    // Par prof
+    html += '<div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin:8px 0 5px">Par précepteur</div>';
+    Object.keys(parProf).forEach(function(prof) {
+      var p = parProf[prof];
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid '+col+'22">';
+      html += '<span style="font-size:13px">'+prof+'</span>';
+      html += '<span style="font-size:12px;color:var(--text-muted)">'+p.nb+' séance'+(p.nb>1?'s':'')+(p.min?' · '+fmtMin(p.min):'')+'</span>';
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+  el.innerHTML = html || '<div class="empty" style="padding:1rem">Aucun cours pour ce filtre.</div>';
+}
+
+function fmtMin(min) {
+  if (!min || min <= 0) return '—';
+  var h = Math.floor(min/60), m = min%60;
+  return h > 0 ? (m > 0 ? h+'h'+String(m).padStart(2,'0') : h+'h') : m+'min';
+}
+
+function copierResumeCours() {
+  var allCours = state.coursJour || [];
+  var enfs = activeEnfants();
+  var cours = coursDateFiltre
+    ? allCours.filter(function(c){ return c.date===coursDateFiltre; })
+    : allCours;
+  if (!cours.length || !enfs.length) { alert('Aucun cours.'); return; }
+  var film = activeFilm();
+  var txt = (film ? film.nom + '\n' : '') + 'Résumé cours\n\n';
+  enfs.forEach(function(enf) {
+    var cesCours = cours.filter(function(c){ return c.enfantId===enf.id; });
+    if (!cesCours.length) return;
+    var totalMin = 0;
+    cesCours.forEach(function(c) {
+      if (c.debut && c.fin) {
+        var hd=c.debut.split(':'), hf=c.fin.split(':');
+        var diff = (parseInt(hf[0])*60+parseInt(hf[1])) - (parseInt(hd[0])*60+parseInt(hd[1]));
+        if (diff > 0) totalMin += diff;
+      }
+    });
+    txt += enf.nom + ' — ' + cesCours.length + ' séance' + (cesCours.length>1?'s':'') + (totalMin?' · '+fmtMin(totalMin):'') + '\n';
+    // Par prof
+    var parProf = {};
+    cesCours.forEach(function(c) {
+      var k = c.prof || '(sans précepteur)';
+      if (!parProf[k]) parProf[k] = { matieres: [], min: 0 };
+      parProf[k].matieres.push(c.matiere||'Autre');
+      if (c.debut && c.fin) {
+        var hd=c.debut.split(':'), hf=c.fin.split(':');
+        var diff = (parseInt(hf[0])*60+parseInt(hf[1])) - (parseInt(hd[0])*60+parseInt(hd[1]));
+        if (diff > 0) parProf[k].min += diff;
+      }
+    });
+    Object.keys(parProf).forEach(function(prof) {
+      var p = parProf[prof];
+      txt += '  ' + prof + ' : ' + [...new Set(p.matieres)].join(', ') + (p.min?' ('+fmtMin(p.min)+')':'') + '\n';
+    });
+    txt += '\n';
+  });
+  txt += '— Liv ;-)';
+  navigator.clipboard.writeText(txt).then(function(){ alert('Résumé copié !'); }).catch(function(){ alert(txt); });
 }
 function renderCoursList() {
   var el = document.getElementById('cours-list');
@@ -2809,6 +2944,7 @@ function changerDateCours(date) {
   coursDateFiltre = date;
   remplirSelectCours();
   renderCoursList();
+  renderCoursResume();
   // Mettre à jour le label du filtre
   var lbl = document.getElementById('cours-date-label');
   if (lbl) {
@@ -2948,6 +3084,7 @@ function changerDateCours(date) {
   coursDateFiltre = date;
   remplirSelectCours();
   renderCoursList();
+  renderCoursResume();
   // Mettre à jour le label du filtre
   var lbl = document.getElementById('cours-date-label');
   if (lbl) {
