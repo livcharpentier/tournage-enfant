@@ -86,6 +86,7 @@
     .btn-cascade { background: var(--red-light); color: var(--red-dark); }
     .btn-sante { background: var(--pink-light); color: #9d174d; }
     .btn-fin { background: #fce7f3; color: #9d174d; }
+    .btn-coaching { background: #ccfbf1; color: #0f766e; }
     
     /* MIC */
     .mic-wrap { display: flex; flex-direction: column; align-items: center; padding: 6px 12px 8px; }
@@ -306,31 +307,34 @@
         <span class="icon">🎬</span><span class="lbl">Arrivée</span><span class="last-t" id="lt-arrivee"></span>
       </button>
       <button class="action-btn btn-hmc" onclick="logAction('hmc')">
-        <span class="icon">✂️👗🎨</span><span class="lbl">HMC / Prép.</span><span class="last-t" id="lt-hmc"></span>
+        <span class="icon">💄</span><span class="lbl">HMC</span><span class="last-t" id="lt-hmc"></span>
       </button>
       <button class="action-btn btn-tournage" onclick="logAction('tournage')">
-        <span class="icon">🎥</span><span class="lbl">Plateau / Tournage</span><span class="last-t" id="lt-tournage"></span>
+        <span class="icon">🎬</span><span class="lbl">Plateau / Tournage</span><span class="last-t" id="lt-tournage"></span>
       </button>
       <button class="action-btn btn-pause" onclick="logAction('pause')">
-        <span class="icon">🧩</span><span class="lbl">Pause plateau</span><span class="last-t" id="lt-pause"></span>
+        <span class="icon">⏸️</span><span class="lbl">Pause plateau</span><span class="last-t" id="lt-pause"></span>
       </button>
       <button class="action-btn btn-repas" onclick="logAction('repas')">
         <span class="icon">🍽</span><span class="lbl">Repas</span><span class="last-t" id="lt-repas"></span>
       </button>
       <button class="action-btn btn-attente" onclick="logAction('attente')">
-        <span class="icon">☁️</span><span class="lbl">Pause hors plateau</span><span class="last-t" id="lt-attente"></span>
+        <span class="icon">🚶</span><span class="lbl">Pause hors plateau</span><span class="last-t" id="lt-attente"></span>
       </button>
       <button class="action-btn btn-cours" onclick="logAction('cours')">
-        <span class="icon">📚</span><span class="lbl">Cours</span><span class="last-t" id="lt-cours"></span>
+        <span class="icon">✏️</span><span class="lbl">Cours</span><span class="last-t" id="lt-cours"></span>
       </button>
       <button class="action-btn btn-cascade" onclick="logAction('cascade')">
         <span class="icon">🤸</span><span class="lbl">Cascade</span><span class="last-t" id="lt-cascade"></span>
+      </button>
+      <button class="action-btn btn-coaching" onclick="logAction('coaching')">
+        <span class="icon">🎭</span><span class="lbl">Coaching</span><span class="last-t" id="lt-coaching"></span>
       </button>
       <button class="action-btn btn-hmc" onclick="logAction('son')">
         <span class="icon">🎙️</span><span class="lbl">Équipage son</span><span class="last-t" id="lt-son"></span>
       </button>
       <button class="action-btn btn-sante" onclick="logAction('sante')">
-        <span class="icon">🩺</span><span class="lbl">Santé</span><span class="last-t" id="lt-sante"></span>
+        <span class="icon">🏥</span><span class="lbl">Santé</span><span class="last-t" id="lt-sante"></span>
       </button>
       <button class="action-btn btn-fin" onclick="logAction('fin')" style="grid-column:span 3">
         <span class="icon">🏁</span><span class="lbl">Fin de journée</span><span class="last-t" id="lt-fin"></span>
@@ -630,6 +634,7 @@
           <div style="color:#065f46;padding:2px 0">Cascade</div>
           
           <div style="color:#065f46;padding:2px 0">Pause plateau</div>
+          <div style="color:#065f46;padding:2px 0">Coaching 🎭</div>
         </div>
         <div style="background:#fee2e2;border-radius:8px;padding:10px">
           <div style="font-weight:700;color:#991b1b;margin-bottom:6px">NE COMPTE PAS</div>
@@ -873,7 +878,7 @@
   </div>
 </div>
 <div class="modal-overlay" id="modal-cours"><div class="modal"><button class="modal-close" onclick="closeModal('modal-cours')">X</button><div class="modal-title">Ajouter un cours</div><div class="form-row"><label class="form-label">Enfant</label><select class="form-input" id="cours-enfant-id"></select></div><div class="form-row"><label class="form-label">Matiere</label><select class="form-input" id="cours-matiere"><option>Mathematiques</option><option>Francais</option><option>Histoire-Geo</option><option>Sciences</option><option>Anglais</option><option>Arts</option><option>Sport</option><option>Autre</option></select></div><div class="form-row"><label class="form-label">Matiere perso (optionnel)</label><input class="form-input" id="cours-matiere-custom" placeholder="ex: Espagnol..."></div><div class="form-row"><label class="form-label">Date</label><input class="form-input" type="date" id="cours-date"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Debut</label><input class="form-input" type="time" id="cours-debut"></div><div><label class="form-label">Fin</label><input class="form-input" type="time" id="cours-fin"></div></div><div class="form-row"><label class="form-label">Precepteur (optionnel)</label><input class="form-input" id="cours-prof" placeholder="ex: M. Martin"></div><button class="form-btn" style="background:var(--purple)" onclick="ajouterCours()">Ajouter ce cours</button></div></div>
-<div class="modal-overlay" id="modal-edit-log"><div class="modal"><button class="modal-close" onclick="closeModal('modal-edit-log')">X</button><div class="modal-title">Modifier cette action</div><input type="hidden" id="edit-log-id"><div class="form-row"><label class="form-label">Action</label><select class="form-input" id="edit-log-type"><option value="pickup">Pick-up maison</option><option value="transport">Transport</option><option value="arrivee">Arrivee</option><option value="hmc">HMC</option><option value="tournage">Tournage</option><option value="pause">Pause plateau</option><option value="repas">Repas/Cantine</option><option value="attente">Pause hors plateau</option><option value="cours">Cours</option><option value="cascade">Cascade</option><option value="son">Equipage son</option><option value="sante">Sante</option><option value="fin">Fin journee</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Heure debut</label><input class="form-input" type="time" id="edit-log-heure"></div><div><label class="form-label">Heure fin</label><input class="form-input" type="time" id="edit-log-fin"></div></div><button class="form-btn" style="background:var(--blue)" onclick="sauvegarderLog()">Enregistrer</button></div></div>
+<div class="modal-overlay" id="modal-edit-log"><div class="modal"><button class="modal-close" onclick="closeModal('modal-edit-log')">X</button><div class="modal-title">Modifier cette action</div><input type="hidden" id="edit-log-id"><div class="form-row"><label class="form-label">Action</label><select class="form-input" id="edit-log-type"><option value="pickup">Pick-up maison</option><option value="transport">Transport</option><option value="arrivee">Arrivee</option><option value="hmc">HMC</option><option value="tournage">Tournage</option><option value="pause">Pause plateau</option><option value="repas">Repas/Cantine</option><option value="attente">Pause hors plateau</option><option value="cours">Cours</option><option value="cascade">Cascade</option><option value="coaching">Coaching</option><option value="son">Equipage son</option><option value="sante">Sante</option><option value="fin">Fin journee</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Heure debut</label><input class="form-input" type="time" id="edit-log-heure"></div><div><label class="form-label">Heure fin</label><input class="form-input" type="time" id="edit-log-fin"></div></div><button class="form-btn" style="background:var(--blue)" onclick="sauvegarderLog()">Enregistrer</button></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
@@ -935,16 +940,16 @@ const LIMITES = new Proxy({}, { get: (t, k) => getLimites()[k] });
 const TYPE_LABEL = {
   arrivee: 'Arrivée', hmc: 'HMC/Prép.', tournage: 'Tournage',
   pause: 'Pause plateau', repas: 'Repas', attente: 'Pause hors plateau',
-  cours: 'Cours', cascade: 'Cascade', sante: 'Santé', son: 'Équipage son', fin: 'Fin journée'
+  cours: 'Cours', cascade: 'Cascade', sante: 'Santé', son: 'Équipage son', coaching: 'Coaching', fin: 'Fin journée'
 };
 const TYPE_COLOR = {
   arrivee: ['#d1fae5', '#065f46'], hmc: ['#dbeafe', '#1d4ed8'],
   tournage: ['#a7f3d0', '#065f46'], pause: ['#f3f4f6', '#1f2937'],
   repas: ['#fef9c3', '#713f12'], attente: ['#fef3c7', '#92400e'],
   cours: ['#ede9fe', '#5b21b6'], cascade: ['#fee2e2', '#991b1b'],
-  sante: ['#fce7f3', '#9d174d'], son: ['#dbeafe', '#1d4ed8'], fin: ['#fce7f3', '#9d174d']
+  sante: ['#fce7f3', '#9d174d'], son: ['#dbeafe', '#1d4ed8'], coaching: ['#ccfbf1', '#0f766e'], fin: ['#fce7f3', '#9d174d']
 };
-const WORK_TYPES = ['tournage', 'hmc', 'cascade', 'pause', 'son'];
+const WORK_TYPES = ['tournage', 'hmc', 'cascade', 'pause', 'son', 'coaching'];
 // ─── STATE ────────────────────────────────────────────────────────
 let state = {
   films: [],
@@ -1691,6 +1696,7 @@ function parseVoice(text) {
     
     'cours': 'cours', 'école': 'cours', 'scolaire': 'cours',
     'cascade': 'cascade',
+    'coaching': 'coaching', 'coach': 'coaching',
     'santé': 'sante', 'médecin': 'sante', 'docteur': 'sante',
     'fin': 'fin', 'départ': 'fin', 'terminé': 'fin', 'fini': 'fin'
   };
@@ -1734,6 +1740,7 @@ function buildSummary() {
     if (hDebut) txt += 'Debut : ' + hDebut.heure + '\n';
     if (dur.hmc) txt += 'HMC : ' + fmt(dur.hmc) + '\n';
     if (dur.tournage) txt += 'Tournage : ' + fmt(dur.tournage) + '\n';
+    if (dur.coaching) txt += 'Coaching : ' + fmt(dur.coaching) + '\n';
     if (dur.cours) txt += 'Cours : ' + fmt(dur.cours) + '\n';
     if (dur.pause) txt += 'Pause plateau : ' + fmt(dur.pause) + '\n';
     if (dur.repas) txt += 'Repas : ' + fmt(dur.repas) + '\n';
