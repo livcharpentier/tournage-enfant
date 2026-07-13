@@ -1195,6 +1195,7 @@ async function load() {
       selectedEnfants = best.selectedEnfants || [];
       // Toujours mettre à jour localStorage avec la meilleure version
       localStorage.setItem('tournage_v2', JSON.stringify(best));
+      window._lastLoadedAt = best.savedAt || 0;
     } catch(e) {}
   }
   if (state.commentaireJour) {
@@ -3133,6 +3134,68 @@ setInterval(() => {
   if (activePage && activePage.id === 'page-planning') 
   renderStatusBar();
 }, 60000);
+
+// ─── RÉVEIL DEPUIS VEILLE ────────────────────────────────────────
+let lastHidden = null;
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    lastHidden = Date.now();
+  } else {
+    // L'appli revient au premier plan
+    const elapsed = lastHidden ? Date.now() - lastHidden : 0;
+    
+    // Toujours restaurer depuis localStorage immédiatement (pas d'attente réseau)
+    try {
+      const raw = localStorage.getItem('tournage_v2');
+      if (raw) {
+        const d = JSON.parse(raw);
+        if (d.savedAt && d.savedAt > (window._lastLoadedAt || 0)) {
+          // localStorage plus récent que ce qu'on a en mémoire → restaurer
+          state = d.state || state;
+          nextId = d.nextId || nextId;
+          selectedEnfants = d.selectedEnfants || selectedEnfants;
+          window._lastLoadedAt = d.savedAt;
+        }
+      }
+    } catch(e) {}
+
+    // Rafraîchir l'affichage
+    try {
+      renderChips();
+      renderLog();
+      renderStatusBar();
+      renderProgressBars();
+      updateFilmDisplay();
+      // Si on était sur résumé ou bilan, rafraîchir aussi
+      const activePage = document.querySelector('.page.active');
+      if (activePage) {
+        if (activePage.id === 'page-resume') renderResume();
+        if (activePage.id === 'page-bilan') renderBilan();
+        if (activePage.id === 'page-cours') { renderCoursList(); renderCoursResume(); }
+      }
+    } catch(e) {}
+
+    // Si absence longue (> 5 min) ET réseau dispo → vérifier si Supabase a des données plus récentes
+    if (elapsed > 300000 && navigator.onLine) {
+      sbLoad().then(remote => {
+        if (!remote) return;
+        const localRaw = localStorage.getItem('tournage_v2');
+        const localAt = localRaw ? (JSON.parse(localRaw).savedAt || 0) : 0;
+        const remoteAt = remote.savedAt || 0;
+        if (remoteAt > localAt) {
+          // Supabase plus récent (connexion sur un autre appareil)
+          state = remote.state || state;
+          nextId = remote.nextId || nextId;
+          selectedEnfants = remote.selectedEnfants || selectedEnfants;
+          localStorage.setItem('tournage_v2', JSON.stringify(remote));
+          renderChips(); renderLog(); renderStatusBar(); renderProgressBars();
+          showSyncBanner('✅ Mise à jour depuis le serveur');
+        }
+      }).catch(() => {});
+    }
+  }
+});
 // Désactiver et supprimer tous les service workers
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
@@ -3273,6 +3336,68 @@ setInterval(() => {
   if (activePage && activePage.id === 'page-planning') 
   renderStatusBar();
 }, 60000);
+
+// ─── RÉVEIL DEPUIS VEILLE ────────────────────────────────────────
+let lastHidden = null;
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    lastHidden = Date.now();
+  } else {
+    // L'appli revient au premier plan
+    const elapsed = lastHidden ? Date.now() - lastHidden : 0;
+    
+    // Toujours restaurer depuis localStorage immédiatement (pas d'attente réseau)
+    try {
+      const raw = localStorage.getItem('tournage_v2');
+      if (raw) {
+        const d = JSON.parse(raw);
+        if (d.savedAt && d.savedAt > (window._lastLoadedAt || 0)) {
+          // localStorage plus récent que ce qu'on a en mémoire → restaurer
+          state = d.state || state;
+          nextId = d.nextId || nextId;
+          selectedEnfants = d.selectedEnfants || selectedEnfants;
+          window._lastLoadedAt = d.savedAt;
+        }
+      }
+    } catch(e) {}
+
+    // Rafraîchir l'affichage
+    try {
+      renderChips();
+      renderLog();
+      renderStatusBar();
+      renderProgressBars();
+      updateFilmDisplay();
+      // Si on était sur résumé ou bilan, rafraîchir aussi
+      const activePage = document.querySelector('.page.active');
+      if (activePage) {
+        if (activePage.id === 'page-resume') renderResume();
+        if (activePage.id === 'page-bilan') renderBilan();
+        if (activePage.id === 'page-cours') { renderCoursList(); renderCoursResume(); }
+      }
+    } catch(e) {}
+
+    // Si absence longue (> 5 min) ET réseau dispo → vérifier si Supabase a des données plus récentes
+    if (elapsed > 300000 && navigator.onLine) {
+      sbLoad().then(remote => {
+        if (!remote) return;
+        const localRaw = localStorage.getItem('tournage_v2');
+        const localAt = localRaw ? (JSON.parse(localRaw).savedAt || 0) : 0;
+        const remoteAt = remote.savedAt || 0;
+        if (remoteAt > localAt) {
+          // Supabase plus récent (connexion sur un autre appareil)
+          state = remote.state || state;
+          nextId = remote.nextId || nextId;
+          selectedEnfants = remote.selectedEnfants || selectedEnfants;
+          localStorage.setItem('tournage_v2', JSON.stringify(remote));
+          renderChips(); renderLog(); renderStatusBar(); renderProgressBars();
+          showSyncBanner('✅ Mise à jour depuis le serveur');
+        }
+      }).catch(() => {});
+    }
+  }
+});
 // Désactiver et supprimer tous les service workers
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
