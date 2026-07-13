@@ -312,13 +312,13 @@
         <span class="icon">🎥</span><span class="lbl">Plateau / Tournage</span><span class="last-t" id="lt-tournage"></span>
       </button>
       <button class="action-btn btn-pause" onclick="logAction('pause')">
-        <span class="icon">🧩</span><span class="lbl">Pause</span><span class="last-t" id="lt-pause"></span>
+        <span class="icon">🧩</span><span class="lbl">Pause plateau</span><span class="last-t" id="lt-pause"></span>
       </button>
       <button class="action-btn btn-repas" onclick="logAction('repas')">
         <span class="icon">🍽</span><span class="lbl">Repas</span><span class="last-t" id="lt-repas"></span>
       </button>
       <button class="action-btn btn-attente" onclick="logAction('attente')">
-        <span class="icon">☁️</span><span class="lbl">Hors plateau</span><span class="last-t" id="lt-attente"></span>
+        <span class="icon">☁️</span><span class="lbl">Pause hors plateau</span><span class="last-t" id="lt-attente"></span>
       </button>
       <button class="action-btn btn-cours" onclick="logAction('cours')">
         <span class="icon">📚</span><span class="lbl">Cours</span><span class="last-t" id="lt-cours"></span>
@@ -338,7 +338,7 @@
     </div>
     <div class="mic-wrap">
       <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎤</button>
-      <div class="mic-hint" id="mic-hint">Dicter : "tournage", "pause", "repas"…</div>
+      <div class="mic-hint" id="mic-hint">Dicter : "tournage", "pause plateau", "repas"…</div>
       <div class="mic-txt" id="mic-txt"></div>
     </div>
     <div style="padding:4px 12px 6px">
@@ -629,18 +629,18 @@
           <div style="color:#065f46;padding:2px 0">HMC / Préparation</div>
           <div style="color:#065f46;padding:2px 0">Cascade</div>
           
-          <div style="color:#065f46;padding:2px 0">Pause</div>
+          <div style="color:#065f46;padding:2px 0">Pause plateau</div>
         </div>
         <div style="background:#fee2e2;border-radius:8px;padding:10px">
           <div style="font-weight:700;color:#991b1b;margin-bottom:6px">NE COMPTE PAS</div>
           <div style="color:#991b1b;padding:2px 0">Repas</div>
-          <div style="color:#991b1b;padding:2px 0">☁️ Hors plateau</div>
+          <div style="color:#991b1b;padding:2px 0">☁️ Pause hors plateau</div>
           <div style="color:#991b1b;padding:2px 0">Transport</div>
         </div>
       </div>
       <div style="margin-top:10px;background:#fef3c7;border-radius:8px;padding:10px;font-size:12px;color:#92400e">
-        <div style="font-weight:700;margin-bottom:4px">Quand utiliser "Temps d'attente" ?</div>
-        <div>L'enfant est <strong>déshabillé, dans sa loge ou hors du plateau</strong>, non disponible pour tourner. Il ne peut pas être rappelé immédiatement. Ce temps <strong>ne compte pas</strong> dans le quota légal.<br><br>À ne pas confondre avec la <strong>Pause</strong>  où l'enfant reste en costume sur le plateau et peut être rappelé rapidement.</div>
+        <div style="font-weight:700;margin-bottom:4px">Pause plateau vs Pause hors plateau</div>
+        <div><strong>Pause plateau 🧩</strong> : l'enfant est en costume, disponible, peut être rappelé rapidement. Ce temps <strong>compte</strong> dans le quota légal.<br><br><strong>Pause hors plateau ☁️</strong> : l'enfant est déshabillé, dans sa loge ou sorti du plateau, non disponible immédiatement. Ce temps <strong>ne compte pas</strong> dans le quota légal.</div>
       </div>
     </div>
     <div class="card" style="margin:10px 0">
@@ -873,7 +873,7 @@
   </div>
 </div>
 <div class="modal-overlay" id="modal-cours"><div class="modal"><button class="modal-close" onclick="closeModal('modal-cours')">X</button><div class="modal-title">Ajouter un cours</div><div class="form-row"><label class="form-label">Enfant</label><select class="form-input" id="cours-enfant-id"></select></div><div class="form-row"><label class="form-label">Matiere</label><select class="form-input" id="cours-matiere"><option>Mathematiques</option><option>Francais</option><option>Histoire-Geo</option><option>Sciences</option><option>Anglais</option><option>Arts</option><option>Sport</option><option>Autre</option></select></div><div class="form-row"><label class="form-label">Matiere perso (optionnel)</label><input class="form-input" id="cours-matiere-custom" placeholder="ex: Espagnol..."></div><div class="form-row"><label class="form-label">Date</label><input class="form-input" type="date" id="cours-date"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Debut</label><input class="form-input" type="time" id="cours-debut"></div><div><label class="form-label">Fin</label><input class="form-input" type="time" id="cours-fin"></div></div><div class="form-row"><label class="form-label">Precepteur (optionnel)</label><input class="form-input" id="cours-prof" placeholder="ex: M. Martin"></div><button class="form-btn" style="background:var(--purple)" onclick="ajouterCours()">Ajouter ce cours</button></div></div>
-<div class="modal-overlay" id="modal-edit-log"><div class="modal"><button class="modal-close" onclick="closeModal('modal-edit-log')">X</button><div class="modal-title">Modifier cette action</div><input type="hidden" id="edit-log-id"><div class="form-row"><label class="form-label">Action</label><select class="form-input" id="edit-log-type"><option value="pickup">Pick-up maison</option><option value="transport">Transport</option><option value="arrivee">Arrivee</option><option value="hmc">HMC</option><option value="tournage">Tournage</option><option value="pause">Pause</option><option value="repas">Repas/Cantine</option><option value="attente">Hors plateau</option><option value="cours">Cours</option><option value="cascade">Cascade</option><option value="son">Equipage son</option><option value="sante">Sante</option><option value="fin">Fin journee</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Heure debut</label><input class="form-input" type="time" id="edit-log-heure"></div><div><label class="form-label">Heure fin</label><input class="form-input" type="time" id="edit-log-fin"></div></div><button class="form-btn" style="background:var(--blue)" onclick="sauvegarderLog()">Enregistrer</button></div></div>
+<div class="modal-overlay" id="modal-edit-log"><div class="modal"><button class="modal-close" onclick="closeModal('modal-edit-log')">X</button><div class="modal-title">Modifier cette action</div><input type="hidden" id="edit-log-id"><div class="form-row"><label class="form-label">Action</label><select class="form-input" id="edit-log-type"><option value="pickup">Pick-up maison</option><option value="transport">Transport</option><option value="arrivee">Arrivee</option><option value="hmc">HMC</option><option value="tournage">Tournage</option><option value="pause">Pause plateau</option><option value="repas">Repas/Cantine</option><option value="attente">Pause hors plateau</option><option value="cours">Cours</option><option value="cascade">Cascade</option><option value="son">Equipage son</option><option value="sante">Sante</option><option value="fin">Fin journee</option></select></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div><label class="form-label">Heure debut</label><input class="form-input" type="time" id="edit-log-heure"></div><div><label class="form-label">Heure fin</label><input class="form-input" type="time" id="edit-log-fin"></div></div><button class="form-btn" style="background:var(--blue)" onclick="sauvegarderLog()">Enregistrer</button></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
@@ -934,7 +934,7 @@ function getLimites(dateStr) {
 const LIMITES = new Proxy({}, { get: (t, k) => getLimites()[k] });
 const TYPE_LABEL = {
   arrivee: 'Arrivée', hmc: 'HMC/Prép.', tournage: 'Tournage',
-  pause: 'Pause', repas: 'Repas', attente: 'Hors plateau',
+  pause: 'Pause plateau', repas: 'Repas', attente: 'Pause hors plateau',
   cours: 'Cours', cascade: 'Cascade', sante: 'Santé', son: 'Équipage son', fin: 'Fin journée'
 };
 const TYPE_COLOR = {
@@ -1612,7 +1612,7 @@ function stopMic() {
   const btn = document.getElementById('mic-btn');
   if (btn) btn.classList.remove('on');
   const hint = document.getElementById('mic-hint');
-  if (hint) hint.textContent = 'Dicter : "tournage", "pause", "repas"…';
+  if (hint) hint.textContent = 'Dicter : "tournage", "pause plateau", "repas"…';
   setTimeout(() => { const t = document.getElementById('mic-txt'); if (t) t.textContent = ''; }, 3000);
 }
 function parseVoice(text) {
@@ -1620,9 +1620,9 @@ function parseVoice(text) {
     'arrivée': 'arrivee', 'arrivee': 'arrivee', 'arrivé': 'arrivee',
     'hmc': 'hmc', 'maquillage': 'hmc', 'costume': 'hmc', 'préparation': 'hmc', 'prep': 'hmc',
     'tournage': 'tournage', 'action': 'tournage', 'on tourne': 'tournage',
-    'pause': 'pause', 'coupure': 'pause',
+    'pause plateau': 'pause', 'pause': 'pause', 'coupure': 'pause', 'pause hors plateau': 'attente', 'hors plateau': 'attente',
     'repas': 'repas', 'déjeuner': 'repas', 'manger': 'repas', 'lunch': 'repas',
-    'attente': 'attente',
+    
     'cours': 'cours', 'école': 'cours', 'scolaire': 'cours',
     'cascade': 'cascade',
     'santé': 'sante', 'médecin': 'sante', 'docteur': 'sante',
@@ -1669,9 +1669,9 @@ function buildSummary() {
     if (dur.hmc) txt += 'HMC : ' + fmt(dur.hmc) + '\n';
     if (dur.tournage) txt += 'Tournage : ' + fmt(dur.tournage) + '\n';
     if (dur.cours) txt += 'Cours : ' + fmt(dur.cours) + '\n';
-    if (dur.pause) txt += 'Pause : ' + fmt(dur.pause) + '\n';
+    if (dur.pause) txt += 'Pause plateau : ' + fmt(dur.pause) + '\n';
     if (dur.repas) txt += 'Repas : ' + fmt(dur.repas) + '\n';
-    if (dur.attente) txt += 'Hors plateau : ' + fmt(dur.attente) + '\n';
+    if (dur.attente) txt += 'Pause hors plateau : ' + fmt(dur.attente) + '\n';
     if (hFinHeure) txt += 'Fin : ' + hFinHeure + '\n';
     const travail = WORK_TYPES.reduce((s,t) => s+(dur[t]||0), 0);
     const lim = LIMITES[enf.age];
@@ -1775,9 +1775,9 @@ function renderResume() {
       html += '</div>';
       if (dur.pause||dur.repas||dur.attente) {
         html += '<div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">';
-        if (dur.pause) html += 'Pause : ' + fmt(dur.pause) + ' · ';
+        if (dur.pause) html += 'Pause plateau : ' + fmt(dur.pause) + ' · ';
         if (dur.repas) html += 'Repas (non compté) : ' + fmt(dur.repas) + ' · ';
-        if (dur.attente) html += 'Hors plateau (non compté) : ' + fmt(dur.attente);
+        if (dur.attente) html += 'Pause hors plateau (non comptée) : ' + fmt(dur.attente);
         html += '</div>';
       }
       html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:4px">';
@@ -2494,9 +2494,9 @@ function renderBilan() {
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Arrivee</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">HMC</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Tournage</th>';
-    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Pause</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Pause plateau</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Repas</th>';
-    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Hors plateau</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Hors plateau*</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Cascade</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Sante</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Cours</th>';
