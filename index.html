@@ -2580,6 +2580,7 @@ function renderBilan() {
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Cours</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Fin</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Présence légale</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Logs</th>';
     html += '</tr></thead><tbody>';
     
     stats.forEach(s => {
@@ -2601,6 +2602,14 @@ function renderBilan() {
       html += '<td style="padding:6px 8px;color:#5b21b6;font-size:10px">' + cStr + '</td>';
       html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure : '-') + '</td>';
       html += '<td style="padding:6px 8px;font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
+      // Cellule crayons - un bouton par log de cet enfant pour ce jour
+      var logsEnf = state.logs.filter(function(l){ return l.filmId===state.activeFilmId && l.date===date && l.enfantId===s.enf.id; }).sort(function(a,b){ return a.heure.localeCompare(b.heure); });
+      var btns = logsEnf.map(function(l){
+        var [bg,tc] = TYPE_COLOR[l.type] || ['#f3f4f6','#1f2937'];
+        var lbl = (TYPE_LABEL[l.type]||l.type).substring(0,6);
+        return '<button onclick="ouvrirEditLogBilan('+l.id+')" style="font-size:9px;padding:2px 5px;border-radius:4px;border:none;background:'+bg+';color:'+tc+';cursor:pointer;margin:1px;font-weight:600">'+l.heure+' '+lbl+'</button>';
+      }).join('');
+      html += '<td style="padding:4px 6px;min-width:120px">' + btns + '</td>';
       html += '</tr>';
     });
     html += '</tbody></table></div>';
@@ -2675,6 +2684,13 @@ function genererPDFBilan() {
   if (win) { win.onload = () => { setTimeout(() => { win.print(); }, 500); }; }
 }
 // ─── INIT ─────────────────────────────────────────────────────────
+function ouvrirEditLogBilan(id) {
+  // Même modal que le live, mais on revient au bilan après
+  ouvrirEditLog(id);
+  // Après sauvegarde, renderBilan sera appelé
+  window._editFromBilan = true;
+}
+
 function ouvrirEditLog(id) {
   var log = state.logs.find(function(l){ return l.id === id; });
   if (!log) return;
@@ -2693,6 +2709,7 @@ function sauvegarderLog() {
   log.fin = document.getElementById('edit-log-fin').value || null;
   save(); closeModal('modal-edit-log');
   renderLog(); renderStatusBar(); renderProgressBars();
+  if (window._editFromBilan) { renderBilan(); window._editFromBilan = false; }
 }
 function ouvrirModalCours() {
   var enfs = activeEnfants();
