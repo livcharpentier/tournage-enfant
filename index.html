@@ -1108,28 +1108,93 @@ async function handleLogin() {
 // ─── PERSISTENCE ─────────────────────────────────────────────────
 let saveTimer = null;
 function save() {
-  try { localStorage.setItem('tournage_v2', JSON.stringify({ state, nextId, selectedEnfants })); } catch(e) {}
+  const payload = { state, nextId, selectedEnfants, savedAt: Date.now() };
+  try { localStorage.setItem('tournage_v2', JSON.stringify(payload)); } catch(e) {}
+  // Marquer qu'une sync Supabase est en attente
+  localStorage.setItem('tournage_pending_sync', '1');
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => { sbSave({ state, nextId, selectedEnfants }); }, 2000);
+  saveTimer = setTimeout(() => {
+    sbSave(payload).then(() => {
+      localStorage.removeItem('tournage_pending_sync');
+    }).catch(() => {
+      // Pas de réseau — on garde le flag, on retentera
+    });
+  }, 2000);
 }
-async function load() {
-  const remote = await sbLoad();
-  if (remote) {
-    try {
-      state = remote.state || state;
-      nextId = remote.nextId || 1;
-      selectedEnfants = remote.selectedEnfants || [];
-      localStorage.setItem('tournage_v2', JSON.stringify(remote));
-    } catch(e) {}
-  } else {
-    try {
-      const raw = localStorage.getItem('tournage_v2');
-      if (raw) {
+
+// Resynchro automatique quand le réseau revient
+window.addEventListener('online', () => {
+  if (localStorage.getItem('tournage_pending_sync')) {
+    const raw = localStorage.getItem('tournage_v2');
+    if (raw) {
+      try {
         const d = JSON.parse(raw);
-        state = d.state || state;
-        nextId = d.nextId || 1;
-        selectedEnfants = d.selectedEnfants || [];
-      }
+        sbSave(d).then(() => {
+          localStorage.removeItem('tournage_pending_sync');
+          showSyncBanner('✅ Données synchronisées avec le serveur');
+        });
+      } catch(e) {}
+    }
+  }
+});
+
+function showSyncBanner(msg) {
+  let b = document.getElementById('sync-banner');
+  if (!b) {
+    b = document.createElement('div');
+    b.id = 'sync-banner';
+    b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;padding:10px 16px;font-size:13px;font-weight:600;text-align:center;transition:opacity .5s';
+    document.body.appendChild(b);
+  }
+  const isOk = msg.startsWith('✅');
+  b.style.background = isOk ? '#10b981' : '#f59e0b';
+  b.style.color = '#fff';
+  b.style.opacity = '1';
+  b.textContent = msg;
+  setTimeout(() => { b.style.opacity = '0'; }, 3000);
+}
+
+// Détecter la perte de réseau
+window.addEventListener('offline', () => {
+  showSyncBanner('⚠️ Hors ligne — données sauvegardées localement');
+});
+async function load() {
+  // Lire localStorage d'abord (toujours disponible)
+  let local = null;
+  try {
+    const raw = localStorage.getItem('tournage_v2');
+    if (raw) local = JSON.parse(raw);
+  } catch(e) {}
+
+  // Essayer Supabase
+  const remote = await sbLoad();
+
+  // Choisir la version la plus récente (par timestamp savedAt)
+  let best = null;
+  if (remote && local) {
+    const remoteAt = remote.savedAt || 0;
+    const localAt  = local.savedAt  || 0;
+    best = localAt > remoteAt ? local : remote;
+    if (localAt > remoteAt) {
+      // localStorage est plus récent → re-pousser vers Supabase
+      sbSave(local);
+      showSyncBanner('✅ Données locales plus récentes — synchronisation en cours…');
+    }
+  } else if (remote) {
+    best = remote;
+  } else if (local) {
+    best = local;
+    // Pas de réseau au démarrage — on retentera à la reconnexion
+    localStorage.setItem('tournage_pending_sync', '1');
+  }
+
+  if (best) {
+    try {
+      state = best.state || state;
+      nextId = best.nextId || 1;
+      selectedEnfants = best.selectedEnfants || [];
+      // Toujours mettre à jour localStorage avec la meilleure version
+      localStorage.setItem('tournage_v2', JSON.stringify(best));
     } catch(e) {}
   }
   if (state.commentaireJour) {
