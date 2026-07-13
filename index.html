@@ -2528,7 +2528,9 @@ function getStatsByDate(date) {
     const travail = WORK_TYPES.reduce((s,t) => s + (dur[t]||0), 0);
     const lim = LIMITES[enf.age];
     const pct = Math.round(travail/lim*100);
-    return { enf, dur, hArrivee, hFin, hRepas, travail, lim, pct, hasCascade: dur.cascade > 0, hasSante: dur.sante > 0 };
+    return { enf, dur, hArrivee, hFin, hRepas, travail, lim, pct,
+      hasCascade: dur.cascade > 0, hasSante: dur.sante > 0,
+      hasCoaching: dur.coaching > 0, hasSon: dur.son > 0 };
   }).filter(Boolean);
 }
 function getAllDates() {
@@ -2572,10 +2574,12 @@ function renderBilan() {
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Repas</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Hors plateau*</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Cascade</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Coaching 🎭</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Son 🎙️</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Sante</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Cours</th>';
     html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Fin</th>';
-    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Plateau</th>';
+    html += '<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--text-muted)">Présence légale</th>';
     html += '</tr></thead><tbody>';
     
     stats.forEach(s => {
@@ -2589,6 +2593,8 @@ function renderBilan() {
       html += '<td style="padding:6px 8px">' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin ? '-' + s.hRepas.fin : '') : '-') + '</td>';
       html += '<td style="padding:6px 8px">' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
       html += '<td style="padding:6px 8px;color:' + (s.hasCascade ? '#991b1b' : 'var(--text-muted)') + '">' + (s.hasCascade ? fmt(s.dur.cascade) : '-') + '</td>';
+      html += '<td style="padding:6px 8px;color:' + (s.hasCoaching ? '#0f766e' : 'var(--text-muted)') + '">' + (s.hasCoaching ? fmt(s.dur.coaching) : '-') + '</td>';
+      html += '<td style="padding:6px 8px;color:' + (s.hasSon ? '#1d4ed8' : 'var(--text-muted)') + '">' + (s.hasSon ? fmt(s.dur.son) : '-') + '</td>';
       html += '<td style="padding:6px 8px;color:' + (s.hasSante ? '#9d174d' : 'var(--text-muted)') + '">' + (s.hasSante ? '⚠' : '-') + '</td>';
       const cBilan = (state.coursJour||[]).filter(c => c.date===date && c.enfantId===s.enf.id);
       const cStr = cBilan.length ? cBilan.map(c => c.matiere+' '+c.debut+(c.fin?'-'+c.fin:'')).join(', ') : '-';
@@ -2634,6 +2640,8 @@ function genererPDFBilan() {
       rows += '<td>' + (s.hRepas ? s.hRepas.heure + (s.hRepas.fin ? '-'+s.hRepas.fin : '') : '-') + '</td>';
       rows += '<td>' + (s.dur.attente ? fmt(s.dur.attente) : '-') + '</td>';
       rows += '<td style="color:#991b1b">' + (s.hasCascade ? fmt(s.dur.cascade) : '-') + '</td>';
+      rows += '<td style="color:#0f766e">' + (s.hasCoaching ? fmt(s.dur.coaching) : '-') + '</td>';
+      rows += '<td style="color:#1d4ed8">' + (s.hasSon ? fmt(s.dur.son) : '-') + '</td>';
       rows += '<td style="color:#9d174d">' + (s.hasSante ? 'Oui' : '-') + '</td>';
       var cPdf = (state.coursJour||[]).filter(function(c){ return c.date===date && c.enfantId===s.enf.id; });
       rows += '<td style="color:#5b21b6;font-size:10px">' + (cPdf.length?cPdf.map(function(c){return c.matiere;}).join(', '):'-') + '</td>';
