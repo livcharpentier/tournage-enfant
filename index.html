@@ -1739,7 +1739,14 @@ function buildSummary() {
     if (!evs.length) return;
     txt += enf.nom + '\n';
     if (hPickup) txt += '  (Pick-up : ' + hPickup.heure + ')\n';
-    if (hTransport) txt += '  (Transport : ' + hTransport.heure + ')\n';
+    if (hTransport) {
+      var durTransport = '';
+      if (hPickup && hTransport.heure) {
+        var diff = toMin(hTransport.heure) - toMin(hPickup.heure);
+        if (diff > 0) durTransport = fmt(diff);
+      }
+      txt += '  (Transport : ' + (durTransport || hTransport.heure) + ')\n';
+    }
     if (hDebut) txt += 'Debut : ' + hDebut.heure + '\n';
     if (dur.hmc) txt += 'HMC : ' + fmt(dur.hmc) + '\n';
     if (dur.tournage) txt += 'Tournage : ' + fmt(dur.tournage) + '\n';
@@ -1850,7 +1857,10 @@ function renderResume() {
       html += '<div style="font-size:13px;font-weight:700">' + enf.nom + '</div>';
       var infoGris = [];
       if (hPickupBilan) infoGris.push('Pick-up ' + hPickupBilan.heure);
-      if (hTransportBilan) infoGris.push('Transport ' + hTransportBilan.heure);
+      if (hTransportBilan) {
+        var diffT = hPickupBilan && hTransportBilan.heure ? toMin(hTransportBilan.heure) - toMin(hPickupBilan.heure) : 0;
+        infoGris.push('Transport ' + (diffT > 0 ? fmt(diffT) : hTransportBilan.heure));
+      }
       if (infoGris.length) html += '<div style="font-size:11px;color:var(--text-muted)">' + infoGris.join(' · ') + '</div>';
       html += '</div>';
       html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px">';
