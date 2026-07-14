@@ -1742,7 +1742,17 @@ function buildSummary() {
     if (dur.hmc) txt += 'HMC : ' + fmt(dur.hmc) + '\n';
     if (dur.tournage) txt += 'Tournage : ' + fmt(dur.tournage) + '\n';
     if (dur.coaching) txt += 'Coaching : ' + fmt(dur.coaching) + '\n';
-    if (dur.cours) txt += 'Cours : ' + fmt(dur.cours) + '\n';
+    // Cours détaillés depuis l'onglet Cours
+    const coursEnf = (state.coursJour||[]).filter(c => c.date===dateRef && c.enfantId===enf.id)
+      .sort((a,b) => a.debut.localeCompare(b.debut));
+    if (coursEnf.length) {
+      txt += 'Cours :\n';
+      coursEnf.forEach(c => {
+        txt += '  • ' + c.matiere + ' ' + c.debut + (c.fin?' → '+c.fin:'') + (c.prof?' ('+c.prof+')':'') + '\n';
+      });
+    } else if (dur.cours) {
+      txt += 'Cours : ' + fmt(dur.cours) + '\n';
+    }
     if (dur.pause) txt += 'Pause plateau : ' + fmt(dur.pause) + '\n';
     if (dur.repas) txt += 'Repas : ' + fmt(dur.repas) + '\n';
     if (dur.attente) txt += 'Pause hors plateau : ' + fmt(dur.attente) + '\n';
@@ -1852,6 +1862,23 @@ function renderResume() {
         if (dur.pause) html += 'Pause plateau : ' + fmt(dur.pause) + ' · ';
         if (dur.repas) html += 'Repas (non compté) : ' + fmt(dur.repas) + ' · ';
         if (dur.attente) html += 'Pause hors plateau (non comptée) : ' + fmt(dur.attente);
+        html += '</div>';
+      }
+      // Cours détaillés
+      const coursResume = (state.coursJour||[]).filter(c => c.date===dateRef && c.enfantId===enf.id)
+        .sort((a,b) => a.debut.localeCompare(b.debut));
+      if (coursResume.length) {
+        html += '<div style="background:#f5f3ff;border-radius:6px;padding:6px 8px;margin-bottom:6px">';
+        html += '<div style="font-size:10px;font-weight:700;color:#5b21b6;margin-bottom:3px">✏️ Cours</div>';
+        coursResume.forEach(c => {
+          var duree = '';
+          if (c.debut && c.fin) {
+            var hd=c.debut.split(':'), hf=c.fin.split(':');
+            var diff=(parseInt(hf[0])*60+parseInt(hf[1]))-(parseInt(hd[0])*60+parseInt(hd[1]));
+            if (diff>0) duree = ' · ' + fmt(diff);
+          }
+          html += '<div style="font-size:11px;color:#5b21b6"><span style="font-weight:600">'+c.matiere+'</span> '+c.debut+(c.fin?' → '+c.fin:'')+duree+(c.prof?' <span style="color:#9ca3af">/ '+c.prof+'</span>':'')+' </div>';
+        });
         html += '</div>';
       }
       html += '<div style="background:var(--surface);border-radius:6px;height:6px;overflow:hidden;margin-bottom:4px">';
