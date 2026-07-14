@@ -2559,12 +2559,15 @@ function getStatsByDate(date) {
       if (l.fin) dur[l.type] = (dur[l.type] || 0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
     });
     const hArrivee = evs.find(l => l.type === 'arrivee');
-    const hFin = [...evs].reverse().find(l => l.type === 'fin');
+    const hFinLog = [...evs].reverse().find(l => l.type === 'fin');
+    const dernierFermeBilan = [...evs].reverse().find(l => l.fin && l.fin !== l.heure);
+    const hFin = hFinLog || dernierFermeBilan;
+    const hFinHeureBilan = hFinLog ? hFinLog.heure : (dernierFermeBilan ? dernierFermeBilan.fin : null);
     const hRepas = evs.find(l => l.type === 'repas');
     const travail = WORK_TYPES.reduce((s,t) => s + (dur[t]||0), 0);
     const lim = LIMITES[enf.age];
     const pct = Math.round(travail/lim*100);
-    return { enf, dur, hArrivee, hFin, hRepas, travail, lim, pct,
+    return { enf, dur, hArrivee, hFin, hFinHeureBilan, hRepas, travail, lim, pct,
       hasCascade: dur.cascade > 0, hasSante: dur.sante > 0,
       hasCoaching: dur.coaching > 0, hasSon: dur.son > 0 };
   }).filter(Boolean);
@@ -2636,7 +2639,7 @@ function renderBilan() {
       const cBilan = (state.coursJour||[]).filter(c => c.date===date && c.enfantId===s.enf.id);
       const cStr = cBilan.length ? cBilan.map(c => c.matiere+' '+c.debut+(c.fin?'-'+c.fin:'')).join(', ') : '-';
       html += '<td style="padding:6px 8px;color:#5b21b6;font-size:10px">' + cStr + '</td>';
-      html += '<td style="padding:6px 8px">' + (s.hFin ? s.hFin.heure : '-') + '</td>';
+      html += '<td style="padding:6px 8px">' + (s.hFinHeureBilan || (s.hFin ? s.hFin.heure : '-')) + '</td>';
       html += '<td style="padding:6px 8px;font-weight:600;color:' + (s.pct>=100?'#991b1b':s.pct>=80?'#92400e':'#065f46') + '">' + fmt(s.travail) + ' (' + s.pct + '%)</td>';
       // Cellule crayons - un bouton par log de cet enfant pour ce jour
       var logsEnf = state.logs.filter(function(l){ return l.filmId===state.activeFilmId && l.date===date && l.enfantId===s.enf.id; }).sort(function(a,b){ return a.heure.localeCompare(b.heure); });
