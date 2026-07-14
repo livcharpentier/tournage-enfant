@@ -388,11 +388,11 @@
         </div>
         <div class="form-row">
           <label class="form-label">Numéro WhatsApp scripte (avec indicatif, ex: +33612...)</label>
-          <input class="form-input" type="tel" id="wa-scripte" placeholder="+336...">
+          <input class="form-input" type="tel" id="wa-scripte" placeholder="+336..." oninput="saveWaContact('scripte', this.value)">
         </div>
         <div class="form-row">
           <label class="form-label">Numéro WhatsApp production</label>
-          <input class="form-input" type="tel" id="wa-prod" placeholder="+336...">
+          <input class="form-input" type="tel" id="wa-prod" placeholder="+336..." oninput="saveWaContact('prod', this.value)">
         </div>
       </div>
       <div class="send-btns">
@@ -1942,6 +1942,15 @@ function renderResume() {
 }
 
 // ─── WHATSAPP / SMS ───────────────────────────────────────────────
+function saveWaContact(role, val) {
+  if (!state.contacts) state.contacts = {};
+  state.contacts[role] = val;
+  // Synchroniser aussi le champ Films
+  var el = document.getElementById('contact-' + role);
+  if (el) el.value = val;
+  save();
+}
+
 function getNumber(role) {
   const fromResume = document.getElementById('wa-' + role)?.value;
   const fromContacts = state.contacts[role];
