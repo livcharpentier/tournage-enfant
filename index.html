@@ -2607,7 +2607,10 @@ function renderBilan() {
       var btns = logsEnf.map(function(l){
         var [bg,tc] = TYPE_COLOR[l.type] || ['#f3f4f6','#1f2937'];
         var lbl = (TYPE_LABEL[l.type]||l.type).substring(0,6);
-        return '<button onclick="ouvrirEditLogBilan('+l.id+')" style="font-size:9px;padding:2px 5px;border-radius:4px;border:none;background:'+bg+';color:'+tc+';cursor:pointer;margin:1px;font-weight:600">'+l.heure+' '+lbl+'</button>';
+        return '<span style="display:inline-flex;align-items:center;margin:1px;border-radius:4px;overflow:hidden">' +
+          '<button onclick="ouvrirEditLogBilan('+l.id+')" style="font-size:9px;padding:2px 5px;border:none;background:'+bg+';color:'+tc+';cursor:pointer;font-weight:600">'+l.heure+' '+lbl+'</button>' +
+          '<button onclick="supprimerLogBilan('+l.id+')" style="font-size:9px;padding:2px 4px;border:none;background:'+bg+';color:'+tc+';cursor:pointer;opacity:.7;border-left:1px solid rgba(0,0,0,.1)">✕</button>' +
+          '</span>';
       }).join('');
       html += '<td style="padding:4px 6px;min-width:120px">' + btns + '</td>';
       html += '</tr>';
@@ -2685,10 +2688,19 @@ function genererPDFBilan() {
 }
 // ─── INIT ─────────────────────────────────────────────────────────
 function ouvrirEditLogBilan(id) {
-  // Même modal que le live, mais on revient au bilan après
   ouvrirEditLog(id);
-  // Après sauvegarde, renderBilan sera appelé
   window._editFromBilan = true;
+}
+
+function supprimerLogBilan(id) {
+  var log = state.logs.find(function(l){ return l.id === id; });
+  if (!log) return;
+  var enf = state.enfants.find(function(e){ return e.id === log.enfantId; });
+  var label = (TYPE_LABEL[log.type] || log.type);
+  if (!confirm('Supprimer "' + label + ' ' + log.heure + '" pour ' + (enf ? enf.nom : '?') + ' ?')) return;
+  state.logs = state.logs.filter(function(l){ return l.id !== id; });
+  save();
+  renderBilan();
 }
 
 function ouvrirEditLog(id) {
