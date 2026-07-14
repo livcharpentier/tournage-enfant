@@ -1116,7 +1116,9 @@ async function handleLogin() {
 // ─── PERSISTENCE ─────────────────────────────────────────────────
 let saveTimer = null;
 function save() {
-  const payload = { state, nextId, selectedEnfants, savedAt: Date.now() };
+  // Copie profonde pour éviter les problèmes de référence async
+  const payload = JSON.parse(JSON.stringify({ state, nextId, selectedEnfants, savedAt: Date.now() }));
+  window._lastLoadedAt = payload.savedAt; // marquer la mémoire comme à jour
   try { localStorage.setItem('tournage_v2', JSON.stringify(payload)); } catch(e) {}
   // Marquer qu'une sync Supabase est en attente
   localStorage.setItem('tournage_pending_sync', '1');
@@ -3321,20 +3323,22 @@ document.addEventListener('visibilitychange', () => {
     // L'appli revient au premier plan
     const elapsed = lastHidden ? Date.now() - lastHidden : 0;
     
-    // Toujours restaurer depuis localStorage immédiatement (pas d'attente réseau)
-    try {
-      const raw = localStorage.getItem('tournage_v2');
-      if (raw) {
-        const d = JSON.parse(raw);
-        if (d.savedAt && d.savedAt > (window._lastLoadedAt || 0)) {
-          // localStorage plus récent que ce qu'on a en mémoire → restaurer
-          state = d.state || state;
-          nextId = d.nextId || nextId;
-          selectedEnfants = d.selectedEnfants || selectedEnfants;
-          window._lastLoadedAt = d.savedAt;
+    // Ne restaurer depuis localStorage que si on était absent assez longtemps (> 10s)
+    // pour éviter d'écraser un log qui vient d'être saisi
+    if (elapsed > 10000) {
+      try {
+        const raw = localStorage.getItem('tournage_v2');
+        if (raw) {
+          const d = JSON.parse(raw);
+          if (d.savedAt && d.savedAt > (window._lastLoadedAt || 0)) {
+            state = d.state || state;
+            nextId = d.nextId || nextId;
+            selectedEnfants = d.selectedEnfants || selectedEnfants;
+            window._lastLoadedAt = d.savedAt;
+          }
         }
-      }
-    } catch(e) {}
+      } catch(e) {}
+    }
 
     // Rafraîchir l'affichage
     try {
