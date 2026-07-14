@@ -2536,6 +2536,46 @@ function partagerCalendrier() {
   }
 }
 // ─── BILAN FILM ──────────────────────────────────────────────────
+function ouvrirAjoutLogBilan(date) {
+  window._bilanDate = date;
+  // Pré-remplir le modal d'ajout log
+  var enfs = activeEnfants();
+  // Remplir select enfant
+  var sel = document.getElementById('ajout-log-bilan-enfant');
+  if (sel) sel.innerHTML = enfs.map(function(e){ return '<option value="'+e.id+'">'+e.nom+'</option>'; }).join('');
+  document.getElementById('ajout-log-bilan-type').value = 'fin';
+  document.getElementById('ajout-log-bilan-heure').value = '';
+  document.getElementById('ajout-log-bilan-fin').value = '';
+  // Afficher la date
+  var jrs=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var mts=['jan','fév','mar','avr','mai','juin','juil','août','sep','oct','nov','déc'];
+  var d = new Date(date+'T12:00:00');
+  document.getElementById('ajout-log-bilan-titre').textContent = '+ Log — ' + jrs[d.getDay()] + ' ' + d.getDate() + ' ' + mts[d.getMonth()];
+  openModal('modal-ajout-log-bilan');
+}
+
+function validerAjoutLogBilan() {
+  var date = window._bilanDate;
+  if (!date) return;
+  var enfId = parseInt(document.getElementById('ajout-log-bilan-enfant').value);
+  var type = document.getElementById('ajout-log-bilan-type').value;
+  var heure = document.getElementById('ajout-log-bilan-heure').value;
+  var fin = document.getElementById('ajout-log-bilan-fin').value;
+  if (!heure) { alert('Heure requise.'); return; }
+  state.logs.push({
+    id: nextId++,
+    filmId: state.activeFilmId,
+    enfantId: enfId,
+    type: type,
+    heure: heure,
+    fin: fin || null,
+    date: date
+  });
+  save();
+  closeModal('modal-ajout-log-bilan');
+  renderBilan();
+}
+
 function supprimerJour(date) {
   if (!confirm('Supprimer toute la journee du ' + date + ' ?')) return;
   state.logs = state.logs.filter(l => !(l.filmId === state.activeFilmId && l.date === date));
@@ -2601,7 +2641,10 @@ function renderBilan() {
     html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden">';
     html += '<div style="background:#1a1a2e;color:#fff;padding:8px 14px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center">';
     html += '<span>' + dayLabel + '</span>';
+    html += '<div style="display:flex;gap:6px">';
+    html += '<button onclick="ouvrirAjoutLogBilan(' + "'" + date + "'" + ')" style="background:rgba(255,255,255,.25);border:none;color:#fff;padding:3px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:600">+ Log</button>';
     html += '<button onclick="supprimerJour(' + "'" + date + "'" + ')" style="background:rgba(255,255,255,.15);border:none;color:#fff;padding:3px 10px;border-radius:6px;font-size:11px;cursor:pointer"> Supprimer</button>';
+    html += '</div>';
     html += '</div>';
     html += '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:11px">';
     html += '<thead><tr style="background:var(--gray-light)">';
@@ -3611,6 +3654,36 @@ if ('serviceWorker' in navigator) {
     </div>
     <div class="form-row"><label class="form-label">Précepteur (optionnel)</label><input class="form-input" id="edit-cours-prof" placeholder="ex: M. Martin"></div>
     <button class="form-btn" style="background:var(--purple)" onclick="sauvegarderCours()">Enregistrer</button>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-ajout-log-bilan">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-ajout-log-bilan')">&#x2715;</button>
+    <div class="modal-title" id="ajout-log-bilan-titre">+ Ajouter un log</div>
+    <div class="form-row"><label class="form-label">Enfant</label><select class="form-input" id="ajout-log-bilan-enfant"></select></div>
+    <div class="form-row"><label class="form-label">Action</label>
+      <select class="form-input" id="ajout-log-bilan-type">
+        <option value="fin">Fin journée</option>
+        <option value="pickup">Pick-up maison</option>
+        <option value="transport">Transport</option>
+        <option value="arrivee">Arrivée</option>
+        <option value="hmc">HMC</option>
+        <option value="tournage">Tournage</option>
+        <option value="pause">Pause plateau</option>
+        <option value="repas">Repas</option>
+        <option value="attente">Pause hors plateau</option>
+        <option value="cours">Cours</option>
+        <option value="coaching">Coaching</option>
+        <option value="cascade">Cascade</option>
+        <option value="son">Équipage son</option>
+        <option value="sante">Santé</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div><label class="form-label">Heure début</label><input class="form-input" type="time" id="ajout-log-bilan-heure"></div>
+      <div><label class="form-label">Heure fin (optionnel)</label><input class="form-input" type="time" id="ajout-log-bilan-fin"></div>
+    </div>
+    <button class="form-btn" style="background:#1a1a2e" onclick="validerAjoutLogBilan()">Ajouter ce log</button>
   </div>
 </div>
 </body>
