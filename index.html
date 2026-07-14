@@ -939,11 +939,13 @@ function getLimites(dateStr) {
 }
 const LIMITES = new Proxy({}, { get: (t, k) => getLimites()[k] });
 const TYPE_LABEL = {
+  pickup: 'Pick-up', transport: 'Transport',
   arrivee: 'Arrivée', hmc: 'HMC/Prép.', tournage: 'Tournage',
   pause: 'Pause plateau', repas: 'Repas', attente: 'Pause hors plateau',
   cours: 'Cours', cascade: 'Cascade', sante: 'Santé', son: 'Équipage son', coaching: 'Coaching', fin: 'Fin journée'
 };
 const TYPE_COLOR = {
+  pickup: ['#d1fae5', '#065f46'], transport: ['#e0f2fe', '#0369a1'],
   arrivee: ['#d1fae5', '#065f46'], hmc: ['#dbeafe', '#1d4ed8'],
   tournage: ['#a7f3d0', '#065f46'], pause: ['#f3f4f6', '#1f2937'],
   repas: ['#fef9c3', '#713f12'], attente: ['#fef3c7', '#92400e'],
