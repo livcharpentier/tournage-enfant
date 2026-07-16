@@ -2865,6 +2865,7 @@ function sauvegarderLog() {
   log.fin = document.getElementById('edit-log-fin').value || null;
   save(); closeModal('modal-edit-log');
   renderLog(); renderStatusBar(); renderProgressBars();
+  renderResume();
   if (window._editFromBilan) { renderBilan(); window._editFromBilan = false; }
 }
 function ouvrirModalCours() {
