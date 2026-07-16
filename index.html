@@ -1927,6 +1927,8 @@ function renderResume() {
           '<div class="log-tag" style="background:'+bg+';color:'+tc+'">'+TYPE_LABEL[l.type]+'</div>' +
           '<div class="log-who">'+(enf?enf.nom.split(' ')[0]:'?')+'</div>' +
           '<div class="log-dur">'+dur+'</div>' +
+          '<button class="log-del" onclick="ouvrirEditLog('+l.id+')" style="color:var(--blue)">&#9998;</button>' +
+          '<button class="log-del" onclick="delLogResume('+l.id+')">&#x2715;</button>' +
           '</div>';
       }).join('');
     }
@@ -2834,6 +2836,15 @@ function supprimerLogBilan(id) {
   state.logs = state.logs.filter(function(l){ return l.id !== id; });
   save();
   renderBilan();
+}
+
+function delLogResume(id) {
+  state.logs = state.logs.filter(function(l){ return l.id !== id; });
+  save();
+  renderResume();
+  renderLog();
+  renderStatusBar();
+  renderProgressBars();
 }
 
 function ouvrirEditLog(id) {
