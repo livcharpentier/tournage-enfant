@@ -333,7 +333,7 @@
       <button class="action-btn btn-hmc" onclick="logAction('son')">
         <span class="icon">🎙️</span><span class="lbl">Équipage son</span><span class="last-t" id="lt-son"></span>
       </button>
-      <button class="action-btn btn-sante" onclick="logAction('sante')">
+      <button class="action-btn btn-sante" onclick="ouvrirModalSante()">
         <span class="icon">🏥</span><span class="lbl">Santé</span><span class="last-t" id="lt-sante"></span>
       </button>
       <button class="action-btn btn-fin" onclick="logAction('fin')" style="grid-column:span 3">
@@ -2868,6 +2868,42 @@ function sauvegarderLog() {
   renderResume();
   if (window._editFromBilan) { renderBilan(); window._editFromBilan = false; }
 }
+function ouvrirModalSante() {
+  document.getElementById('sante-note').value = '';
+  document.getElementById('sante-heure').value = nowHM();
+  openModal('modal-sante');
+}
+
+function validerSante() {
+  var note = document.getElementById('sante-note').value.trim();
+  var heure = document.getElementById('sante-heure').value || nowHM();
+  // Enregistrer le log avec la note dans detail
+  if (!state.activeFilmId) { alert('Sélectionnez un film.'); return; }
+  const enfs = activeEnfants();
+  if (!enfs.length) { alert('Ajoutez des enfants.'); return; }
+  const targets = selectedEnfants.length > 0 ? selectedEnfants : enfs.map(e => e.id);
+  targets.forEach(function(eid) {
+    state.logs.push({
+      id: nextId++,
+      filmId: state.activeFilmId,
+      enfantId: eid,
+      type: 'sante',
+      heure: heure,
+      fin: heure,
+      date: todayStr(),
+      detail: note
+    });
+  });
+  var ltEl = document.getElementById('lt-sante');
+  if (ltEl) ltEl.textContent = heure;
+  save();
+  renderLog();
+  renderStatusBar();
+  renderProgressBars();
+  if (navigator.vibrate) navigator.vibrate(30);
+  closeModal('modal-sante');
+}
+
 function ouvrirModalCours() {
   var enfs = activeEnfants();
   var sel = document.getElementById('cours-enfant-id');
@@ -3712,6 +3748,21 @@ if ('serviceWorker' in navigator) {
       <div><label class="form-label">Heure fin (optionnel)</label><input class="form-input" type="time" id="ajout-log-bilan-fin"></div>
     </div>
     <button class="form-btn" style="background:#1a1a2e" onclick="validerAjoutLogBilan()">Ajouter ce log</button>
+  </div>
+</div>
+<div class="modal-overlay" id="modal-sante">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-sante')">&#x2715;</button>
+    <div class="modal-title">🏥 Incident santé</div>
+    <div class="form-row">
+      <label class="form-label">Heure</label>
+      <input class="form-input" type="time" id="sante-heure">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Que s'est-il passé ? Médicament donné ?</label>
+      <textarea class="form-input" id="sante-note" rows="4" placeholder="Ex: Mal de tête, repos 20 min. Doliprane 250mg donné à 14h30. Parents prévenus." style="resize:vertical;line-height:1.5"></textarea>
+    </div>
+    <button class="form-btn" style="background:#ec4899" onclick="validerSante()">Enregistrer</button>
   </div>
 </div>
 </body>
