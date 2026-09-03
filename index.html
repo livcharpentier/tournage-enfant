@@ -253,6 +253,9 @@
   </div>
 </div>
 <div id="page-live" class="page active">
+  <div id="offline-bar" style="display:none;background:#f59e0b;color:#fff;text-align:center;font-size:12px;font-weight:700;padding:6px;position:sticky;top:0;z-index:11">
+    ⚡ Mode hors ligne — données sauvegardées localement
+  </div>
   <div style="background:#1a1a2e;color:#fff;padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10">
     <div>
       <div style="font-size:11px;opacity:.6;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Plateau Live</div>
@@ -1167,7 +1170,22 @@ function showSyncBanner(msg) {
 // Détecter la perte de réseau
 window.addEventListener('offline', () => {
   showSyncBanner('⚠️ Hors ligne — données sauvegardées localement');
+  const bar = document.getElementById('offline-bar');
+  if (bar) bar.style.display = 'block';
 });
+
+window.addEventListener('online', () => {
+  const bar = document.getElementById('offline-bar');
+  if (bar) bar.style.display = 'none';
+});
+
+// Vérifier au démarrage
+if (!navigator.onLine) {
+  document.addEventListener('DOMContentLoaded', () => {
+    const bar = document.getElementById('offline-bar');
+    if (bar) bar.style.display = 'block';
+  });
+}
 async function load() {
   // Lire localStorage d'abord (toujours disponible)
   let local = null;
@@ -3424,9 +3442,22 @@ document.addEventListener('visibilitychange', () => {
     }
   }
 });
-// Désactiver et supprimer tous les service workers
+// ─── SERVICE WORKER OFFLINE ──────────────────────────────────────
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+      console.log('SW enregistré:', reg.scope);
+      // Vérifier les mises à jour
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showSyncBanner('🔄 Mise à jour disponible — rechargez la page');
+          }
+        });
+      });
+    }).catch(err => console.log('SW erreur:', err));
+  });
 }
 // ─── INIT ─────────────────────────────────────────────────────────
 
@@ -3565,9 +3596,22 @@ setInterval(() => {
   renderStatusBar();
 }, 60000);
 
-// Désactiver et supprimer tous les service workers
+// ─── SERVICE WORKER OFFLINE ──────────────────────────────────────
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+      console.log('SW enregistré:', reg.scope);
+      // Vérifier les mises à jour
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showSyncBanner('🔄 Mise à jour disponible — rechargez la page');
+          }
+        });
+      });
+    }).catch(err => console.log('SW erreur:', err));
+  });
 }
 </script>
 <div class="modal-overlay" id="modal-cal">
