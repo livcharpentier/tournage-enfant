@@ -2934,25 +2934,7 @@ function genererPDFResume() {
 
   const blob2 = new Blob([html], { type: 'text/html' });
   
-  if (navigator.share && /Mobi|Android|iPhone/i.test(navigator.userAgent)) {
-    const file2 = new File([blob2], 'resume-' + (film ? film.nom.replace(/[^a-z0-9]/gi,'_') : 'LEDR2') + '.html', { type: 'text/html' });
-    if (navigator.canShare && navigator.canShare({ files: [file2] })) {
-      navigator.share({
-        title: 'Résumé tournage — ' + (film ? film.nom : 'LEDR2'),
-        files: [file2]
-      }).catch(() => {
-        const url2 = URL.createObjectURL(blob2);
-        const win2 = window.open(url2, '_blank');
-        if (win2) win2.addEventListener('load', () => setTimeout(() => win2.print(), 500));
-      });
-      return;
-    }
-  }
-  
-  const url2 = URL.createObjectURL(blob2);
-  const win2 = window.open(url2, '_blank');
-  if (win2) win2.addEventListener('load', () => setTimeout(() => win2.print(), 500));
-  URL.revokeObjectURL(url2);
+  afficherPDFModal(html, 'resume-' + (film ? film.nom.replace(/[^a-z0-9]/gi,'_') : 'LEDR2') + '.html');
 }
 
 function genererPDFBilan() {
@@ -3700,33 +3682,61 @@ ${obsHtml}
 
   const blob = new Blob([html], { type: 'text/html' });
   
-  // Sur mobile : partage natif si disponible
-  if (navigator.share && /Mobi|Android|iPhone/i.test(navigator.userAgent)) {
-    // Convertir en fichier partageable
-    const file = new File([blob], 'journee-' + dateRef + '.html', { type: 'text/html' });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      navigator.share({
-        title: 'Journée ' + dateRef + ' — ' + (film ? film.nom : 'LEDR2'),
-        files: [file]
-      }).catch(() => {
-        // Fallback impression
-        const url = URL.createObjectURL(blob);
-        const win = window.open(url, '_blank');
-        if (win) win.addEventListener('load', () => setTimeout(() => win.print(), 500));
-      });
-      return;
-    }
+  // Afficher dans un modal intégré à l'appli
+  afficherPDFModal(html, 'journee-' + dateRef + '.html');
+}
+
+function afficherPDFModal(html, filename) {
+  // Créer ou réutiliser le modal PDF
+  let modal = document.getElementById('modal-pdf-viewer');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'modal-pdf-viewer';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#fff;display:flex;flex-direction:column';
+    document.body.appendChild(modal);
   }
   
-  // Sur ordinateur : ouvrir + imprimer/PDF
-  const url = URL.createObjectURL(blob);
-  const win = window.open(url, '_blank');
-  if (win) {
-    win.addEventListener('load', () => {
-      setTimeout(() => { win.print(); }, 500);
-    });
+  modal.innerHTML = \`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#1a1a2e;color:#fff;flex-shrink:0">
+      <button onclick="document.getElementById('modal-pdf-viewer').style.display='none'" 
+        style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:14px">✕ Fermer</button>
+      <span style="font-size:13px;font-weight:600;flex:1">Tableau journée</span>
+      <button onclick="imprimerPDF()" 
+        style="background:#10b981;border:none;color:#fff;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600">🖨️ Imprimer / PDF</button>
+      <button onclick="telechargerPDF('${filename}')" 
+        style="background:#3b82f6;border:none;color:#fff;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600">⬇️ Télécharger</button>
+    </div>
+    <iframe id="pdf-iframe" style="flex:1;border:none;width:100%"></iframe>
+  \`;
+  
+  modal.style.display = 'flex';
+  
+  // Injecter le HTML dans l'iframe
+  const iframe = document.getElementById('pdf-iframe');
+  iframe.onload = function() {
+    window._pdfDoc = iframe.contentDocument;
+    window._pdfHtml = html;
+    window._pdfFilename = filename;
+  };
+  const blob = new Blob([html], { type: 'text/html' });
+  iframe.src = URL.createObjectURL(blob);
+}
+
+function imprimerPDF() {
+  const iframe = document.getElementById('pdf-iframe');
+  if (iframe && iframe.contentWindow) {
+    iframe.contentWindow.print();
   }
-  URL.revokeObjectURL(url);
+}
+
+function telechargerPDF(filename) {
+  const iframe = document.getElementById('pdf-iframe');
+  if (iframe && iframe.src) {
+    const a = document.createElement('a');
+    a.href = iframe.src;
+    a.download = filename || 'tableau.html';
+    a.click();
+  }
 }
 
 // ─── SAUVEGARDE AUTOMATIQUE ──────────────────────────────────────
