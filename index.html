@@ -3705,6 +3705,10 @@ function afficherPDFModal(html, filename) {
         style="background:#10b981;border:none;color:#fff;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600">🖨️ Imprimer / PDF</button>
       <button onclick="telechargerPDF(${filename})" 
         style="background:#3b82f6;border:none;color:#fff;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600">⬇️ Télécharger</button>
+      <button onclick="partagerWA('scripte',window._pdfFilename)"
+        style="background:#25d366;border:none;color:#fff;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600">📲 WA Scripte</button>
+      <button onclick="partagerWA('prod',window._pdfFilename)"
+        style="background:#128c7e;border:none;color:#fff;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600">📲 WA Prod</button>
     </div>
     <iframe id="pdf-iframe" style="flex:1;border:none;width:100%"></iframe>
   `;
@@ -3720,6 +3724,43 @@ function afficherPDFModal(html, filename) {
   };
   const blob = new Blob([html], { type: 'text/html' });
   iframe.src = URL.createObjectURL(blob);
+}
+
+function partagerWA(dest, filename) {
+  const iframe = document.getElementById('pdf-iframe');
+  if (!iframe || !iframe.src) return;
+  
+  // Récupérer le numéro
+  const num = dest === 'scripte' 
+    ? (state.contacts||{}).scripte 
+    : (state.contacts||{}).prod;
+  
+  if (navigator.share) {
+    // Mobile : partage natif avec le fichier
+    fetch(iframe.src)
+      .then(r => r.blob())
+      .then(blob => {
+        const file = new File([blob], filename || 'tableau.html', { type: 'text/html' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file], title: filename });
+        } else {
+          // Fallback : lien WhatsApp sans fichier
+          const waUrl = num 
+            ? 'https://wa.me/' + num.replace(/[^0-9]/g,'') + '?text=' + encodeURIComponent('Tableau journée ci-joint')
+            : 'https://wa.me/?text=' + encodeURIComponent('Tableau journée ci-joint');
+          window.open(waUrl, '_blank');
+        }
+      });
+  } else {
+    // Ordi : télécharger + ouvrir WhatsApp Web
+    telechargerPDF(filename);
+    setTimeout(() => {
+      const waUrl = num 
+        ? 'https://web.whatsapp.com/send?phone=' + num.replace(/[^0-9]/g,'') + '&text=' + encodeURIComponent('Tableau journée en pièce jointe (fichier téléchargé)')
+        : 'https://web.whatsapp.com/';
+      window.open(waUrl, '_blank');
+    }, 1000);
+  }
 }
 
 function imprimerPDF() {
