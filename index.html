@@ -2927,11 +2927,27 @@ function genererPDFResume() {
 <p style="margin-top:20px;font-size:10px;color:#9ca3af;text-align:right">Généré par Areca Live — ${new Date().toLocaleString('fr-FR')} · Responsable enfants : Liv Charpentier</p>
 </body></html>`;
 
-  const blob = new Blob([html], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  const win = window.open(url, '_blank');
-  if (win) win.addEventListener('load', () => setTimeout(() => win.print(), 500));
-  URL.revokeObjectURL(url);
+  const blob2 = new Blob([html], { type: 'text/html' });
+  
+  if (navigator.share && /Mobi|Android|iPhone/i.test(navigator.userAgent)) {
+    const file2 = new File([blob2], 'resume-' + (film ? film.nom.replace(/[^a-z0-9]/gi,'_') : 'LEDR2') + '.html', { type: 'text/html' });
+    if (navigator.canShare && navigator.canShare({ files: [file2] })) {
+      navigator.share({
+        title: 'Résumé tournage — ' + (film ? film.nom : 'LEDR2'),
+        files: [file2]
+      }).catch(() => {
+        const url2 = URL.createObjectURL(blob2);
+        const win2 = window.open(url2, '_blank');
+        if (win2) win2.addEventListener('load', () => setTimeout(() => win2.print(), 500));
+      });
+      return;
+    }
+  }
+  
+  const url2 = URL.createObjectURL(blob2);
+  const win2 = window.open(url2, '_blank');
+  if (win2) win2.addEventListener('load', () => setTimeout(() => win2.print(), 500));
+  URL.revokeObjectURL(url2);
 }
 
 function genererPDFBilan() {
@@ -3673,6 +3689,26 @@ ${obsHtml}
 </body></html>`;
 
   const blob = new Blob([html], { type: 'text/html' });
+  
+  // Sur mobile : partage natif si disponible
+  if (navigator.share && /Mobi|Android|iPhone/i.test(navigator.userAgent)) {
+    // Convertir en fichier partageable
+    const file = new File([blob], 'journee-' + dateRef + '.html', { type: 'text/html' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({
+        title: 'Journée ' + dateRef + ' — ' + (film ? film.nom : 'LEDR2'),
+        files: [file]
+      }).catch(() => {
+        // Fallback impression
+        const url = URL.createObjectURL(blob);
+        const win = window.open(url, '_blank');
+        if (win) win.addEventListener('load', () => setTimeout(() => win.print(), 500));
+      });
+      return;
+    }
+  }
+  
+  // Sur ordinateur : ouvrir + imprimer/PDF
   const url = URL.createObjectURL(blob);
   const win = window.open(url, '_blank');
   if (win) {
