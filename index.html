@@ -508,6 +508,7 @@
     <div style="display:flex;gap:8px;padding:10px 12px;flex-wrap:wrap;align-items:center">
       <button onclick="renderBilan()" style="padding:7px 14px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:600;cursor:pointer">Actualiser</button>
       <button onclick="genererPDFBilan()" style="padding:7px 14px;border-radius:8px;border:none;background:#ef4444;color:#fff;font-size:12px;font-weight:600;cursor:pointer"> PDF Bilan</button>
+      <button onclick="genererPDFResume()" style="padding:7px 14px;border-radius:8px;border:none;background:#7c3aed;color:#fff;font-size:12px;font-weight:600;cursor:pointer">📊 PDF Résumé</button>
     </div>
     <div id="bilan-content" style="padding:0 12px 10px"></div>
   </div>
@@ -2789,6 +2790,142 @@ function renderBilan() {
   });
   el.innerHTML = html;
 }
+function genererPDFResume() {
+  const film = activeFilm();
+  const dates = getAllDates();
+  if (!dates.length) { alert('Aucune journee enregistree.'); return; }
+
+  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const jours = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+
+  function fmt(min) {
+    if (!min || min <= 0) return '—';
+    const h = Math.floor(min/60), m = min%60;
+    return h > 0 ? (m > 0 ? h+'h'+String(m).padStart(2,'0') : h+'h') : m+'min';
+  }
+
+  // Totaux globaux par enfant
+  const totauxEnfant = {};
+  const enfs = activeEnfants();
+  enfs.forEach(e => { totauxEnfant[e.id] = { jours: 0, tournage: 0, hmc: 0, coaching: 0, pause: 0, repas: 0, attente: 0, travail: 0, depassements: 0 }; });
+
+  let rows = '';
+  dates.forEach(date => {
+    const d = new Date(date + 'T12:00:00');
+    const dayLabel = jours[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
+    const stats = getStatsByDate(date).filter(s => s !== null);
+    if (!stats.length) return;
+
+    // Une ligne par journée avec tous les enfants
+    const enfantsDuJour = stats.map(s => {
+      const depasse = s.travail > s.lim;
+      if (totauxEnfant[s.enf.id]) {
+        totauxEnfant[s.enf.id].jours++;
+        totauxEnfant[s.enf.id].tournage += s.dur.tournage || 0;
+        totauxEnfant[s.enf.id].hmc += s.dur.hmc || 0;
+        totauxEnfant[s.enf.id].coaching += s.dur.coaching || 0;
+        totauxEnfant[s.enf.id].pause += s.dur.pause || 0;
+        totauxEnfant[s.enf.id].repas += s.dur.repas || 0;
+        totauxEnfant[s.enf.id].attente += s.dur.attente || 0;
+        totauxEnfant[s.enf.id].travail += s.travail;
+        if (depasse) totauxEnfant[s.enf.id].depassements++;
+      }
+      const couleur = s.enf.couleur || '#3b82f6';
+      return `<span style="display:inline-block;background:${couleur}22;border:1px solid ${couleur}55;border-radius:4px;padding:1px 6px;font-size:10px;margin:1px;color:${depasse?'#991b1b':'#1f2937'};font-weight:${depasse?'700':'400'}">${s.enf.nom.split(' ')[0]} ${fmt(s.travail)}${depasse?' ⚠️':''}</span>`;
+    }).join('');
+
+    const totalJour = stats.reduce((s,x) => s + x.travail, 0);
+    const depassesJour = stats.filter(s => s.travail > s.lim).length;
+
+    rows += `<tr style="border-bottom:2px solid #e5e7eb">
+      <td style="padding:8px 10px;font-weight:700;white-space:nowrap;background:#f8fafc">${dayLabel}</td>
+      <td style="padding:8px;text-align:center">${stats.length}</td>
+      <td style="padding:8px">${enfantsDuJour}</td>
+      <td style="padding:8px;text-align:center;font-weight:600">${fmt(totalJour)}</td>
+      <td style="padding:8px;text-align:center;color:${depassesJour > 0 ? '#dc2626' : '#065f46'};font-weight:${depassesJour > 0 ? '700' : '400'}">${depassesJour > 0 ? depassesJour + ' ⚠️' : '✓'}</td>
+    </tr>`;
+  });
+
+  // Tableau totaux par enfant
+  let rowsEnfants = '';
+  enfs.forEach(e => {
+    const t = totauxEnfant[e.id];
+    if (!t || t.jours === 0) return;
+    const couleur = e.couleur || '#3b82f6';
+    rowsEnfants += `<tr style="border-bottom:1px solid #e5e7eb">
+      <td style="padding:7px 10px;font-weight:700;border-left:4px solid ${couleur}">${e.nom}</td>
+      <td style="padding:7px;text-align:center">${t.jours}</td>
+      <td style="padding:7px;text-align:center;font-weight:600">${fmt(t.hmc)}</td>
+      <td style="padding:7px;text-align:center;font-weight:700">${fmt(t.tournage)}</td>
+      <td style="padding:7px;text-align:center">${fmt(t.coaching)}</td>
+      <td style="padding:7px;text-align:center">${fmt(t.pause)}</td>
+      <td style="padding:7px;text-align:center">${fmt(t.repas)}</td>
+      <td style="padding:7px;text-align:center">${fmt(t.attente)}</td>
+      <td style="padding:7px;text-align:center;font-weight:700;color:#1d4ed8">${fmt(t.travail)}</td>
+      <td style="padding:7px;text-align:center;color:${t.depassements > 0 ? '#dc2626' : '#065f46'};font-weight:700">${t.depassements > 0 ? t.depassements + ' ⚠️' : '✓'}</td>
+    </tr>`;
+  });
+
+  const html = `<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<title>Résumé — ${film ? film.nom : 'LEDR2'}</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; color: #1f2937; font-size: 12px; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  h2 { font-size: 13px; color: #6b7280; margin: 0 0 20px; font-weight: normal; }
+  h3 { font-size: 13px; margin: 24px 0 8px; color: #374151; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+  th { padding: 8px 10px; text-align: left; font-size: 11px; font-weight: 700; }
+  @media print { body { padding: 10px; } @page { margin: 15mm; } }
+</style>
+</head>
+<body>
+<h1>🎬 ${film ? film.nom : 'Les Enfants de la Résistance 2'}</h1>
+<h2>Résumé du tournage — ${dates.length} journées enregistrées</h2>
+
+<h3>📅 Journées de tournage</h3>
+<table>
+  <thead style="background:#1a1a2e;color:white">
+    <tr>
+      <th>Date</th>
+      <th style="text-align:center">Enfants</th>
+      <th>Présents & temps légal</th>
+      <th style="text-align:center">Total plateau</th>
+      <th style="text-align:center">Dépassements</th>
+    </tr>
+  </thead>
+  <tbody>${rows}</tbody>
+</table>
+
+<h3>👶 Totaux par enfant</h3>
+<table>
+  <thead style="background:#374151;color:white">
+    <tr>
+      <th>Enfant</th>
+      <th style="text-align:center">Jours</th>
+      <th style="text-align:center">HMC</th>
+      <th style="text-align:center">Tournage</th>
+      <th style="text-align:center">Coaching</th>
+      <th style="text-align:center">Pause plateau</th>
+      <th style="text-align:center">Repas</th>
+      <th style="text-align:center">Hors plateau</th>
+      <th style="text-align:center">Présence légale</th>
+      <th style="text-align:center">Dépassements</th>
+    </tr>
+  </thead>
+  <tbody>${rowsEnfants}</tbody>
+</table>
+
+<p style="margin-top:20px;font-size:10px;color:#9ca3af;text-align:right">Généré par Areca Live — ${new Date().toLocaleString('fr-FR')} · Responsable enfants : Liv Charpentier</p>
+</body></html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url, '_blank');
+  if (win) win.addEventListener('load', () => setTimeout(() => win.print(), 500));
+  URL.revokeObjectURL(url);
+}
+
 function genererPDFBilan() {
   const film = activeFilm();
   const dates = getAllDates();
