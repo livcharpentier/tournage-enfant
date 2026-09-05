@@ -418,6 +418,9 @@
         <button class="send-btn btn-copy" onclick="copyResume()" style="grid-column:span 2">
           <span style="font-size:20px"></span>Copier le résumé
         </button>
+        <button class="send-btn btn-copy" onclick="exporterPDFJournee()" style="grid-column:span 2;background:#dc2626;color:#fff">
+          <span style="font-size:20px">📄</span>PDF Tableau journée
+        </button>
       </div>
       <div id="extra-contacts-btns" style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
     </div>
@@ -3384,6 +3387,156 @@ setInterval(() => {
   if (activePage && activePage.id === 'page-planning') 
   renderStatusBar();
 }, 60000);
+
+// ─── PDF JOURNÉE ──────────────────────────────────────────────────
+function exporterPDFJournee() {
+  const dateRef = resumeDateFiltre || todayStr();
+  const film = activeFilm();
+  const enfs = activeEnfants();
+  const dayLogs = state.logs.filter(l => l.filmId === state.activeFilmId && l.date === dateRef);
+  if (!dayLogs.length) { alert('Aucune donnée pour cette journée.'); return; }
+
+  const jrs = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const mts = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  const d = new Date(dateRef + 'T12:00:00');
+  const dateLabel = jrs[d.getDay()] + ' ' + d.getDate() + ' ' + mts[d.getMonth()] + ' ' + d.getFullYear();
+
+  function fmt(min) {
+    if (!min || min <= 0) return '—';
+    const h = Math.floor(min/60), m = min%60;
+    return h > 0 ? (m > 0 ? h+'h'+String(m).padStart(2,'0') : h+'h') : m+'min';
+  }
+
+  // Calculer stats par enfant
+  let rows = '';
+  let totalTravailFilm = 0;
+
+  enfs.forEach(enf => {
+    const evs = dayLogs.filter(l => l.enfantId === enf.id).sort((a,b) => a.heure.localeCompare(b.heure));
+    if (!evs.length) return;
+
+    const dur = {};
+    Object.keys(TYPE_LABEL).forEach(t => dur[t] = 0);
+    evs.forEach(l => {
+      if (l.fin && l.fin !== l.heure) dur[l.type] = (dur[l.type]||0) + Math.max(0, toMin(l.fin) - toMin(l.heure));
+    });
+
+    const hArrivee = evs.find(l => l.type === 'arrivee' || l.type === 'hmc');
+    const hPickup = evs.find(l => l.type === 'pickup');
+    const hTransport = evs.find(l => l.type === 'transport');
+    const hFinLog = [...evs].reverse().find(l => l.type === 'fin');
+    const dernierFerme = [...evs].reverse().find(l => l.fin && l.fin !== l.heure);
+    const hFin = hFinLog ? hFinLog.heure : (dernierFerme ? dernierFerme.fin : '—');
+
+    const travail = WORK_TYPES.reduce((s,t) => s + (dur[t]||0), 0);
+    const lim = LIMITES[enf.age];
+    const pct = Math.round(travail/lim*100);
+    const depasse = travail > lim;
+    totalTravailFilm += travail;
+
+    const couleur = enf.couleur || '#3b82f6';
+    const bg = depasse ? '#fee2e2' : '#f0fdf4';
+    const textColor = depasse ? '#991b1b' : '#065f46';
+
+    rows += `<tr style="background:${bg}">
+      <td style="padding:8px 10px;font-weight:700;border-left:4px solid ${couleur}">${enf.nom}</td>
+      <td style="padding:8px;text-align:center">${hPickup ? hPickup.heure : '—'}</td>
+      <td style="padding:8px;text-align:center">${hArrivee ? hArrivee.heure : '—'}</td>
+      <td style="padding:8px;text-align:center">${dur.hmc ? fmt(dur.hmc) : '—'}</td>
+      <td style="padding:8px;text-align:center">${dur.tournage ? fmt(dur.tournage) : '—'}</td>
+      <td style="padding:8px;text-align:center">${dur.coaching ? fmt(dur.coaching) : '—'}</td>
+      <td style="padding:8px;text-align:center">${dur.pause ? fmt(dur.pause) : '—'}</td>
+      <td style="padding:8px;text-align:center">${dur.repas ? fmt(dur.repas) : '—'}</td>
+      <td style="padding:8px;text-align:center">${dur.attente ? fmt(dur.attente) : '—'}</td>
+      <td style="padding:8px;text-align:center">${hFin}</td>
+      <td style="padding:8px;text-align:center;font-weight:700;color:${textColor}">${fmt(travail)}<br><small>${pct}%${depasse ? ' ⚠️' : ''}</small></td>
+    </tr>`;
+  });
+
+  // Cours du jour
+  const coursJour = (state.coursJour||[]).filter(c => c.date === dateRef);
+  let coursHtml = '';
+  if (coursJour.length) {
+    coursHtml = `<h3 style="margin:20px 0 8px;color:#5b21b6;font-size:14px">✏️ Cours du jour</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead><tr style="background:#ede9fe">
+        <th style="padding:6px 10px;text-align:left">Enfant</th>
+        <th style="padding:6px;text-align:left">Matière</th>
+        <th style="padding:6px;text-align:center">Horaires</th>
+        <th style="padding:6px;text-align:center">Durée</th>
+        <th style="padding:6px;text-align:left">Précepteur</th>
+      </tr></thead><tbody>`;
+    coursJour.forEach(c => {
+      const enf = enfs.find(e => e.id === c.enfantId);
+      let duree = '—';
+      if (c.debut && c.fin) {
+        const diff = toMin(c.fin) - toMin(c.debut);
+        if (diff > 0) duree = fmt(diff);
+      }
+      coursHtml += `<tr style="border-bottom:1px solid #e9d5ff">
+        <td style="padding:6px 10px">${enf ? enf.nom : '?'}</td>
+        <td style="padding:6px;font-weight:600;color:#5b21b6">${c.matiere}</td>
+        <td style="padding:6px;text-align:center">${c.debut}${c.fin ? ' → ' + c.fin : ''}</td>
+        <td style="padding:6px;text-align:center">${duree}</td>
+        <td style="padding:6px;color:#6b7280">${c.prof || '—'}</td>
+      </tr>`;
+    });
+    coursHtml += '</tbody></table>';
+  }
+
+  // Observation du jour
+  const obs = state['commentaireJour'] || '';
+  const obsHtml = obs ? `<div style="margin-top:16px;padding:10px;background:#fef9c3;border-radius:6px;font-size:12px"><strong>📝 Observation :</strong> ${obs}</div>` : '';
+
+  const html = `<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<title>Journée ${dateLabel} — ${film ? film.nom : 'LEDR2'}</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; color: #1f2937; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  h2 { font-size: 13px; color: #6b7280; margin: 0 0 16px; font-weight: normal; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: #1a1a2e; color: white; padding: 8px 10px; text-align: center; font-size: 11px; }
+  th:first-child { text-align: left; }
+  tr:nth-child(even) { filter: brightness(0.97); }
+  td { border-bottom: 1px solid #e5e7eb; }
+  @media print { body { padding: 10px; } }
+</style>
+</head>
+<body>
+<h1>🎬 ${film ? film.nom : 'Les Enfants de la Résistance 2'}</h1>
+<h2>${dateLabel} — Rapport de journée</h2>
+<table>
+  <thead><tr>
+    <th style="text-align:left">Enfant</th>
+    <th>Pick-up</th>
+    <th>Arrivée</th>
+    <th>HMC</th>
+    <th>Tournage</th>
+    <th>Coaching</th>
+    <th>Pause plateau</th>
+    <th>Repas</th>
+    <th>Hors plateau</th>
+    <th>Fin</th>
+    <th>Présence légale</th>
+  </tr></thead>
+  <tbody>${rows}</tbody>
+</table>
+${coursHtml}
+${obsHtml}
+<p style="margin-top:20px;font-size:10px;color:#9ca3af;text-align:right">Généré par Areca Live — ${new Date().toLocaleString('fr-FR')}</p>
+</body></html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url, '_blank');
+  if (win) {
+    win.addEventListener('load', () => {
+      setTimeout(() => { win.print(); }, 500);
+    });
+  }
+  URL.revokeObjectURL(url);
+}
 
 // ─── SAUVEGARDE AUTOMATIQUE ──────────────────────────────────────
 function sauvegardeAuto() {
