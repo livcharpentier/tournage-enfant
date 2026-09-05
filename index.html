@@ -2844,14 +2844,36 @@ function genererPDFResume() {
 
     const totalJour = stats.reduce((s,x) => s + x.travail, 0);
     const depassesJour = stats.filter(s => s.travail > s.lim).length;
+    
+    // Cours du jour
+    const coursJourDate = (state.coursJour||[]).filter(c => c.date === date);
+    let coursStr = '';
+    if (coursJourDate.length) {
+      coursStr = coursJourDate.map(c => {
+        const enf = enfs.find(e => e.id === c.enfantId);
+        return (enf ? enf.nom.split(' ')[0] : '?') + ' ' + c.matiere + ' ' + c.debut + (c.fin ? '→' + c.fin : '') + (c.prof ? ' (' + c.prof + ')' : '');
+      }).join(' · ');
+    }
+    
+    // Commentaire du jour
+    const commentJour = state['comment_' + date] || '';
 
-    rows += `<tr style="border-bottom:2px solid #e5e7eb">
-      <td style="padding:8px 10px;font-weight:700;white-space:nowrap;background:#f8fafc">${dayLabel}</td>
+    rows += `<tr style="border-bottom:${(coursStr || commentJour) ? '1px solid #e5e7eb' : '2px solid #e5e7eb'}">
+      <td style="padding:8px 10px;font-weight:700;white-space:nowrap;background:#f8fafc" rowspan="${(coursStr || commentJour) ? '2' : '1'}">${dayLabel}</td>
       <td style="padding:8px;text-align:center">${stats.length}</td>
       <td style="padding:8px">${enfantsDuJour}</td>
       <td style="padding:8px;text-align:center;font-weight:600">${fmt(totalJour)}</td>
       <td style="padding:8px;text-align:center;color:${depassesJour > 0 ? '#dc2626' : '#065f46'};font-weight:${depassesJour > 0 ? '700' : '400'}">${depassesJour > 0 ? depassesJour + ' ⚠️' : '✓'}</td>
     </tr>`;
+    if (coursStr || commentJour) {
+      rows += `<tr style="border-bottom:2px solid #e5e7eb;background:#fafafa">
+        <td colspan="4" style="padding:5px 10px;font-size:11px;color:#374151">
+          ${coursStr ? '<span style="color:#5b21b6">✏️ ' + coursStr + '</span>' : ''}
+          ${coursStr && commentJour ? '<br>' : ''}
+          ${commentJour ? '<span style="color:#92400e">📝 ' + commentJour + '</span>' : ''}
+        </td>
+      </tr>`;
+    }
   });
 
   // Tableau totaux par enfant
