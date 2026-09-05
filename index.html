@@ -3560,7 +3560,7 @@ setInterval(() => {
 
 // ─── PDF JOURNÉE ──────────────────────────────────────────────────
 function exporterPDFJournee() {
-  const dateRef = resumeDateFiltre || todayStr();
+  const dateRef = resumeDate || todayStr();
   const film = activeFilm();
   const enfs = activeEnfants();
   const dayLogs = state.logs.filter(l => l.filmId === state.activeFilmId && l.date === dateRef);
