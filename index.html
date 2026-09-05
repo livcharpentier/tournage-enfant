@@ -256,6 +256,10 @@
   <div id="offline-bar" style="display:none;background:#f59e0b;color:#fff;text-align:center;font-size:12px;font-weight:700;padding:6px;position:sticky;top:0;z-index:11">
     ⚡ Mode hors ligne — données sauvegardées localement
   </div>
+  <div style="background:#0f172a;color:#94a3b8;font-size:11px;text-align:center;padding:4px;position:sticky;top:0;z-index:10">
+    💾 <button onclick="exporterDonnees()" style="background:none;border:none;color:#60a5fa;font-size:11px;cursor:pointer;text-decoration:underline">Exporter sauvegarde JSON</button>
+    · Dernière sauvegarde : <span id="derniere-sauvegarde">—</span>
+  </div>
   <div style="background:#1a1a2e;color:#fff;padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10">
     <div>
       <div style="font-size:11px;opacity:.6;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Plateau Live</div>
@@ -3378,6 +3382,40 @@ setInterval(() => {
   if (activePage && activePage.id === 'page-planning') 
   renderStatusBar();
 }, 60000);
+
+// ─── EXPORT SAUVEGARDE ────────────────────────────────────────────
+function exporterDonnees() {
+  try {
+    const payload = {
+      exportDate: new Date().toISOString(),
+      version: 'LEDR2-v1',
+      state,
+      nextId,
+      selectedEnfants
+    };
+    const json = JSON.stringify(payload, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const d = new Date();
+    const dateStr = d.toISOString().slice(0,10);
+    a.href = url;
+    a.download = 'sauvegarde-ledr2-' + dateStr + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    // Mettre à jour le label
+    const el = document.getElementById('derniere-sauvegarde');
+    if (el) {
+      const h = String(d.getHours()).padStart(2,'0');
+      const m = String(d.getMinutes()).padStart(2,'0');
+      el.textContent = dateStr + ' ' + h + ':' + m;
+      el.style.color = '#10b981';
+    }
+    showSyncBanner('✅ Sauvegarde exportée !');
+  } catch(e) {
+    alert('Erreur export: ' + e.message);
+  }
+}
 
 // ─── RÉVEIL DEPUIS VEILLE ────────────────────────────────────────
 let lastHidden = null;
