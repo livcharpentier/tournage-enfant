@@ -3351,6 +3351,8 @@ async function initApp() {
     updatePeriodeLabel();
     remplirSelectResume();
     remplirSelectCours();
+    // Sauvegarde automatique quotidienne (après 3s pour laisser charger)
+    setTimeout(sauvegardeAuto, 3000);
   } catch(e) { console.error('Init error:', e); }
 }
 // Vérifier si token existant
@@ -3382,6 +3384,25 @@ setInterval(() => {
   if (activePage && activePage.id === 'page-planning') 
   renderStatusBar();
 }, 60000);
+
+// ─── SAUVEGARDE AUTOMATIQUE ──────────────────────────────────────
+function sauvegardeAuto() {
+  try {
+    const CLE = 'derniere_sauvegarde_auto';
+    const derniere = localStorage.getItem(CLE);
+    const maintenant = Date.now();
+    const vingtQuatreH = 24 * 60 * 60 * 1000;
+    
+    // Sauvegarder si pas de sauvegarde ou si > 24h
+    if (!derniere || (maintenant - parseInt(derniere)) > vingtQuatreH) {
+      // Vérifier qu'il y a des données à sauvegarder
+      if (!state.films || state.films.length === 0) return;
+      
+      exporterDonnees();
+      localStorage.setItem(CLE, String(maintenant));
+    }
+  } catch(e) {}
+}
 
 // ─── EXPORT SAUVEGARDE ────────────────────────────────────────────
 function exporterDonnees() {
@@ -3602,6 +3623,8 @@ async function initApp() {
     updatePeriodeLabel();
     remplirSelectResume();
     remplirSelectCours();
+    // Sauvegarde automatique quotidienne (après 3s pour laisser charger)
+    setTimeout(sauvegardeAuto, 3000);
   } catch(e) { console.error('Init error:', e); }
 }
 // Vérifier si token existant
