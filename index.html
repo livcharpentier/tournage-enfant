@@ -2331,10 +2331,25 @@ function renderCal() {
   for (let d = 1; d <= daysInMonth; d++) {
     const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const dayEvs = events.filter(e => e.date === dateStr);
+    // Jours de tournage depuis les logs
+    const logsJour = (state.logs||[]).filter(l => l.date === dateStr && (!state.activeFilmId || l.filmId === state.activeFilmId));
+    const aTournage = logsJour.some(l => WORK_TYPES.includes(l.type));
+    const enfantsDuJour = [...new Set(logsJour.map(l => l.enfantId))];
     const isToday = today.getFullYear() === calYear && today.getMonth() === calMonth && today.getDate() === d;
     const evHtml = dayEvs.slice(0,3).map(e => `<div class="cal-ev ${e.type}">${e.titre}</div>`).join('');
-    html += `<div class="cal-day ${isToday ? 'today' : ''}" onclick="openAddEvent('${dateStr}')">
-      <div class="cal-day-num">${d}</div>
+    // Points colorés pour chaque enfant présent
+    const enfs = activeEnfants();
+    const pointsHtml = aTournage ? enfantsDuJour.slice(0,4).map(eid => {
+      const enf = enfs.find(e => e.id === eid);
+      const col = enf ? enf.couleur : '#3b82f6';
+      return `<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${col};margin:0 1px"></span>`;
+    }).join('') : '';
+    
+    html += `<div class="cal-day ${isToday ? 'today' : ''} ${aTournage ? 'has-tournage' : ''}" 
+      onclick="aTournage ? goToResume('${dateStr}') : openAddEvent('${dateStr}')"
+      style="${aTournage ? 'cursor:pointer;' : ''}">
+      <div class="cal-day-num" style="${aTournage ? 'font-weight:700;' : ''}">${d}</div>
+      ${pointsHtml ? '<div style="text-align:center;line-height:1;margin-bottom:2px">' + pointsHtml + '</div>' : ''}
       ${evHtml}
     </div>`;
   }
@@ -2383,6 +2398,11 @@ function renderCal() {
   }).join('');
 }
 let calSelectedEnfants = [];
+function goToResume(date) {
+  resumeDate = date;
+  showPage('resume');
+}
+
 function openAddEvent(dateStr) {
   const d = new Date(dateStr);
   const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
