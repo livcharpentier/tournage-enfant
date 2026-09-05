@@ -1234,9 +1234,13 @@ async function load() {
       window._lastLoadedAt = best.savedAt || 0;
     } catch(e) {}
   }
-  if (state.commentaireJour) {
-    const el = document.getElementById('commentaire-jour');
-    if (el) el.value = state.commentaireJour;
+  // Charger l'observation de la date sélectionnée
+  const elComm = document.getElementById('commentaire-jour');
+  if (elComm) {
+    const dateRef2 = resumeDate || todayStr();
+    const noteDate = state['comment_' + dateRef2] || '';
+    const noteGlobale = state.commentaireJour || '';
+    elComm.value = noteDate || (dateRef2 === todayStr() ? noteGlobale : '');
   }
   if (state.contacts) {
     const sc = document.getElementById('contact-scripte');
@@ -1251,7 +1255,11 @@ async function load() {
 }
 function saveCommentaire() {
   const el = document.getElementById('commentaire-jour');
-  if (el) { state.commentaireJour = el.value; save(); }
+  if (!el) return;
+  const dateRef = resumeDate || todayStr();
+  state['comment_' + dateRef] = el.value;
+  state.commentaireJour = el.value; // compatibilité
+  save();
 }
 function saveContacts() {
   const sc = document.getElementById('contact-scripte');
