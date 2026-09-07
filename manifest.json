@@ -1,6 +1,6 @@
 {
-  "name": "Tournage Enfants",
-  "short_name": "Tournage",
+  "name": "Responsable Enfants",
+  "short_name": "Responsable Enfants",
   "description": "Suivi du temps de travail des enfants sur tournage",
   "start_url": "/",
   "display": "standalone",
