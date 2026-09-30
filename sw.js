@@ -1,4 +1,4 @@
-const CACHE_NAME = 'areca-live-v1';
+const CACHE_NAME = 'arenca-live-v1';
 const ASSETS = [
   '/',
   '/index.html',
